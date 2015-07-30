@@ -47,6 +47,10 @@ class DescriptionsDataset extends Dataset {
                 200;
             case [100, 200]:
                 200;
+            case [50, 100]:
+                50;
+            case [100, 50]:
+                50;
             default:
                 100;
         }
