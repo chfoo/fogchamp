@@ -159,7 +159,20 @@ class MatchupChart {
 
         var span:SpanElement = Browser.document.createSpanElement();
         span.classList.add('matchupChartLabelRotate-$position');
-        span.textContent = pokemonStat.name;
+
+        var pokemonTypes:Array<String> = pokemonStat.types;
+
+        for (pokemonType in pokemonTypes) {
+            var typeIcon:SpanElement = Browser.document.createSpanElement();
+            typeIcon.classList.add('pokemonType-$pokemonType');
+            typeIcon.classList.add("miniPokemonTypeIcon");
+            typeIcon.textContent = " ";
+            span.appendChild(typeIcon);
+        }
+
+        var labelText:SpanElement = Browser.document.createSpanElement();
+        labelText.textContent = pokemonStat.name;
+        span.appendChild(labelText);
 
         container.appendChild(span);
         cell.appendChild(container);
