@@ -29,7 +29,6 @@ a:active, a:hover {
 }
 
 #messageContainer {
-    display: none;
     background: rgba(180, 152, 39, 0.75);
     position: fixed;
     top: 0px;
@@ -38,9 +37,15 @@ a:active, a:hover {
     padding: 0.2em;
 }
 
-#pokemonSelection, #pokemonStats, #pokemonMoves, #pokemonDiamond, #footer {
+#pokemonSelection, #pokemonStats, #pokemonMoves, #pokemonDiamond {
     text-align: center;
     width: 60em;
+    margin: auto;
+}
+
+#footer {
+    text-align: center;
+    width: 40em;
     margin: auto;
 }
 
