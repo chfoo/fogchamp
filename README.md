@@ -19,7 +19,8 @@ You will need:
 4. Copy `static/` to `static/` on your web server
 5. Copy the icons from http://veekun.com/dex/downloads to `static/veekun/icons/` on your web server
 6. Copy the JSON files (`pbr-platnium.json`, `moves.json`, `descriptions.json`) to your web server
-7. Copy `visualizer.html` (rename to `index.html` if desired) to your web server.
+7. Copy the `script.js` file to your web server
+8. Copy `visualizer.html` (rename to `index.html` if desired) & `style.css` to your web server.
 
 
 Credits
