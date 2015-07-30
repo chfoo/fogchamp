@@ -150,6 +150,7 @@ span[class|="pokemonType"] {
     padding-right: 0.1em;
     text-shadow: 0px 0px 0.1em black;
     box-shadow: 0px 0px 0.1em black;
+    line-height: 1.2em;
 }
 
 /* http://www.epidemicjohto.com/t882-type-colors-hex-colors */
@@ -241,38 +242,40 @@ span[class|="pokemonType"] {
     border: 0.1em solid grey;
 }
 
-.matchupChartDividerCell {
-    /*width: 3em;
-    height: 3em;*/
+.matchupChartDividerCell-first {
+    width: 4em;
+    height: 4em;
 }
 
 .matchupChartLabel-top {
-    width: 10em;
+    width: 12em;
     height: 1.2em;
 }
 
 .matchupChartLabel-left {
-    height: 10em;
+    height: 12em;
     width: 1.2em;
 }
 
 .matchupChartLabelRotate-left {
-    height: 10em;
-    width: 10em;
+    height: 12em;
+    width: 12em;
     transform: rotate(-90deg);
     display: block;
 }
 
 .matchupChartMoveLabel-top {
-    width: 2em;
+    width: 2.2em;
     height: 6em;
     overflow: hidden;
+    white-space: nowrap;
 }
 
 .matchupChartMoveLabel-left {
-    height: 2em;
+    height: 2.2em;
     width: 6em;
     overflow: hidden;
+    white-space: nowrap;
 }
 
 .matchupChartMoveLabelRotate-top {
