@@ -97,7 +97,7 @@ class UI {
                 pokemonNums.set(i, Std.parseInt(pattern.matched(i + 1)));
             }
             setSelectionByNumbers(pokemonNums);
-            renderAll();
+            renderAll(false);
         }
     }
 
@@ -129,12 +129,19 @@ class UI {
         renderAll();
     }
 
-    function renderAll() {
+    function renderAll(?updateUrlFragment:Bool) {
+        if (updateUrlFragment == null) {
+            updateUrlFragment = true;
+        }
+
         renderPokemonStats();
         renderPokemonMoves();
         renderChart();
         attachHelpListeners();
-        writeUrlFragment();
+
+        if (updateUrlFragment) {
+            writeUrlFragment();
+        }
     }
 
     function getSlotSlug(slotNum:Int):String {
