@@ -1,0 +1,255 @@
+html, body {
+    font-family: 'Roboto Condensed', sans-serif;
+    background: #404040;
+    color: #E8E8E8;
+}
+
+:focus {
+    outline: none;
+    box-shadow: 0px 0px 0.2em 0.1em orange;
+}
+
+.clickHelp {
+    color: inherit;
+    border-bottom: 0.1em dotted;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#messageContainer {
+    display: none;
+    background: rgba(180, 152, 39, 0.75);
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    padding: 0.2em;
+}
+
+#pokemonSelection, #pokemonStats, #pokemonMoves, #pokemonDiamond {
+    text-align: center;
+    width: 60em;
+    margin: auto;
+}
+
+#pokemonSelectionBlue, #pokemonSelectionRed {
+    display: inline-block;
+    padding: 0.25em;
+}
+
+.pokemonStatsSlot, .pokemonMovesSet {
+    width: 8em;
+    margin: 0.25em;
+    display: inline-block;
+}
+
+.selectSlotContainer {
+    display: inline-block;
+}
+
+.pokemonMovesSet {
+    vertical-align: top;
+}
+
+.pokemonMoveSlot {
+    margin-bottom: 0.5em;
+}
+
+.blueCorner {
+    background: #27619E;
+}
+
+.redCorner {
+    background: #9E2A27;
+}
+
+.pokemonStatsName, .moveName {
+    font-weight: bold;
+}
+
+.pokemonIcon {
+    width: 5em;
+    /* http://stackoverflow.com/q/3900436/1524507* /
+    image-rendering:optimizeSpeed;             /* Legal fallback */
+    image-rendering:-moz-crisp-edges;          /* Firefox        */
+    image-rendering:-o-crisp-edges;            /* Opera          */
+    image-rendering:-webkit-optimize-contrast; /* Safari         */
+    image-rendering:optimize-contrast;         /* CSS3 Proposed  */
+    image-rendering:crisp-edges;               /* CSS4 Proposed  */
+    image-rendering:pixelated;                 /* CSS4 Proposed  */
+    -ms-interpolation-mode:nearest-neighbor;   /* IE8+           */
+}
+
+.pokemonIconSlot-0, .pokemonIconSlot-1, .pokemonIconSlot-2 {
+    transform: scaleX(-1);
+}
+
+.pokemonGender-f {
+    color: pink;
+}
+
+.pokemonGender-m {
+    color: cyan;
+}
+
+.pokemonGender-- {
+    display: none;
+}
+
+.pokemonHp {
+    color: #B6DCFF;
+}
+
+.pokemonSpeed {
+    color: #FFE8B6;
+}
+
+.pokemonAttack {
+    color: #FFCAB6;
+}
+
+.pokemonDefense {
+    color: #B9FFB6;
+}
+
+.pokemonSpecialAttack {
+    color: #E6B6A4;
+}
+
+.pokemonSpecialDefense {
+    color: #A7E6A4;
+}
+
+.damageCategory-physical {
+    color: #FF8E87;
+}
+
+.damageCategory-special {
+    color: #8BFF87;
+}
+
+.damageCategory-status {
+    color: #879EFF;
+}
+
+span[class|="pokemonType"] {
+    border-radius: 0.25em;
+    padding-left: 0.1em;
+    padding-right: 0.1em;
+    text-shadow: 0px 0px 0.1em black;
+    box-shadow: 0px 0px 0.1em black;
+}
+
+/* http://www.epidemicjohto.com/t882-type-colors-hex-colors */
+.pokemonType-normal {
+    background: #A8A77A;
+}
+
+.pokemonType-fire {
+    background: #EE8130;
+}
+
+.pokemonType-water {
+    background: #6390F0;
+}
+
+.pokemonType-electric {
+    background: #F7D02C;
+}
+
+.pokemonType-grass {
+    background: #7AC74C;
+}
+
+.pokemonType-ice {
+    background: #96D9D6;
+}
+
+.pokemonType-fighting {
+    background: #C22E28;
+}
+
+.pokemonType-poison {
+    background: #A33EA1;
+}
+
+.pokemonType-ground {
+    background: #E2BF65;
+}
+
+.pokemonType-flying {
+    background: #A98FF3;
+}
+
+.pokemonType-psychic {
+    background: #F95587;
+}
+
+.pokemonType-bug {
+    background: #A6B91A;
+}
+
+.pokemonType-rock {
+    background: #B6A136;
+}
+
+.pokemonType-ghost {
+    background: #735797;
+}
+
+.pokemonType-dragon {
+    background: #6F35FC;
+}
+
+.pokemonType-dark {
+    background: #705746;
+}
+
+.pokemonType-steel {
+    background: #B7B7CE;
+}
+
+.pokemonType-fairy {
+    background: #D685AD;
+}
+
+.dimLabel {
+    font-size: small;
+    color: #C7C7C7;
+}
+
+.moveLabelTop {
+    width: 3em;
+    display: block;
+}
+
+.matchupChart {
+    border-collapse: collapse;
+    text-align: center;
+    width: 70%;
+    margin: auto;
+}
+
+.matchupChart * td {
+    border: 0.1em solid grey;
+}
+
+.pokemonChartLabel-top {
+    width: 12em;
+}
+
+.pokemonChartLabel-left {
+    height: 12em;
+}
+
+.damageEfficacy-0 {
+    color: #DE5F59;
+}
+
+.damageEfficacy-25, .damageEfficacy-50 {
+    color: #E6E5BC;
+}
+
+.damageEfficacy-200, .damageEfficacy-400 {
+    color: #BFE6BC;
+}

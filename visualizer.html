@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/vader/jquery-ui.css">
+    <link rel="stylesheet" href="style.css">
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<noscript>
+    <p><strong>JavaScript is required to use this page.</strong></p>
+</noscript>
+
+<div id="messageContainer"></div>
+
+<div id="pokemonSelection">
+    <div class="blueCorner" id="pokemonSelectionBlue"></div>
+    <div class="redCorner" id="pokemonSelectionRed"></div>
+</div>
+<div id="pokemonStats"></div>
+<div id="pokemonMoves"></div>
+<div id="pokemonDiamond"></div>
+<div id="helpDialog"></div>
+
+<script id="pokemonSelectionTemplate" type="x-tmpl-mustache">
+    {{#slots}}
+    <div class="selectionSlotContainer">
+        <select id="selectionSelect{{.}}">
+        {{#selections}}
+            <option value="{{slug}}">{{name}}</option>
+        {{/selections}}
+        </select>
+    </div>
+    {{/slots}}
+</script>
+<script id="pokemonStatsTemplate" type="x-tmpl-mustache">
+    {{#pokemonStats}}
+    <div class="pokemonStatsSlot">
+        <img class="pokemonIcon pokemonIconSlot-{{slot_number}}" src="static/veekun/icons/{{number}}.png">
+        <br>
+        <span class="pokemonStatsName">
+            {{name}}<sup class="pokemonGender-{{gender}}">{{gender}}</sup>
+        </span>
+        <br>
+        {{#types}}
+            <span class="pokemonType-{{.}}">{{.}}</span>
+        {{/types}}
+        <br>
+        <span data-help-slug="ability:{{ability}}">{{ability_name}}</span> {{item}}
+        <br>
+        <span class="pokemonHp">{{hp}}</span>
+        <span class="pokemonAttack">{{attack}}</span>&middot;<span class="pokemonDefense">{{defense}}</span>
+        <br>
+        <span class="pokemonSpeed">{{speed}}</span>
+        <span class="pokemonSpecialAttack">{{special_attack}}</span>&middot;<span class="pokemonSpecialDefense">{{special_defense}}</span>
+    </div>
+    {{/pokemonStats}}
+
+    <p>
+        <span class="pokemonHp">HP</span>
+        <span class="pokemonAttack">Attack</span>&middot;<span class="pokemonDefense">Defense</span>
+        <br>
+        <span class="pokemonSpeed">Speed</span>
+        <span class="pokemonSpecialAttack">Special-Attack</span>&middot;<span class="pokemonSpecialDefense">Special-Defense</span>
+    </p>
+</script>
+
+<script id="pokemonMovesTemplate" type="x-tmpl-mustache">
+    {{#pokemonMoves}}
+    <div class="pokemonMovesSet">
+        {{#moves}}
+            <div class="pokemonMoveSlot">
+                <span class="moveName" data-help-slug="move:{{move_slug}}">
+                    {{move_name}}<sup><span class="damageCategory-{{damage_category}}">{{damage_category_short}}</span></sup>
+                </span>
+                <br>
+                <span class="pokemonType-{{move_type}}">{{move_type}}</span>
+                <br>
+                {{accuracy}}<span class="dimLabel">%</span>
+                {{pp}}<span class="dimLabel">pp</span>
+                {{power}}<span class="dimLabel">pwr</span>
+            </div>
+        {{/moves}}
+   </div>
+    {{/pokemonMoves}}
+</script>
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<script src="static/mustache.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

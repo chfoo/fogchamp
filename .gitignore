@@ -1,0 +1,14 @@
+*~
+
+.idea/
+*.iml
+
+static/veekun/icons/
+
+pbr*.json
+moves.json
+descriptions.json
+
+script.js
+
+*.pyc
