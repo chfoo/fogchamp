@@ -126,7 +126,7 @@ class MatchupChart {
                 if (topMoveIndex < topPokemonMoveSlugs.length) {
                     var moveStat = movesDataset.getMoveStats(topPokemonMoveSlugs[topMoveIndex]);
 
-                    processCellEfficacy(cell, moveStat, topPokemonStat, leftPokemonStat);
+                    processCellEfficacy(cell, moveStat, topPokemonStat, leftPokemonStat, "top");
                 }
             }
         } else {
@@ -138,10 +138,15 @@ class MatchupChart {
             if (leftMoveIndex < leftPokemonMoveSlugs.length) {
                 var moveStat = movesDataset.getMoveStats(leftPokemonMoveSlugs[leftMoveIndex]);
 
-                processCellEfficacy(cell, moveStat, leftPokemonStat, topPokemonStat);
+                processCellEfficacy(cell, moveStat, leftPokemonStat, topPokemonStat, "left");
             }
 
-            renderDividerCell(rowElement);
+            if (leftMoveIndex == 3) {
+                renderDividerCell(rowElement, "last");
+            } else {
+                renderDividerCell(rowElement);
+            }
+
         }
     }
 
@@ -189,6 +194,8 @@ class MatchupChart {
     }
 
     function processMoveLabelCell(moveStats:Dynamic, cell:TableCellElement, position:String) {
+        cell.classList.add('matchupChartMoveCell-$position');
+
         var container:DivElement = Browser.document.createDivElement();
         container.classList.add('matchupChartMoveLabel-$position');
 
@@ -227,10 +234,18 @@ class MatchupChart {
         return dividerCell;
     }
 
-    function processCellEfficacy(cell:TableCellElement, userMoveStat:Dynamic, userPokemonStat:Dynamic, foePokemonStat:Dynamic) {
-        if (userMoveStat.power == "--") {
+    function processCellEfficacy(cell:TableCellElement, userMoveStat:Dynamic, userPokemonStat:Dynamic, foePokemonStat:Dynamic, ?position:String) {
+        cell.classList.add('matchupChartEfficacyCell-$position');
+
+        if (userMoveStat.accuracy == "--" && userMoveStat.power == "--") {
             return;
         }
+
+        var container:DivElement = Browser.document.createDivElement();
+        container.classList.add('matchupChartEfficacy-$position');
+
+        var span:SpanElement = Browser.document.createSpanElement();
+        span.classList.add('matchupChartEfficacyRotate-$position');
 
         var userMoveType:String = userMoveStat.move_type;
         var userTypes:Array<String> = userPokemonStat.types;
@@ -256,34 +271,46 @@ class MatchupChart {
                 factorString = "Err";
         }
 
-        var userAttack;
-        var foeDefense;
-        var userBasePower = userMoveStat.power;
-
-        if (userMoveStat.damage_category == "physical") {
-            userAttack = userPokemonStat.attack;
+        if (userMoveStat.power == "--") {
+            if (factor == 0) {
+                span.textContent = "✕";
+            } else {
+                span.textContent = "○";
+            }
+            span.classList.add('damageEfficacy-$factor');
         } else {
-            userAttack = userPokemonStat.special_attack;
+            var userAttack;
+            var foeDefense;
+            var userBasePower = userMoveStat.power;
+
+            if (userMoveStat.damage_category == "physical") {
+                userAttack = userPokemonStat.attack;
+            } else {
+                userAttack = userPokemonStat.special_attack;
+            }
+
+            if (userMoveStat.damage_category == "physical") {
+                foeDefense = foePokemonStat.defense;
+            } else {
+                foeDefense = foePokemonStat.special_defense;
+            }
+
+            var stab = userTypes.indexOf(userMoveType) != -1;
+
+            var estimatedDamage = Formula.computeDamage(userAttack, foeDefense, userBasePower, stab, factor);
+
+            if (userMoveStat.max_hits != null) {
+                estimatedDamage *= userMoveStat.max_hits;
+            }
+
+            var estimatedPercentage = Std.int(estimatedDamage / foePokemonStat.hp * 100);
+
+            span.innerHTML = '<span class="damageEfficacy-$factor">×$factorString</span>
+                <br>
+                <span>$estimatedPercentage%</span>';
         }
 
-        if (userMoveStat.damage_category == "physical") {
-            foeDefense = foePokemonStat.defense;
-        } else {
-            foeDefense = foePokemonStat.special_defense;
-        }
-
-        var stab = userTypes.indexOf(userMoveType) != -1;
-
-        var estimatedDamage = Formula.computeDamage(userAttack, foeDefense, userBasePower, stab, factor);
-
-        if (userMoveStat.max_hits != null) {
-            estimatedDamage *= userMoveStat.max_hits;
-        }
-
-        var estimatedPercentage = Std.int(estimatedDamage / foePokemonStat.hp * 100);
-
-        cell.innerHTML = '<span class="damageEfficacy-$factor">×$factorString</span>
-            <br>
-            <span>$estimatedPercentage%</span>';
+        container.appendChild(span);
+        cell.appendChild(container);
     }
 }

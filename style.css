@@ -236,20 +236,49 @@ span[class|="pokemonType"] {
     color: #C7C7C7;
 }
 
+#pokemonDiamond {
+    padding-bottom: 5em;
+}
+
+div[class|="matchupChartMoveLabel"] {
+    line-height: 1em;
+}
+
 .matchupChart {
     border-collapse: collapse;
     text-align: center;
-    width: 70%;
+    width: 50em;
+    height: 50em;
     margin: auto;
+    transform: scale(0.8) rotate(45deg);
 }
 
-.matchupChart * td {
-    border: 0.1em solid grey;
+.matchupChartMoveCell-left {
+    text-align: right;
+}
+
+.matchupChartMoveCell-top {
+    text-align: left;
+}
+
+.matchupChartMoveCell-left, .matchupChartEfficacyCell-left {
+    border-top: 0.1em solid #5E5E5E;
+    border-bottom: 0.1em solid #5E5E5E;
+}
+
+.matchupChartMoveCell-top, .matchupChartEfficacyCell-top {
+    border-left: 0.1em solid #5E5E5E;
+    border-right: 0.1em solid #5E5E5E;
 }
 
 .matchupChartDividerCell-first {
     width: 4em;
     height: 4em;
+}
+
+.matchupChartDividerCell-last {
+    border-bottom: 0.1em solid #5E5E5E;
+    border-right: 0.1em solid #5E5E5E;
 }
 
 .matchupChartLabel-top {
@@ -296,6 +325,17 @@ span[class|="pokemonType"] {
     display: block;
 }
 
+.matchupChartEfficacy-top {
+    width: 2.2em;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.matchupChartEfficacyRotate-top {
+    transform: rotate(-90deg);
+    display: block;
+}
+
 .matchupChartDividerCellSpeed-blue {
     background: #27619E;
 }
@@ -320,7 +360,7 @@ span[class|="pokemonType"] {
 }
 
 .damageEfficacy-25, .damageEfficacy-50 {
-    color: #E6E5BC;
+    color: #E6DC8A;
 }
 
 .damageEfficacy-200, .damageEfficacy-400 {
