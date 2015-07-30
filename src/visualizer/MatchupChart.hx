@@ -212,13 +212,6 @@ class MatchupChart {
         moveLabelText.textContent = moveStats.name;
         span.appendChild(moveLabelText);
 
-        span.appendChild(Browser.document.createBRElement());
-
-        var extraInfo:SpanElement = Browser.document.createSpanElement();
-        extraInfo.innerHTML = '${moveStats.power}<small>pwr</small>';
-        extraInfo.classList.add("dimLabel");
-        span.appendChild(extraInfo);
-
         container.appendChild(span);
         cell.appendChild(container);
     }
@@ -305,9 +298,8 @@ class MatchupChart {
 
             var estimatedPercentage = Std.int(estimatedDamage / foePokemonStat.hp * 100);
 
-            span.innerHTML = '<span class="damageEfficacy-$factor">×$factorString</span>
-                <br>
-                <span>$estimatedPercentage%</span>';
+            span.innerHTML = '<span class="damageEfficacy-$factor matchupChartSubEfficacy">×$factorString</span>
+                <span class=matchupChartSubEfficacy>$estimatedPercentage<span class=dimLabel>%</span></span>';
         }
 
         container.appendChild(span);

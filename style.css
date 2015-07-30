@@ -247,10 +247,10 @@ div[class|="matchupChartMoveLabel"] {
 .matchupChart {
     border-collapse: collapse;
     text-align: center;
-    width: 50em;
-    height: 50em;
+    width: 40em;
+    height: 40em;
     margin: auto;
-    transform: scale(0.8) rotate(45deg);
+    transform: scale(0.9) rotate(45deg);
 }
 
 .matchupChartMoveCell-left {
@@ -282,33 +282,31 @@ div[class|="matchupChartMoveLabel"] {
 }
 
 .matchupChartLabel-top {
-    width: 12em;
+    width: 10em;
     height: 1.2em;
 }
 
 .matchupChartLabel-left {
-    height: 12em;
+    height: 10em;
     width: 1.2em;
 }
 
 .matchupChartLabelRotate-left {
-    height: 12em;
-    width: 12em;
+    height: 10em;
+    width: 10em;
     transform: rotate(-90deg);
     display: block;
 }
 
 .matchupChartMoveLabel-top {
-    width: 2.2em;
+    width: 1em;
     height: 6em;
-    overflow: hidden;
     white-space: nowrap;
 }
 
 .matchupChartMoveLabel-left {
-    height: 2.2em;
+    height: 1em;
     width: 6em;
-    overflow: hidden;
     white-space: nowrap;
 }
 
@@ -325,15 +323,30 @@ div[class|="matchupChartMoveLabel"] {
     display: block;
 }
 
+.matchupChartEfficacyCell-top {
+    vertical-align: top;
+}
+
 .matchupChartEfficacy-top {
-    width: 2.2em;
-    overflow: hidden;
+    width: 1em;
     white-space: nowrap;
 }
 
 .matchupChartEfficacyRotate-top {
-    transform: rotate(-90deg);
+    transform: rotate(-90deg) translateX(-6em);
+    transform-origin: top left;
     display: block;
+    width: 6em;
+    text-align: right;
+}
+
+.matchupChartEfficacy-left {
+    text-align: left;
+}
+
+.matchupChartSubEfficacy {
+    min-width: 1.2em;
+    display: inline-block;
 }
 
 .matchupChartDividerCellSpeed-blue {
