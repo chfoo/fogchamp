@@ -230,11 +230,6 @@ span[class|="pokemonType"] {
     color: #C7C7C7;
 }
 
-.moveLabelTop {
-    width: 3em;
-    display: block;
-}
-
 .matchupChart {
     border-collapse: collapse;
     text-align: center;
@@ -246,12 +241,58 @@ span[class|="pokemonType"] {
     border: 0.1em solid grey;
 }
 
-.pokemonChartLabel-top {
-    width: 12em;
+.matchupChartDividerCell {
+    /*width: 3em;
+    height: 3em;*/
 }
 
-.pokemonChartLabel-left {
-    height: 12em;
+.matchupChartLabel-top {
+    width: 10em;
+    height: 1.2em;
+}
+
+.matchupChartLabel-left {
+    height: 10em;
+    width: 1.2em;
+}
+
+.matchupChartLabelRotate-left {
+    height: 10em;
+    width: 10em;
+    transform: rotate(-90deg);
+    display: block;
+}
+
+.matchupChartMoveLabel-top {
+    width: 2em;
+    height: 6em;
+    overflow: hidden;
+}
+
+.matchupChartMoveLabel-left {
+    height: 2em;
+    width: 6em;
+    overflow: hidden;
+}
+
+.matchupChartMoveLabelRotate-top {
+    height: 6em;
+    width: 6em;
+    transform: rotate(-90deg);
+    display: block;
+}
+
+.matchupChartMoveLabelRotate-left {
+    height: 6em;
+    width: 6em;
+    display: block;
+}
+
+.miniPokemonTypeIcon {
+    width: 0.5em;
+    height: 0.7em;
+    display: inline-block;
+    margin: 0.1em;
 }
 
 .damageEfficacy-0 {
