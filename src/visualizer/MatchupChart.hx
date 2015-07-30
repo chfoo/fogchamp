@@ -205,6 +205,13 @@ class MatchupChart {
         moveLabelText.textContent = moveStats.name;
         span.appendChild(moveLabelText);
 
+        span.appendChild(Browser.document.createBRElement());
+
+        var extraInfo:SpanElement = Browser.document.createSpanElement();
+        extraInfo.innerHTML = '${moveStats.power}<small>pwr</small>';
+        extraInfo.classList.add("dimLabel");
+        span.appendChild(extraInfo);
+
         container.appendChild(span);
         cell.appendChild(container);
     }
