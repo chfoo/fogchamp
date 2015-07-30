@@ -39,6 +39,11 @@ class PokedexReader(Reader):
                 move_id = int(row[0])
                 slug = row[1]
                 move_type = types_map[int(row[3])]
+
+                # Downgrade to gen 4
+                if move_type == 'fairy':
+                    move_type = 'normal'
+
                 power = row[4]
                 pp = row[5]
                 accuracy = row[6]
@@ -146,6 +151,18 @@ class PokedexReader(Reader):
                     pokemon_types[pokemon_num] = []
 
                 pokemon_types[pokemon_num].append(pokemon_type)
+
+        # Downgrade to gen 4
+        for type_list in pokemon_types.values():
+            for index in range(len(type_list)):
+                pokemon_type = type_list[index]
+
+                if pokemon_type == 'fairy':
+                    type_list[index] = 'normal'
+
+            # Ensure no duplicates
+            if len(type_list) > 1 and type_list[0] == type_list[1]:
+                type_list.pop()
 
         return pokemon_types
 
