@@ -29,6 +29,7 @@ class PokedexReader(Reader):
         types_map = self.read_types_map()
         move_name_map = self.read_move_names()
         move_desc_map = self.read_move_descriptions()
+        move_meta_map = self.read_move_meta()
 
         with self.read_csv('moves.csv') as reader:
             for index, row in enumerate(reader):
@@ -47,7 +48,7 @@ class PokedexReader(Reader):
                 pp = int(pp) if pp else '--'
                 accuracy = int(accuracy) if accuracy else '--'
 
-                yield {
+                doc = {
                     'slug': slug,
                     'move_type': move_type,
                     'power': power,
@@ -57,6 +58,10 @@ class PokedexReader(Reader):
                     'name': move_name_map[move_id],
                     'description': move_desc_map.get(move_id)
                 }
+
+                doc.update(move_meta_map.get(move_id, {}))
+
+                yield doc
 
     def read_move_names(self, lang=9):
         move_name_map = {}
@@ -76,6 +81,25 @@ class PokedexReader(Reader):
                 move_name_map[move_id] = name
 
         return move_name_map
+
+    def read_move_meta(self):
+        move_meta_map = {}
+
+        with self.read_csv('move_meta.csv') as reader:
+            for index, row in enumerate(reader):
+                if index == 0:
+                    continue
+
+                move_id = int(row[0])
+                min_hits = int(row[3]) if row[3] else None
+                max_hits = int(row[4]) if row[4] else None
+
+                move_meta_map[move_id] = {
+                    'min_hits': min_hits,
+                    'max_hits': max_hits,
+                }
+
+        return move_meta_map
 
     def read_move_descriptions(self, lang=9):
         move_desc_map = {}

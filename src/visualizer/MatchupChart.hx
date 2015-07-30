@@ -256,6 +256,11 @@ class MatchupChart {
         var stab = userTypes.indexOf(userMoveType) != -1;
 
         var estimatedDamage = Formula.computeDamage(userAttack, foeDefense, userBasePower, stab, factor);
+
+        if (userMoveStat.max_hits != null) {
+            estimatedDamage *= userMoveStat.max_hits;
+        }
+
         var estimatedPercentage = Std.int(estimatedDamage / foePokemonStat.hp * 100);
 
         cell.innerHTML = '<span class="damageEfficacy-$factor">×$factorString</span>
