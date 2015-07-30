@@ -4,13 +4,25 @@ html, body {
     color: #E8E8E8;
 }
 
+a:link {
+    color: #8AB7FF;
+}
+
+a:visited {
+    color: #8A94FF;
+}
+
+a:active, a:hover {
+    color: #FF8A9D;
+}
+
 :focus {
     outline: none;
     box-shadow: 0px 0px 0.2em 0.1em orange;
 }
 
 .clickHelp {
-    color: inherit;
+    color: #E8E8E8 !important;
     border-bottom: 0.1em dotted;
     text-decoration: none;
     cursor: pointer;
@@ -26,7 +38,7 @@ html, body {
     padding: 0.2em;
 }
 
-#pokemonSelection, #pokemonStats, #pokemonMoves, #pokemonDiamond {
+#pokemonSelection, #pokemonStats, #pokemonMoves, #pokemonDiamond, #footer {
     text-align: center;
     width: 60em;
     margin: auto;
