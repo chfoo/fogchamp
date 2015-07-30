@@ -89,7 +89,7 @@ class UI {
 
     function readUrlFragment() {
         var fragment = Browser.location.hash;
-        var pattern = new EReg("([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)-([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)", "");
+        var pattern = new EReg("([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)", "");
 
         if (pattern.match(fragment)) {
             var pokemonNums = new Vector<Int>(6);
