@@ -291,6 +291,18 @@ span[class|="pokemonType"] {
     display: block;
 }
 
+.matchupChartDividerCellSpeed-blue {
+    background: #27619E;
+}
+
+.matchupChartDividerCellSpeed-red {
+    background: #9E2A27;
+}
+
+.matchupChartDividerCellSpeed-tie {
+    background: #3B9E27;
+}
+
 .miniPokemonTypeIcon {
     width: 0.5em;
     height: 0.7em;

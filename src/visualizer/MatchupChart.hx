@@ -105,7 +105,17 @@ class MatchupChart {
 
     function renderVersusMatrix(rowElement:TableRowElement, leftMoveIndex:Int, leftPokemonStat:Dynamic, topPokemonStat:Dynamic) {
         if (leftMoveIndex == -1) {
-            renderDividerCell(rowElement, "first");
+            var dividerCell = renderDividerCell(rowElement, "first");
+            var dividerCellWhoFaster;
+
+            if (leftPokemonStat.speed > topPokemonStat.speed) {
+                dividerCellWhoFaster = "blue";
+            } else if (leftPokemonStat.speed < topPokemonStat.speed) {
+                dividerCellWhoFaster = "red";
+            } else {
+                dividerCellWhoFaster = "tie";
+            }
+            dividerCell.classList.add('matchupChartDividerCellSpeed-$dividerCellWhoFaster');
 
             var topPokemonMoveSlugs:Array<String> = topPokemonStat.moves;
 
@@ -199,13 +209,15 @@ class MatchupChart {
         cell.appendChild(container);
     }
 
-    function renderDividerCell(rowElement:TableRowElement, ?classSuffix:String) {
+    function renderDividerCell(rowElement:TableRowElement, ?classSuffix:String):TableCellElement {
         var dividerCell = cast(rowElement.insertCell(-1), TableCellElement);
         dividerCell.classList.add("matchupChartDividerCell");
 
         if (classSuffix != null) {
             dividerCell.classList.add('matchupChartDividerCell-$classSuffix');
         }
+
+        return dividerCell;
     }
 
     function processCellEfficacy(cell:TableCellElement, userMoveStat:Dynamic, userPokemonStat:Dynamic, foePokemonStat:Dynamic) {
