@@ -16,11 +16,12 @@ You will need:
 1. Clone this repo
 2. Initialize veekun's Pokedex: `git submodule init`
 3. Generate the JSON files: `python3 -m util.csv2json`
-4. Copy `static/` to `static/` on your web server
-5. Copy the icons from http://veekun.com/dex/downloads to `static/veekun/icons/` on your web server
-6. Copy the JSON files (`pbr-platnium.json`, `moves.json`, `descriptions.json`) to your web server
-7. Copy the `script.js` file to your web server
-8. Copy `visualizer.html` (rename to `index.html` if desired) & `style.css` to your web server.
+4. Generate the JS: `make` (or copy the haxe command in the Makefile).
+5. Copy `static/` to `static/` on your web server
+6. Copy the icons from http://veekun.com/dex/downloads to `static/veekun/icons/` on your web server
+7. Copy the JSON files (`pbr-platnium.json`, `moves.json`, `descriptions.json`) to your web server
+8. Copy the `script.js` file to your web server
+9. Copy `visualizer.html` (rename to `index.html` if desired) & `style.css` to your web server.
 
 
 Credits
