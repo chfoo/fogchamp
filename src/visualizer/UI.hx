@@ -1,5 +1,6 @@
 package visualizer;
 
+import js.html.DivElement;
 import js.html.OptionElement;
 import js.html.SelectElement;
 import haxe.ds.Vector;
@@ -162,6 +163,7 @@ class UI {
         }
 
         try {
+            renderMatchCommand();
             renderPokemonStats();
             renderPokemonMoves();
             renderChart();
@@ -185,6 +187,19 @@ class UI {
 
     function setSlotSlug(slotNum:Int, slug:String) {
         new JQuery('#selectionSelect$slotNum').val(slug);
+    }
+
+    function renderMatchCommand() {
+        var numbers = [];
+
+        for (i in 0...6) {
+            var slug = getSlotSlug(i);
+            var pokemonNum = pokemonDataset.getPokemonStats(slug).number;
+            numbers.push(pokemonNum);
+        }
+
+        var element:DivElement = cast(Browser.document.getElementById("matchCommand"), DivElement);
+        element.textContent = '!match ${numbers[0]},${numbers[1]},${numbers[2]}/${numbers[3]},${numbers[4]},${numbers[5]}';
     }
 
     function renderPokemonStats() {
