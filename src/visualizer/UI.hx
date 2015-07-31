@@ -83,8 +83,17 @@ class UI {
 
     function attachSelectChangeListeners() {
         for (i in 0...6) {
-            new JQuery('#selectionSelect$i').change(function (event:JqEvent) {
+            var jquery = new JQuery('#selectionSelect$i');
+
+            jquery.change(function (event:JqEvent) {
                 selectChanged(i);
+            });
+
+            jquery.focus(function (event:JqEvent) {
+                new JQuery('.pokemonIconSlot-$i').addClass("pokemonIcon-focus");
+            });
+            jquery.focusout(function (event:JqEvent) {
+                new JQuery('.pokemonIconSlot-$i').removeClass("pokemonIcon-focus");
             });
         }
     }
