@@ -1,5 +1,7 @@
 package visualizer;
 
+import js.html.OptionElement;
+import js.html.SelectElement;
 import haxe.ds.Vector;
 import js.Browser;
 import js.JQuery;
@@ -36,6 +38,7 @@ class UI {
     public function setup() {
         renderSelectionList();
         attachSelectChangeListeners();
+        renderEditionSelect();
         attachUrlFragmentChangeListener();
         setSelectionByNumbers(DEFAULT_POKEMON);
         readUrlFragment();
@@ -83,6 +86,26 @@ class UI {
                 selectChanged(i);
             });
         }
+    }
+
+    function renderEditionSelect() {
+        var selectElement = cast(Browser.document.getElementById("pokemonEditionSelect"), SelectElement);
+
+        for (index in 0...PokemonDataset.DATASET_NAMES.length) {
+            var optionElement:OptionElement = Browser.document.createOptionElement();
+
+            optionElement.value = PokemonDataset.DATASET_FILES[index];
+            optionElement.textContent = PokemonDataset.DATASET_NAMES[index];
+
+            selectElement.add(optionElement);
+        }
+
+        selectElement.selectedIndex = PokemonDataset.DATASET_FILES.length - 1;
+
+        new JQuery("#pokemonEditionSelect").change(function (event:JqEvent) {
+            pokemonDataset.datasetIndex = selectElement.selectedIndex;
+            renderAll(false);
+        });
     }
 
     function attachUrlFragmentChangeListener() {

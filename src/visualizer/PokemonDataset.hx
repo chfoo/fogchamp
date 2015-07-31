@@ -1,25 +1,73 @@
 package visualizer;
 
-
 import haxe.ds.Vector;
 
 
+typedef DatasetDoc = {
+    slugs: Vector<String>,
+    stats: Map<String, Dynamic>
+};
+
+
 class PokemonDataset extends Dataset {
-    public var slugs(default, null):Vector<String>;
-    public var stats(default, null):Map<String, Dynamic>;
+    static public var DATASET_FILES(default, null) = ["pbr-gold.json", "pbr-platinum.json"];
+    static public var DATASET_NAMES(default, null) = ["Nkekev PBR Gold", "Nkekev PBR Platinum"];
+
+    var datasets:Array<DatasetDoc>;
+
+    public var slugs(get, null):Vector<String>;
+    public var stats(get, null):Map<String, Dynamic>;
+
+    public var datasetIndex = 0;
 
     public function new() {
         super();
+        datasets = new Array<DatasetDoc>();
     }
 
     override public function load(callback) {
-        makeRequest("pbr-platinum.json", callback);
+        loadOneDataset(callback);
+    }
+
+    function loadOneDataset(originalCallback) {
+        var filename = DATASET_FILES[datasetIndex];
+
+        makeRequest(filename, function (success) {
+            if (success) {
+                datasetIndex += 1;
+
+                if (datasetIndex < DATASET_FILES.length) {
+                    loadOneDataset(originalCallback);
+                } else {
+                    datasetIndex -= 1;
+                    originalCallback(success);
+                }
+            } else {
+                originalCallback(success);
+            }
+        });
     }
 
     override function loadDone(data:Dynamic) {
-        slugs = Reflect.field(data, "pokemon_slugs");
-        stats = Reflect.field(data, "stats");
+        var slugs = Reflect.field(data, "pokemon_slugs");
+        var stats = Reflect.field(data, "stats");
+
+        var datasetDoc = {
+            slugs: slugs,
+            stats: stats
+        }
+
+        datasets.push(datasetDoc);
+
         super.loadDone(data);
+    }
+
+    function get_slugs():Vector<String> {
+        return datasets[datasetIndex].slugs;
+    }
+
+    function get_stats():Map<String, Dynamic> {
+        return datasets[datasetIndex].stats;
     }
 
     public function getPokemonStats(slug:String):Dynamic {

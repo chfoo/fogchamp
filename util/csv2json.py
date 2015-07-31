@@ -21,23 +21,28 @@ def main():
     nkekev_reader = NkekevReader(nkekev_dir)
 
     # Build each Pokemon's stats
-    pokemon_stats = {}
-    pokemon_slugs = []
-    pokemon_types = pokedex_reader.read_pokemon_types()
+    movesets_funcs = [
+        ('pbr-platinum', nkekev_reader.read_pbr_platinum),
+        ('pbr-gold', nkekev_reader.read_pbr_gold),
+    ]
+    for move_slug, func in movesets_funcs:
+        pokemon_stats = {}
+        pokemon_slugs = []
+        pokemon_types = pokedex_reader.read_pokemon_types()
 
-    for pokemon_stat in nkekev_reader.read_pbr_platinum():
-        slug = pokemon_stat.pop('slug')
-        pokemon_slugs.append(slug)
-        pokemon_stats[slug] = pokemon_stat
-        pokemon_stats[slug]['types'] = pokemon_types[pokemon_stat['number']]
+        for pokemon_stat in func():
+            slug = pokemon_stat.pop('slug')
+            pokemon_slugs.append(slug)
+            pokemon_stats[slug] = pokemon_stat
+            pokemon_stats[slug]['types'] = pokemon_types[pokemon_stat['number']]
 
-    json_path = os.path.join(output_dir, 'pbr-platinum.json')
+        json_path = os.path.join(output_dir, '{}.json'.format(move_slug))
 
-    with open(json_path, 'w') as file:
-        file.write(json.dumps({
-             'stats': pokemon_stats,
-             'pokemon_slugs': pokemon_slugs
-        }, indent=2, sort_keys=True))
+        with open(json_path, 'w') as file:
+            file.write(json.dumps({
+                 'stats': pokemon_stats,
+                 'pokemon_slugs': pokemon_slugs
+            }, indent=2, sort_keys=True))
 
     # Build all the moves
     move_stats = {}
