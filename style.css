@@ -37,6 +37,7 @@ a:active, a:hover {
     height: 0px;
     border-bottom: 0.09em dotted;
     content: '';
+    color: #98B1B3;
 }
 
 #messageContainer {
