@@ -23,9 +23,20 @@ a:active, a:hover {
 
 .clickHelp {
     color: #E8E8E8 !important;
-    border-bottom: 0.1em dotted;
     text-decoration: none;
     cursor: pointer;
+    position: relative;
+}
+
+/* http://stackoverflow.com/a/14329779/1524507 */
+.clickHelp::after {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0.1em;
+    height: 0px;
+    border-bottom: 0.09em dotted;
+    content: '';
 }
 
 #messageContainer {
