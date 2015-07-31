@@ -37,15 +37,9 @@ a:active, a:hover {
     padding: 0.2em;
 }
 
-#pokemonSelection, #pokemonStats, #pokemonMoves, #pokemonDiamond {
+#bodyContainer {
     text-align: center;
-    width: 60em;
-    margin: auto;
-}
-
-#footer {
-    text-align: center;
-    width: 40em;
+    width: 55em;
     margin: auto;
 }
 
