@@ -19,12 +19,14 @@ class UI {
     var pokemonDataset:PokemonDataset;
     var movesDataset:MovesDataset;
     var descriptionsDataset:DescriptionsDataset;
+    var userMessage:UserMessage;
     static var DEFAULT_POKEMON:Vector<Int> = Vector.fromArrayCopy([493, 257, 462, 244, 441, 139]);
 
     public function new(pokemonDataset:PokemonDataset, movesDataset:MovesDataset, descriptionsDataset:DescriptionsDataset) {
         this.pokemonDataset = pokemonDataset;
         this.movesDataset = movesDataset;
         this.descriptionsDataset = descriptionsDataset;
+        userMessage = new UserMessage();
     }
 
     static function renderTemplate(template:String, data:Dynamic):String {
@@ -98,6 +100,8 @@ class UI {
             }
             setSelectionByNumbers(pokemonNums);
             renderAll(false);
+        } else {
+            userMessage.showMessage("The URL fragment (stuff after the hash symbol) isn't valid.");
         }
     }
 
@@ -134,13 +138,21 @@ class UI {
             updateUrlFragment = true;
         }
 
-        renderPokemonStats();
-        renderPokemonMoves();
-        renderChart();
-        attachHelpListeners();
+        try {
+            renderPokemonStats();
+            renderPokemonMoves();
+            renderChart();
+            attachHelpListeners();
 
-        if (updateUrlFragment) {
-            writeUrlFragment();
+            if (updateUrlFragment) {
+                writeUrlFragment();
+            }
+
+            userMessage.hide();
+        } catch (error:Dynamic) {
+            userMessage.showMessage("An error occured while attempting to render the data. File a bug report if this persists.");
+
+            throw error;
         }
     }
 
