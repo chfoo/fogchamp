@@ -265,11 +265,16 @@ class MatchupChart {
         }
 
         if (userMoveStat.power == "--") {
-            if (factor == 0) {
-                span.textContent = "✕";
+            if (userMoveStat.damage_category == "status") {
+                if (factor == 0) {
+                    span.textContent = "✕";
+                } else {
+                    span.textContent = "○";
+                }
             } else {
-                span.textContent = "○";
+                span.textContent = '×$factorString';
             }
+            
             span.classList.add('damageEfficacy-$factor');
         } else {
             var userAttack;
