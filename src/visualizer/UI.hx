@@ -241,9 +241,10 @@ class UI {
             var slug = getSlotSlug(slotNum);
             var pokemonStats = pokemonDataset.getPokemonStats(slug);
             var abilityName = descriptionsDataset.getAbilityName(pokemonStats.ability);
-            Reflect.setField(pokemonStats, 'ability_name', abilityName);
-            Reflect.setField(pokemonStats, 'slot_number', slotNum);
-            statsList.push(pokemonStats);
+            var renderDoc = Reflect.copy(pokemonStats);
+            Reflect.setField(renderDoc, 'ability_name', abilityName);
+            Reflect.setField(renderDoc, 'slot_number', slotNum);
+            statsList.push(renderDoc);
         }
 
         return statsList;
@@ -270,11 +271,12 @@ class UI {
 
             for (moveSlug in moveSlugs) {
                 var moveStats = movesDataset.getMoveStats(moveSlug);
-                Reflect.setField(moveStats, "move_slug", moveSlug);
-                Reflect.setField(moveStats, "move_name", moveStats.name);
+                var moveRenderDoc = Reflect.copy(moveStats);
+                Reflect.setField(moveRenderDoc, "move_slug", moveSlug);
+                Reflect.setField(moveRenderDoc, "move_name", moveStats.name);
                 var damageCategory:String = moveStats.damage_category;
-                Reflect.setField(moveStats, "damage_category_short", damageCategory.substr(0, 2));
-                moves.push(moveStats);
+                Reflect.setField(moveRenderDoc, "damage_category_short", damageCategory.substr(0, 2));
+                moves.push(moveRenderDoc);
             }
 
             movesList.push({
