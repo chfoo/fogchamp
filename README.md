@@ -29,9 +29,9 @@ Credits
 
 Copyright 2015 Christopher Foo. Licensed under the MIT license.
 
-The PBR metadata was obtained from Nkekev's docs.
-
-Contains mustache.js. MIT license.
+* The PBR metadata was obtained from Nkekev's docs.
+* Contains mustache.js. MIT license.
+* Contains jquery-visible by customd. MIT license.
 
 This visualizer was inspired by Felk's visualizer which I can't find the complete source code to.
 

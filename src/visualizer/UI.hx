@@ -326,6 +326,13 @@ class UI {
 
         var jquery = new JQuery("#helpDialog").text(text);
         untyped jquery.dialog();
+
+        var inViewport:Bool = untyped jquery.visible();
+
+        if (!inViewport) {
+            untyped jquery.dialog({position: {my: "center top", at: "center top", of: Browser.window}});
+        }
+
         untyped jquery.dialog("option", "title", title);
     }
 
