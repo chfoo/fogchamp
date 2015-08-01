@@ -55,6 +55,11 @@ a:active, a:hover {
     margin: auto;
 }
 
+#footer {
+    max-width: 40em;
+    margin: auto;
+}
+
 #pokemonSelectionBlue, #pokemonSelectionRed {
     display: inline-block;
     padding: 0.25em;
