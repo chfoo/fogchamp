@@ -316,6 +316,8 @@ class UI {
             var move = movesDataset.getMoveStats(slug);
             title = move.name;
             text = move.description;
+        } else if (category == "damage") {
+            text = 'HP damage against foe (min, max, crit):${parts[2]}–${parts[3]}–${parts[4]}%';
         }
 
         if (text == null || text.length == 0) {

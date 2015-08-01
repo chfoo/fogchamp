@@ -294,17 +294,21 @@ class MatchupChart {
             }
 
             var stab = userTypes.indexOf(userMoveType) != -1;
-
-            var estimatedDamage = Formula.computeDamage(userAttack, foeDefense, userBasePower, stab, factor);
+            var damageResult = Formula.computeDamage(userAttack, foeDefense, userBasePower, stab, factor);
 
             if (userMoveStat.max_hits != null) {
-                estimatedDamage *= userMoveStat.max_hits;
+                damageResult = Formula.modifyHits(damageResult, userMoveStat.min_hits, userMoveStat.max_hits);
             }
 
-            var estimatedPercentage = Std.int(estimatedDamage / foePokemonStat.hp * 100);
+            var damageResultPercent = Formula.resultsToPercentages(damageResult, foePokemonStat.hp);
 
             span.innerHTML = '<span class="damageEfficacy-$factor matchupChartSubEfficacy">×$factorString</span>
-                <span class=matchupChartSubEfficacy>$estimatedPercentage<span class=dimLabel>%</span></span>';
+                <span class=matchupChartSubEfficacy
+                data-help-slug="damage:
+                ${userPokemonStat.name} ${userMoveStat.name}:
+                ${damageResultPercent.minHPPercent}:${damageResultPercent.maxHPPercent}:${damageResultPercent.critHPPercent}"
+                >${damageResultPercent.maxHPPercent}<span class=dimLabel>%</span>
+                </span>';
         }
 
         container.appendChild(span);
