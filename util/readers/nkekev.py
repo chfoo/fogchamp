@@ -3,6 +3,15 @@ import re
 from util.readers.base import Reader
 
 
+TYPO_REPLACEMENTS = {
+    'Aurasphere': 'Aura Sphere',
+    'DynamicPunch': 'Dynamic Punch',
+    'Solarbeam': 'Solar Beam',
+    'Recovery': 'Recover',
+    'Shockwave': 'Shock Wave',
+}
+
+
 class NkekevReader(Reader):
     def read_pbr_moveset(self, filename, row_has_gender=True):
         with self.read_csv(filename) as reader:
@@ -99,14 +108,9 @@ def slugify(name):
 
     if name.startswith('Hidden Power'):
         name = 'Hidden Power'
-    elif name == 'Aurasphere':
-        name = 'Aura Sphere'
-    elif name == 'DynamicPunch':
-        name = 'Dynamic Punch'
-    elif name == 'Solarbeam':
-        name = 'Solar Beam'
-    elif name == 'Recovery':
-        name = 'Recover'
+
+    if name in TYPO_REPLACEMENTS:
+        name = TYPO_REPLACEMENTS[name]
 
     name = re.sub(r' \((\d+|max)\)', '', name)  # Things like "Frustation (90)"
     name = name.lower().replace(' ', '-')
