@@ -24,6 +24,7 @@ class UI {
     var descriptionsDataset:DescriptionsDataset;
     var userMessage:UserMessage;
     static var DEFAULT_POKEMON:Vector<Int> = Vector.fromArrayCopy([493, 257, 462, 244, 441, 139]);
+    var isSettingUrlHash:Bool = false;
 
     public function new(pokemonDataset:PokemonDataset, movesDataset:MovesDataset, descriptionsDataset:DescriptionsDataset) {
         this.pokemonDataset = pokemonDataset;
@@ -123,6 +124,11 @@ class UI {
     }
 
     function readUrlFragment() {
+        if (isSettingUrlHash) {
+            isSettingUrlHash = false;
+            return;
+        }
+
         var fragment = Browser.location.hash;
         var pattern = new EReg("([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)", "");
 
@@ -152,6 +158,7 @@ class UI {
             }
         }
 
+        isSettingUrlHash = true;
         Browser.location.hash = fragment;
     }
 
