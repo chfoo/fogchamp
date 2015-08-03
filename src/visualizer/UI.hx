@@ -265,12 +265,13 @@ class UI {
 
         for (slotNum in [2, 1, 0, 3, 4, 5]) {
             var slug = getSlotSlug(slotNum);
-            var name = pokemonDataset.getPokemonStats(slug).name;
-            var moveSlugs:Array<String> = pokemonDataset.getPokemonStats(slug).moves;
+            var pokemonStat = pokemonDataset.getPokemonStats(slug);
+            var name = pokemonStat.name;
+            var moveSlugs:Array<String> = pokemonStat.moves;
             var moves = new Array<Dynamic>();
 
             for (moveSlug in moveSlugs) {
-                var moveStats = movesDataset.getMoveStats(moveSlug);
+                var moveStats = movesDataset.getMoveStats(moveSlug, pokemonStat);
                 var moveRenderDoc = Reflect.copy(moveStats);
                 Reflect.setField(moveRenderDoc, "move_slug", moveSlug);
                 Reflect.setField(moveRenderDoc, "move_name", moveStats.name);

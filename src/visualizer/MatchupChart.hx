@@ -124,7 +124,7 @@ class MatchupChart {
                 cell.rowSpan = topMoveIndex + 1;
 
                 if (topMoveIndex < topPokemonMoveSlugs.length) {
-                    var moveStat = movesDataset.getMoveStats(topPokemonMoveSlugs[topMoveIndex]);
+                    var moveStat = movesDataset.getMoveStats(topPokemonMoveSlugs[topMoveIndex], topPokemonStat);
 
                     processCellEfficacy(cell, moveStat, topPokemonStat, leftPokemonStat, "top");
                 }
@@ -136,7 +136,7 @@ class MatchupChart {
             var leftPokemonMoveSlugs:Array<String> = leftPokemonStat.moves;
 
             if (leftMoveIndex < leftPokemonMoveSlugs.length) {
-                var moveStat = movesDataset.getMoveStats(leftPokemonMoveSlugs[leftMoveIndex]);
+                var moveStat = movesDataset.getMoveStats(leftPokemonMoveSlugs[leftMoveIndex], leftPokemonStat);
 
                 processCellEfficacy(cell, moveStat, leftPokemonStat, topPokemonStat, "left");
             }
@@ -162,7 +162,7 @@ class MatchupChart {
 
         if (moveIndex < moveSlugs.length) {
             var moveSlug = moveSlugs[moveIndex];
-            var moveStats = movesDataset.getMoveStats(moveSlug);
+            var moveStats = movesDataset.getMoveStats(moveSlug, pokemonStat);
 
             processMoveLabelCell(moveStats, labelCell, position);
         }

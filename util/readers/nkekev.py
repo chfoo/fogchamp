@@ -79,7 +79,7 @@ class NkekevReader(Reader):
 
                         moves.append(slugify(move))
 
-                yield {
+                doc = {
                     'gender': gender,
                     'name': name,
                     'slug': slugify(name),
@@ -97,6 +97,13 @@ class NkekevReader(Reader):
                     'item': slugify(item),
                     'happiness': happiness,
                 }
+
+                move_type_override_match = re.search(r'Hidden Power \((\w+)\)', move_a)
+
+                if move_type_override_match:
+                    doc['move_type_override'] = slugify(move_type_override_match.group(1))
+
+                yield doc
 
                 prev_number = number
 
