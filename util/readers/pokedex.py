@@ -49,9 +49,9 @@ class PokedexReader(Reader):
                 accuracy = row[6]
                 damage_category = DAMAGE_CATEGORY_MAP[int(row[9])]
 
-                power = int(power) if power else '--'
-                pp = int(pp) if pp else '--'
-                accuracy = int(accuracy) if accuracy else '--'
+                power = int(power) if power else None
+                pp = int(pp) if pp else None
+                accuracy = int(accuracy) if accuracy else None
 
                 doc = {
                     'slug': slug,

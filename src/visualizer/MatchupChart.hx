@@ -230,7 +230,7 @@ class MatchupChart {
     function processCellEfficacy(cell:TableCellElement, userMoveStat:Dynamic, userPokemonStat:Dynamic, foePokemonStat:Dynamic, ?position:String) {
         cell.classList.add('matchupChartEfficacyCell-$position');
 
-        if (userMoveStat.accuracy == "--" && userMoveStat.power == "--") {
+        if (userMoveStat.accuracy == null && userMoveStat.power == null) {
             return;
         }
 
@@ -264,7 +264,7 @@ class MatchupChart {
                 factorString = "Err";
         }
 
-        if (userMoveStat.power == "--") {
+        if (userMoveStat.power == null) {
             if (userMoveStat.damage_category == "status") {
                 if (factor == 0) {
                     span.textContent = "✕";

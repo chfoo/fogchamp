@@ -276,6 +276,15 @@ class UI {
                 Reflect.setField(moveRenderDoc, "move_name", moveStats.name);
                 var damageCategory:String = moveStats.damage_category;
                 Reflect.setField(moveRenderDoc, "damage_category_short", damageCategory.substr(0, 2));
+
+                if (moveRenderDoc.power == null) {
+                    Reflect.setField(moveRenderDoc, "power", "--");
+                }
+
+                if (moveRenderDoc.accuracy == null) {
+                    Reflect.setField(moveRenderDoc, "accuracy", "--");
+                }
+
                 moves.push(moveRenderDoc);
             }
 
