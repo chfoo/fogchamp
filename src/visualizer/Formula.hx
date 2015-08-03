@@ -18,9 +18,27 @@ typedef DamageResultPercent = {
 
 
 class Formula {
-    static var LEVEL = 100;
-    static var RANDOM_MIN_MODIFIER = 0.85;
-    static var CRIT_MODIFIER = 2.0;
+    public static var LEVEL = 100;
+    public static var RANDOM_MIN_MODIFIER = 0.85;
+    public static var CRIT_MODIFIER = 2.0;
+
+    static public function computeBasePower(userPokemonStat:Dynamic, foePokemonStat:Dynamic, userMoveStat:Dynamic):Int {
+        switch (userMoveStat.slug) {
+            case "low-kick" | "grass-knot":
+                if (foePokemonStat.weight != null) {
+                    return weightToPower(foePokemonStat.weight);
+                }
+            case "return":
+                if (userPokemonStat.happiness != null) {
+                    return Std.int(Math.max(1, userPokemonStat.happiness / 2.5));
+                }
+            case "frustration":
+                if (userPokemonStat.happiness != null) {
+                    return Std.int(Math.max(1, (255 - userPokemonStat.happiness) / 2.5));
+                }
+        }
+        return userMoveStat.power;
+    }
 
     static public function computeDamage(userAttack:Int, foeDefense:Int, userBasePower:Int, stab:Bool, damageFactor:Int):DamageResult {
         var modifier = damageFactor / 100;
@@ -62,6 +80,22 @@ class Formula {
             minHPPercent: Std.int(damageResult.minHP / foeHP * 100),
             maxHPPercent: Std.int(damageResult.maxHP / foeHP * 100),
             critHPPercent: Std.int(damageResult.critHP / foeHP * 100)
+        }
+    }
+
+    static public function weightToPower(weight:Float):Int {
+        if (weight < 10) {
+            return 20;
+        } else if (weight < 25) {
+            return 40;
+        } else if (weight < 50) {
+            return 60;
+        } else if (weight < 100) {
+            return 80;
+        } else if (weight < 200) {
+            return 100;
+        } else {
+            return 120;
         }
     }
 }

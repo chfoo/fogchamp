@@ -264,7 +264,9 @@ class MatchupChart {
                 factorString = "Err";
         }
 
-        if (userMoveStat.power == null) {
+        var userBasePower = Formula.computeBasePower(userPokemonStat, foePokemonStat, userMoveStat);
+
+        if (userBasePower == null) {
             if (userMoveStat.damage_category == "status") {
                 if (factor == 0) {
                     span.textContent = "✕";
@@ -272,6 +274,7 @@ class MatchupChart {
                     span.textContent = "○";
                 }
             } else {
+                trace(userMoveStat, userBasePower);
                 span.textContent = '×$factorString';
             }
             
@@ -279,7 +282,6 @@ class MatchupChart {
         } else {
             var userAttack;
             var foeDefense;
-            var userBasePower = userMoveStat.power;
 
             if (userMoveStat.damage_category == "physical") {
                 userAttack = userPokemonStat.attack;
