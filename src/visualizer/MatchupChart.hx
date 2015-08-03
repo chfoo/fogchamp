@@ -265,8 +265,9 @@ class MatchupChart {
         }
 
         var userBasePower = Formula.computeBasePower(userPokemonStat, foePokemonStat, userMoveStat);
+        var isFixedDamageMove = Formula.FIXED_DAMAGE_MOVE.indexOf(userMoveStat.slug) != -1;
 
-        if (userBasePower == null) {
+        if (userBasePower == null && !isFixedDamageMove) {
             if (userMoveStat.damage_category == "status") {
                 if (factor == 0) {
                     span.textContent = "✕";
@@ -295,7 +296,13 @@ class MatchupChart {
             }
 
             var stab = userTypes.indexOf(userMoveType) != -1;
-            var damageResult = Formula.computeDamage(userAttack, foeDefense, userBasePower, stab, factor);
+            var damageResult;
+
+            if (isFixedDamageMove) {
+                damageResult = Formula.computedFixedDamage();
+            } else {
+                damageResult = Formula.computeDamage(userAttack, foeDefense, userBasePower, stab, factor);
+            }
 
             if (userMoveStat.max_hits != null) {
                 damageResult = Formula.modifyHits(damageResult, userMoveStat.min_hits, userMoveStat.max_hits);

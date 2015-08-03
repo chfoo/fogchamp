@@ -21,6 +21,7 @@ class Formula {
     public static var LEVEL = 100;
     public static var RANDOM_MIN_MODIFIER = 0.85;
     public static var CRIT_MODIFIER = 2.0;
+    public static var FIXED_DAMAGE_MOVE = ["seismic-toss", "night-shade"];
 
     static public function computeBasePower(userPokemonStat:Dynamic, foePokemonStat:Dynamic, userMoveStat:Dynamic):Int {
         switch (userMoveStat.slug) {
@@ -57,6 +58,14 @@ class Formula {
             minHP: minDamage,
             maxHP: damage,
             critHP: critDamage
+        }
+    }
+
+    static public function computedFixedDamage():DamageResult {
+        return {
+            minHP: Formula.LEVEL,
+            maxHP: Formula.LEVEL,
+            critHP: Formula.LEVEL
         }
     }
 
