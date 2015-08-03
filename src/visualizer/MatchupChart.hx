@@ -274,10 +274,9 @@ class MatchupChart {
                     span.textContent = "○";
                 }
             } else {
-                trace(userMoveStat, userBasePower);
                 span.textContent = '×$factorString';
             }
-            
+
             span.classList.add('damageEfficacy-$factor');
         } else {
             var userAttack;
