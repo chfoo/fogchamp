@@ -242,3 +242,18 @@ class PokedexReader(Reader):
                 efficacy_map[user][foe] = damage_factor
 
         return efficacy_map
+
+    def read_pokemon_weights(self):
+        weight_map = {}
+
+        with self.read_csv('pokemon.csv') as reader:
+            for index, row in enumerate(reader):
+                if index == 0:
+                    continue
+
+                pokemon_num = int(row[0])
+                weight = int(row[4]) / 10
+
+                weight_map[pokemon_num] = weight
+
+        return weight_map

@@ -61,10 +61,22 @@ class NkekevReader(Reader):
                 special_defense = int(special_defense)
                 speed = int(speed)
 
+                happiness = None
+
                 moves = []
 
                 for move in [move_a, move_b, move_c, move_d]:
                     if move:
+                        happiness_match = re.search(r' \((\d+|max)\)', move)
+
+                        if happiness_match:
+                            happiness = happiness_match.group(1)
+
+                            if happiness == 'max':
+                                happiness = 255
+                            else:
+                                happiness = int(happiness)
+
                         moves.append(slugify(move))
 
                 yield {
@@ -83,6 +95,7 @@ class NkekevReader(Reader):
                     'speed': speed,
                     'nature': slugify(nature),
                     'item': slugify(item),
+                    'happiness': happiness,
                 }
 
                 prev_number = number

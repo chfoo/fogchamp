@@ -29,12 +29,14 @@ def main():
         pokemon_stats = {}
         pokemon_slugs = []
         pokemon_types = pokedex_reader.read_pokemon_types()
+        pokemon_weights = pokedex_reader.read_pokemon_weights()
 
         for pokemon_stat in func():
             slug = pokemon_stat.pop('slug')
             pokemon_slugs.append(slug)
             pokemon_stats[slug] = pokemon_stat
             pokemon_stats[slug]['types'] = pokemon_types[pokemon_stat['number']]
+            pokemon_stats[slug]['weight'] = pokemon_weights[pokemon_stat['number']]
 
         json_path = os.path.join(output_dir, '{}.json'.format(move_slug))
 
