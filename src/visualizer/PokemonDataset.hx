@@ -71,7 +71,9 @@ class PokemonDataset extends Dataset {
     }
 
     public function getPokemonStats(slug:String):Dynamic {
-        return Reflect.field(stats, slug);
+        var pokemonStat = Reflect.field(stats, slug);
+        Reflect.setField(pokemonStat, "slug", slug);
+        return pokemonStat;
     }
 
     public function getSlug(pokemonNum:Int):String {

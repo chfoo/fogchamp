@@ -18,6 +18,8 @@ class MovesDataset extends Dataset {
     }
 
     public function getMoveStats(slug:String):Dynamic {
-        return Reflect.field(moves, slug);
+        var moveStat = Reflect.field(moves, slug);
+        Reflect.setField(moveStat, "slug", slug);
+        return moveStat;
     }
 }
