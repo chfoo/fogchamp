@@ -240,11 +240,8 @@ class MatchupChart {
         var span:SpanElement = Browser.document.createSpanElement();
         span.classList.add('matchupChartEfficacyRotate-$position');
 
-        var userMoveType:String = userMoveStat.move_type;
-        var userTypes:Array<String> = userPokemonStat.types;
-        var foeTypes:Array<String> = foePokemonStat.types;
-
-        var factor = descriptionsDataset.getTypeEfficacy(userMoveType, foeTypes[0], foeTypes[1]);
+        var damageResult = Formula.computeResult(userPokemonStat, foePokemonStat, userMoveStat, descriptionsDataset);
+        var factor = damageResult.factor;
         var factorString;
 
         switch (factor) {
@@ -264,10 +261,8 @@ class MatchupChart {
                 factorString = "Err";
         }
 
-        var userBasePower = Formula.computeBasePower(userPokemonStat, foePokemonStat, userMoveStat);
-        var isFixedDamageMove = Formula.FIXED_DAMAGE_MOVE.indexOf(userMoveStat.slug) != -1;
 
-        if (userBasePower == null && !isFixedDamageMove) {
+        if (damageResult.maxHP == null) {
             if (userMoveStat.damage_category == "status") {
                 if (factor == 0) {
                     span.textContent = "✕";
@@ -280,34 +275,6 @@ class MatchupChart {
 
             span.classList.add('damageEfficacy-$factor');
         } else {
-            var userAttack;
-            var foeDefense;
-
-            if (userMoveStat.damage_category == "physical") {
-                userAttack = userPokemonStat.attack;
-            } else {
-                userAttack = userPokemonStat.special_attack;
-            }
-
-            if (userMoveStat.damage_category == "physical") {
-                foeDefense = foePokemonStat.defense;
-            } else {
-                foeDefense = foePokemonStat.special_defense;
-            }
-
-            var stab = userTypes.indexOf(userMoveType) != -1;
-            var damageResult;
-
-            if (isFixedDamageMove) {
-                damageResult = Formula.computedFixedDamage();
-            } else {
-                damageResult = Formula.computeDamage(userAttack, foeDefense, userBasePower, stab, factor);
-            }
-
-            if (userMoveStat.max_hits != null) {
-                damageResult = Formula.modifyHits(damageResult, userMoveStat.min_hits, userMoveStat.max_hits);
-            }
-
             var damageResultPercent = Formula.resultsToPercentages(damageResult, foePokemonStat.hp);
 
             span.innerHTML = '<span class="damageEfficacy-$factor matchupChartSubEfficacy">×$factorString</span>

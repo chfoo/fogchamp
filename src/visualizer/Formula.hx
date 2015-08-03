@@ -2,12 +2,14 @@ package visualizer;
 
 
 typedef DamageResult = {
+    factor: Int,
     minHP: Float,
     maxHP: Float,
     critHP: Float,
 }
 
 typedef DamageResultPercent = {
+    factor: Int,
     minHP: Float,
     maxHP: Float,
     critHP: Float,
@@ -22,6 +24,62 @@ class Formula {
     public static var RANDOM_MIN_MODIFIER = 0.85;
     public static var CRIT_MODIFIER = 2.0;
     public static var FIXED_DAMAGE_MOVE = ["seismic-toss", "night-shade"];
+    public static var WEIGHT_MOVE = ["low-kick", "grass-knot"];
+    public static var HAPPINESS_MOVE = ["return", "frustration"];
+    public static var VARIABLE_POWER_MOVE = ["magnitude"];
+
+    static public function computeResult(userPokemonStat:Dynamic, foePokemonStat:Dynamic, userMoveStat:Dynamic, descriptionsDataset:DescriptionsDataset):DamageResult {
+        var userMoveType:String = userMoveStat.move_type;
+        var userTypes:Array<String> = userPokemonStat.types;
+        var foeTypes:Array<String> = foePokemonStat.types;
+        var factor = descriptionsDataset.getTypeEfficacy(userMoveType, foeTypes[0], foeTypes[1]);
+        var userBasePower = Formula.computeBasePower(userPokemonStat, foePokemonStat, userMoveStat);
+        var isFixedDamageMove = Formula.FIXED_DAMAGE_MOVE.indexOf(userMoveStat.slug) != -1;
+
+        if (userBasePower == null && !isFixedDamageMove) {
+            return {
+                factor: factor,
+                minHP: null,
+                maxHP: null,
+                critHP: null
+            }
+        }
+
+        var userAttack;
+        var foeDefense;
+
+        if (userMoveStat.damage_category == "physical") {
+            userAttack = userPokemonStat.attack;
+        } else {
+            userAttack = userPokemonStat.special_attack;
+        }
+
+        if (userMoveStat.damage_category == "physical") {
+            foeDefense = foePokemonStat.defense;
+        } else {
+            foeDefense = foePokemonStat.special_defense;
+        }
+
+        var stab = userTypes.indexOf(userMoveType) != -1;
+        var damageResult:DamageResult;
+
+        if (isFixedDamageMove) {
+            damageResult = {
+                factor: factor,
+                minHP: Formula.LEVEL,
+                maxHP: Formula.LEVEL,
+                critHP: Formula.LEVEL
+            }
+        } else {
+            damageResult = Formula.computeDamage(userAttack, foeDefense, userBasePower, stab, factor);
+        }
+
+        if (userMoveStat.max_hits != null) {
+            damageResult = Formula.modifyHits(damageResult, userMoveStat.min_hits, userMoveStat.max_hits);
+        }
+
+        return damageResult;
+    }
 
     static public function computeBasePower(userPokemonStat:Dynamic, foePokemonStat:Dynamic, userMoveStat:Dynamic):Int {
         switch (userMoveStat.slug) {
@@ -55,17 +113,10 @@ class Formula {
         var critDamage = damage * CRIT_MODIFIER;
 
         return {
+            factor: damageFactor,
             minHP: minDamage,
             maxHP: damage,
             critHP: critDamage
-        }
-    }
-
-    static public function computedFixedDamage():DamageResult {
-        return {
-            minHP: Formula.LEVEL,
-            maxHP: Formula.LEVEL,
-            critHP: Formula.LEVEL
         }
     }
 
@@ -75,6 +126,7 @@ class Formula {
         var critDamage = damageResult.critHP * maxHits;
 
         return {
+            factor: damageResult.factor,
             minHP: minDamage,
             maxHP: maxDamage,
             critHP: critDamage
@@ -83,6 +135,7 @@ class Formula {
 
     static public function resultsToPercentages(damageResult:DamageResult, foeHP:Int):DamageResultPercent {
         return {
+            factor: damageResult.factor,
             minHP: damageResult.minHP,
             maxHP: damageResult.maxHP,
             critHP: damageResult.critHP,
