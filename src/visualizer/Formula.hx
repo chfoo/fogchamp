@@ -34,9 +34,10 @@ class Formula {
         var foeTypes:Array<String> = foePokemonStat.types;
         var factor = descriptionsDataset.getTypeEfficacy(userMoveType, foeTypes[0], foeTypes[1]);
         var userBasePower = Formula.computeBasePower(userPokemonStat, foePokemonStat, userMoveStat);
+        var isVariableBasePower = Formula.VARIABLE_POWER_MOVE.indexOf(userMoveStat.slug) != -1;
         var isFixedDamageMove = Formula.FIXED_DAMAGE_MOVE.indexOf(userMoveStat.slug) != -1;
 
-        if (userBasePower == null && !isFixedDamageMove) {
+        if (userBasePower == null && !isFixedDamageMove && !isVariableBasePower) {
             return {
                 factor: factor,
                 minHP: null,
@@ -69,6 +70,16 @@ class Formula {
                 minHP: Formula.LEVEL,
                 maxHP: Formula.LEVEL,
                 critHP: Formula.LEVEL
+            }
+        } else if (isVariableBasePower) {
+            var damageResultLow = Formula.computeDamage(userAttack, foeDefense, 10, stab, factor);
+            var damageResultHigh = Formula.computeDamage(userAttack, foeDefense, 150, stab, factor);
+
+            damageResult = {
+                factor: factor,
+                minHP: damageResultLow.minHP,
+                maxHP: damageResultHigh.maxHP,
+                critHP: damageResultHigh.critHP
             }
         } else {
             damageResult = Formula.computeDamage(userAttack, foeDefense, userBasePower, stab, factor);
