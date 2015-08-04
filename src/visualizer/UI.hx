@@ -25,7 +25,7 @@ class UI {
     var descriptionsDataset:DescriptionsDataset;
     var userMessage:UserMessage;
     static var DEFAULT_POKEMON:Vector<Int> = Vector.fromArrayCopy([493, 257, 462, 244, 441, 139]);
-    var isSettingUrlHash:Bool = false;
+    var previousUrlHash:String = null;
     var formulaOptions:FormulaOptions;
 
     public function new(pokemonDataset:PokemonDataset, movesDataset:MovesDataset, descriptionsDataset:DescriptionsDataset) {
@@ -128,12 +128,12 @@ class UI {
     }
 
     function readUrlFragment() {
-        if (isSettingUrlHash) {
-            isSettingUrlHash = false;
+        var fragment = Browser.location.hash;
+
+        if (fragment == previousUrlHash) {
             return;
         }
 
-        var fragment = Browser.location.hash;
         var pattern = new EReg("([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)", "");
 
         if (pattern.match(fragment)) {
@@ -162,7 +162,7 @@ class UI {
             }
         }
 
-        isSettingUrlHash = true;
+        previousUrlHash = '#$fragment';
         Browser.location.hash = fragment;
     }
 
