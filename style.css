@@ -109,6 +109,7 @@ a:active, a:hover {
 }
 
 .pokemonIconSlot-0, .pokemonIconSlot-1, .pokemonIconSlot-2 {
+    -webkit-transform: scaleX(-1);
     transform: scaleX(-1);
 }
 
@@ -292,6 +293,7 @@ div[class|="matchupChartMoveLabel"] {
     width: 40em;
     height: 40em;
     margin: auto;
+    -webkit-transform: scale(0.9) rotate(45deg);
     transform: scale(0.9) rotate(45deg);
 }
 
@@ -336,6 +338,7 @@ div[class|="matchupChartMoveLabel"] {
 .matchupChartLabelRotate-left {
     height: 10em;
     width: 10em;
+    -webkit-transform: rotate(-90deg);
     transform: rotate(-90deg);
     display: block;
 }
@@ -355,6 +358,7 @@ div[class|="matchupChartMoveLabel"] {
 .matchupChartMoveLabelRotate-top {
     height: 6em;
     width: 6em;
+    -webkit-transform: rotate(-90deg);
     transform: rotate(-90deg);
     display: block;
 }
@@ -375,7 +379,9 @@ div[class|="matchupChartMoveLabel"] {
 }
 
 .matchupChartEfficacyRotate-top {
+    -webkit-transform: rotate(-90deg) translateX(-6em);
     transform: rotate(-90deg) translateX(-6em);
+    -webkit-transform-origin: top left;
     transform-origin: top left;
     display: block;
     width: 6em;
