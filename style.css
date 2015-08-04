@@ -55,6 +55,11 @@ a:active, a:hover {
     margin: auto;
 }
 
+#extraUrls {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
 #footer {
     max-width: 40em;
     margin: auto;

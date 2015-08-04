@@ -193,6 +193,8 @@ class UI {
                 writeUrlFragment();
             }
 
+            renderExtraUrls();
+
             userMessage.hide();
         } catch (error:Dynamic) {
             userMessage.showMessage("An error occured while attempting to render the data. File a bug report if this persists.");
@@ -210,6 +212,13 @@ class UI {
     }
 
     function renderMatchCommand() {
+        var numbers = getMatchNumbers();
+
+        var element:DivElement = cast(Browser.document.getElementById("matchCommand"), DivElement);
+        element.textContent = '!match ${numbers[0]},${numbers[1]},${numbers[2]}/${numbers[3]},${numbers[4]},${numbers[5]}';
+    }
+
+    function getMatchNumbers():Array<Int> {
         var numbers = [];
 
         for (i in 0...6) {
@@ -218,8 +227,7 @@ class UI {
             numbers.push(pokemonNum);
         }
 
-        var element:DivElement = cast(Browser.document.getElementById("matchCommand"), DivElement);
-        element.textContent = '!match ${numbers[0]},${numbers[1]},${numbers[2]}/${numbers[3]},${numbers[4]},${numbers[5]}';
+        return numbers;
     }
 
     function renderPokemonStats() {
@@ -364,5 +372,15 @@ class UI {
             formulaOptions.typeImmunities = checked;
             renderAll(false);
         });
+    }
+
+    function renderExtraUrls() {
+        var numbers = getMatchNumbers();
+
+        new JQuery("#extraUrls").html('
+            <a href="http://www.tppvisuals.com/pbr/visualizer.htm#${numbers[0]}-${numbers[1]}-${numbers[2]}-${numbers[3]}-${numbers[4]}-${numbers[5]}">
+            View Dhason visualizer
+            </a>
+        ');
     }
 }
