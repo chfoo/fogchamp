@@ -237,7 +237,7 @@ class PokedexReader(Reader):
 
                 # Downgrade to gen 4
                 if foe == 'steel' and user in ('ghost', 'dark'):
-                    damage_factor = 100
+                    damage_factor = 50
 
                 efficacy_map[user][foe] = damage_factor
 
