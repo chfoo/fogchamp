@@ -1,5 +1,6 @@
 package visualizer;
 
+import visualizer.Formula.FormulaOptions;
 import js.html.Text;
 import js.html.SpanElement;
 import js.html.DivElement;
@@ -29,11 +30,13 @@ class MatchupChart {
     var descriptionsDataset:DescriptionsDataset;
     var pokemonStats:Array<Dynamic>;
     var tableElement:TableElement;
+    var formulaOptions:FormulaOptions;
 
-    public function new(pokemonDataset:PokemonDataset, movesDataset:MovesDataset, descriptionsDataset:DescriptionsDataset) {
+    public function new(pokemonDataset:PokemonDataset, movesDataset:MovesDataset, descriptionsDataset:DescriptionsDataset, formulaOptions:FormulaOptions) {
         this.pokemonDataset = pokemonDataset;
         this.movesDataset = movesDataset;
         this.descriptionsDataset = descriptionsDataset;
+        this.formulaOptions = formulaOptions;
     }
 
     public function setPokemon(pokemonStats:Array<Dynamic>) {
@@ -240,7 +243,7 @@ class MatchupChart {
         var span:SpanElement = Browser.document.createSpanElement();
         span.classList.add('matchupChartEfficacyRotate-$position');
 
-        var damageResult = Formula.computeResult(userPokemonStat, foePokemonStat, userMoveStat, descriptionsDataset);
+        var damageResult = Formula.computeResult(userPokemonStat, foePokemonStat, userMoveStat, descriptionsDataset, formulaOptions);
         var factor = damageResult.factor;
         var factorString;
 

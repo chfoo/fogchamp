@@ -18,6 +18,13 @@ typedef DamageResultPercent = {
     critHPPercent: Int,
 }
 
+class FormulaOptions {
+    public var typeImmunities = true;
+
+    public function new() {
+    }
+}
+
 
 class Formula {
     public static var LEVEL = 100;
@@ -28,7 +35,11 @@ class Formula {
     public static var HAPPINESS_MOVE = ["return", "frustration"];
     public static var VARIABLE_POWER_MOVE = ["magnitude"];
 
-    static public function computeResult(userPokemonStat:Dynamic, foePokemonStat:Dynamic, userMoveStat:Dynamic, descriptionsDataset:DescriptionsDataset):DamageResult {
+    static public function computeResult(
+            userPokemonStat:Dynamic, foePokemonStat:Dynamic,
+            userMoveStat:Dynamic, descriptionsDataset:DescriptionsDataset,
+            formulaOptions:FormulaOptions
+    ):DamageResult {
         var userMoveType:String = userMoveStat.move_type;
         var userTypes:Array<String> = userPokemonStat.types;
         var foeTypes:Array<String> = foePokemonStat.types;
@@ -36,6 +47,10 @@ class Formula {
         var userBasePower = Formula.computeBasePower(userPokemonStat, foePokemonStat, userMoveStat);
         var isVariableBasePower = Formula.VARIABLE_POWER_MOVE.indexOf(userMoveStat.slug) != -1;
         var isFixedDamageMove = Formula.FIXED_DAMAGE_MOVE.indexOf(userMoveStat.slug) != -1;
+
+        if (!formulaOptions.typeImmunities && factor == 0) {
+            factor = 100;
+        }
 
         if (userBasePower == null && !isFixedDamageMove && !isVariableBasePower) {
             return {
