@@ -14,9 +14,7 @@ NUMBER_NAME_REWRITE_MAP = {
 
 
 class ChfooReader(Reader):
-    def read_pbr_moveset(self, filename, pokedex_reader):
-        move_map = pokedex_reader.read_move_names()
-
+    def read_pbr_moveset(self, filename):
         with self.read_csv(filename) as reader:
             for index, row in enumerate(reader):
                 if index == 0:
@@ -26,10 +24,10 @@ class ChfooReader(Reader):
                     gender,
                     number,
                     name,
-                    move_a_num,
-                    move_b_num,
-                    move_c_num,
-                    move_d_num,
+                    move_a,
+                    move_b,
+                    move_c,
+                    move_d,
                     ability,
                     item,
                     hp,
@@ -44,10 +42,6 @@ class ChfooReader(Reader):
                     name = NUMBER_NAME_REWRITE_MAP[number]
 
                 number = int(re.match(r'(\d+)', number).group(1))
-                move_a_num = int(move_a_num)
-                move_b_num = int(move_b_num) if move_b_num else None
-                move_c_num = int(move_c_num) if move_c_num else None
-                move_d_num = int(move_d_num) if move_d_num else None
                 hp = int(hp)
                 attack = int(attack)
                 defense = int(defense)
@@ -57,9 +51,8 @@ class ChfooReader(Reader):
 
                 moves = []
 
-                for move_num in [move_a_num, move_b_num, move_c_num, move_d_num]:
-                    if move_num:
-                        move = move_map[move_num]
+                for move in [move_a, move_b, move_c, move_d]:
+                    if move:
                         moves.append(slugify(move))
 
                 doc = {
@@ -98,8 +91,8 @@ class ChfooReader(Reader):
 
             yield doc
 
-    def read_pbr_seel(self, nkekev_reader, pokedex_reader):
-        movesets = self.read_pbr_moveset('pbr-seel.csv', pokedex_reader)
+    def read_pbr_seel(self, nkekev_reader):
+        movesets = self.read_pbr_moveset('pbr-seel.csv')
         movesets = self.patch_pbr_moveset(movesets, nkekev_reader)
 
         return movesets
