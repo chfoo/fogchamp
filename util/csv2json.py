@@ -2,6 +2,8 @@
 import argparse
 import json
 import os
+import functools
+from util.readers.chfoo import ChfooReader
 
 from util.readers.nkekev import NkekevReader
 from util.readers.pokedex import PokedexReader
@@ -14,14 +16,17 @@ def main():
     args = arg_parser.parse_args()
 
     nkekev_dir = os.path.join(args.metadata_dir, 'nkekev')
+    chfoo_dir = os.path.join(args.metadata_dir, 'chfoo')
     pokedex_dir = os.path.join(args.metadata_dir, 'pokedex', 'pokedex', 'data', 'csv')
     output_dir = args.output_dir
 
     pokedex_reader = PokedexReader(pokedex_dir)
     nkekev_reader = NkekevReader(nkekev_dir)
+    chfoo_reader = ChfooReader(chfoo_dir)
 
     # Build each Pokemon's stats
     movesets_funcs = [
+        ('pbr-seel', functools.partial(chfoo_reader.read_pbr_seel, nkekev_reader, pokedex_reader)),
         ('pbr-platinum', nkekev_reader.read_pbr_platinum),
         ('pbr-gold', nkekev_reader.read_pbr_gold),
     ]

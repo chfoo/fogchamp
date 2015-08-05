@@ -132,6 +132,8 @@ def slugify(name):
     if name in TYPO_REPLACEMENTS:
         name = TYPO_REPLACEMENTS[name]
 
+    name = name.replace(' (Sand)', ' (Sandy)')
+
     name = re.sub(r' \((\d+|max)\)', '', name)  # Things like "Frustation (90)"
     name = name.lower().replace(' ', '-')
     name = name.replace('toxik', 'toxic')
