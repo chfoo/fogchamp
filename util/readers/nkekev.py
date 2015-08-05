@@ -73,7 +73,8 @@ class NkekevReader(Reader):
                             happiness = happiness_match.group(1)
 
                             if happiness == 'max':
-                                happiness = 255
+                                # Max as in max frustration pp, not happiness
+                                happiness = 0
                             else:
                                 happiness = int(happiness)
 
