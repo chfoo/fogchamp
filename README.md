@@ -31,6 +31,7 @@ Copyright 2015 Christopher Foo. Licensed under the MIT license.
 
 * The PBR metadata was obtained from Nkekev's docs.
 * Contains data scraped from TPPVisuals.com.
+* Contains data scraped from Bulbapedia. CC by-nc-sa 2.5.
 * Contains mustache.js. MIT license.
 * Contains jquery-visible by customd. MIT license.
 

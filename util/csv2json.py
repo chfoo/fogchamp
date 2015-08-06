@@ -3,6 +3,7 @@ import argparse
 import json
 import os
 import functools
+from util.readers.bulbapedia import BulbapediaReader
 from util.readers.chfoo import ChfooReader
 
 from util.readers.nkekev import NkekevReader
@@ -18,11 +19,13 @@ def main():
     nkekev_dir = os.path.join(args.metadata_dir, 'nkekev')
     chfoo_dir = os.path.join(args.metadata_dir, 'chfoo')
     pokedex_dir = os.path.join(args.metadata_dir, 'pokedex', 'pokedex', 'data', 'csv')
+    bulbapedia_dir = os.path.join(args.metadata_dir, 'bulbapedia')
     output_dir = args.output_dir
 
     pokedex_reader = PokedexReader(pokedex_dir)
     nkekev_reader = NkekevReader(nkekev_dir)
     chfoo_reader = ChfooReader(chfoo_dir)
+    bulbapedia_reader = BulbapediaReader(bulbapedia_dir)
 
     # Build each Pokemon's stats
     movesets_funcs = [
@@ -57,6 +60,8 @@ def main():
     for move in pokedex_reader.read_moves():
         slug = move.pop('slug')
         move_stats[slug] = move
+
+    bulbapedia_reader.downgrade_move_changes(move_stats)
 
     json_path = os.path.join(output_dir, 'moves.json')
 
