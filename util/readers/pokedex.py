@@ -157,7 +157,9 @@ class PokedexReader(Reader):
             for index in range(len(type_list)):
                 pokemon_type = type_list[index]
 
-                if pokemon_type == 'fairy':
+                if pokemon_type == 'fairy' and index == 1:
+                    type_list.pop()
+                elif pokemon_type == 'fairy':
                     type_list[index] = 'normal'
 
             # Ensure no duplicates
