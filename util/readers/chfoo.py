@@ -101,7 +101,7 @@ class ChfooReader(Reader):
 def rewrite_name(name):
     name = name.replace('-female', '-f')
     name = name.replace('-male', '-m')
-    name = re.sub(r'-(\w{2,})', r' (\1)', name)
+    name = re.sub(r'-(\w{3,})', r' (\1)', name)
     name = name.title()
 
     return name
