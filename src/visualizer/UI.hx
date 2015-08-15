@@ -378,9 +378,12 @@ class UI {
         var numbers = getMatchNumbers();
 
         new JQuery("#extraUrls").html('
+            View
             <a href="http://www.tppvisuals.com/pbr/visualizer.htm#${numbers[0]}-${numbers[1]}-${numbers[2]}-${numbers[3]}-${numbers[4]}-${numbers[5]}">
-            View Dhason visualizer
-            </a>
+            Dhason</a> /
+            <a href="http://fe1k.de/tpp/visualize#${numbers[0]}-${numbers[1]}-${numbers[2]}-${numbers[3]}-${numbers[4]}-${numbers[5]}">
+            FelkCraft</a>
+            visualizer
         ');
     }
 }
