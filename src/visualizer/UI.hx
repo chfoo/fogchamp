@@ -115,7 +115,11 @@ class UI {
             selectElement.add(optionElement);
         }
 
-        selectElement.selectedIndex = PokemonDataset.DATASET_FILES.length - 1;
+        if (PokemonDataset.DEFAULT_INDEX >= 0) {
+            selectElement.selectedIndex = PokemonDataset.DEFAULT_INDEX;
+        } else {
+            selectElement.selectedIndex = PokemonDataset.DATASET_FILES.length - 1;
+        }
 
         new JQuery("#pokemonEditionSelect").change(function (event:JqEvent) {
             pokemonDataset.datasetIndex = selectElement.selectedIndex;
