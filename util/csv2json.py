@@ -3,6 +3,7 @@ import argparse
 import json
 import os
 import functools
+from util.readers.addarash1 import AddarashReader
 from util.readers.bulbapedia import BulbapediaReader
 from util.readers.chfoo import ChfooReader
 
@@ -18,6 +19,7 @@ def main():
 
     nkekev_dir = os.path.join(args.metadata_dir, 'nkekev')
     chfoo_dir = os.path.join(args.metadata_dir, 'chfoo')
+    addarash1_dir = os.path.join(args.metadata_dir, 'addarash1')
     pokedex_dir = os.path.join(args.metadata_dir, 'pokedex', 'pokedex', 'data', 'csv')
     bulbapedia_dir = os.path.join(args.metadata_dir, 'bulbapedia')
     output_dir = args.output_dir
@@ -25,10 +27,13 @@ def main():
     pokedex_reader = PokedexReader(pokedex_dir)
     nkekev_reader = NkekevReader(nkekev_dir)
     chfoo_reader = ChfooReader(chfoo_dir)
+    addarash1_reader = AddarashReader(addarash1_dir)
     bulbapedia_reader = BulbapediaReader(bulbapedia_dir)
 
     # Build each Pokemon's stats
     movesets_funcs = [
+        ('pbr-gold-1.2', functools.partial(addarash1_reader.read_pbr_gold_1_2,
+                                           nkekev_reader, chfoo_reader)),
         ('pbr-seel', functools.partial(chfoo_reader.read_pbr_seel, nkekev_reader)),
         ('pbr-platinum', nkekev_reader.read_pbr_platinum),
         ('pbr-gold', nkekev_reader.read_pbr_gold),
