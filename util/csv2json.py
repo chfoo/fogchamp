@@ -32,6 +32,9 @@ def main():
 
     # Build each Pokemon's stats
     movesets_funcs = [
+        ('pbr-gold-1.2-2015-11-07', functools.partial(
+            addarash1_reader.read_pbr_gold_1_2_2015_11_07,
+            nkekev_reader, chfoo_reader)),
         ('pbr-gold-1.2', functools.partial(addarash1_reader.read_pbr_gold_1_2,
                                            nkekev_reader, chfoo_reader)),
         ('pbr-seel', functools.partial(chfoo_reader.read_pbr_seel, nkekev_reader)),

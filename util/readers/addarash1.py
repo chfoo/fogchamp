@@ -105,3 +105,10 @@ class AddarashReader(Reader):
         movesets = self.patch_pbr_moveset(movesets, nkekev_reader, chfoo_reader)
 
         return movesets
+        
+        
+    def read_pbr_gold_1_2_2015_11_07(self, nkekev_reader, chfoo_reader):
+        movesets = self.read_pbr_moveset('pbr-gold-1.2-2015-11-07.csv')
+        movesets = self.patch_pbr_moveset(movesets, nkekev_reader, chfoo_reader)
+
+        return movesets
