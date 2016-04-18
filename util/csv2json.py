@@ -87,12 +87,19 @@ def main():
 
     types_efficacy = pokedex_reader.read_type_efficacy()
 
+    items = {}
+
+    for item in pokedex_reader.read_items():
+        slug = item.pop('slug')
+        items[slug] = item
+
     json_path = os.path.join(output_dir, 'descriptions.json')
 
     with open(json_path, 'w') as file:
         file.write(json.dumps({
             'abilities': abilities,
             'types_efficacy': types_efficacy,
+            'items': items,
         }, indent=2, sort_keys=True))
 
 if __name__ == '__main__':

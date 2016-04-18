@@ -257,8 +257,15 @@ class UI {
             var slug = getSlotSlug(slotNum);
             var pokemonStats = pokemonDataset.getPokemonStats(slug);
             var abilityName = descriptionsDataset.getAbilityName(pokemonStats.ability);
+            var itemName = "";
+
+            if (pokemonStats.item != "") {
+                itemName = descriptionsDataset.getItemName(pokemonStats.item);
+            }
+
             var renderDoc = Reflect.copy(pokemonStats);
             Reflect.setField(renderDoc, 'ability_name', abilityName);
+            Reflect.setField(renderDoc, 'item_name', itemName);
             Reflect.setField(renderDoc, 'slot_number', slotNum);
             statsList.push(renderDoc);
         }
@@ -338,6 +345,10 @@ class UI {
             var ability = Reflect.field(descriptionsDataset.abilities, slug);
             title = ability.name;
             text = ability.description;
+        } else if (category == "item") {
+            var item = Reflect.field(descriptionsDataset.items, slug);
+            title = item.name;
+            text = item.description;
         } else if (category == "move") {
             var move = movesDataset.getMoveStats(slug);
             title = move.name;

@@ -4,10 +4,9 @@ from util.readers.base import Reader
 
 
 TYPO_REPLACEMENTS = {
-    'AncientPower': 'Ancient Power',
     'Aurasphere': 'Aura Sphere',
-    'DynamicPunch': 'Dynamic Punch',
     'Solarbeam': 'Solar Beam',
+    'Faint Attack': 'Feint Attack',
     'Recovery': 'Recover',
     'Shockwave': 'Shock Wave',
     'Twinneedle': 'Twineedle',
@@ -21,6 +20,14 @@ TYPO_REPLACEMENTS = {
     'Featherdance': 'Feather Dance',
     'Thundershock': 'Thunder Shock',
     'Grasswhistle': 'Grass Whistle',
+    'Selfdestruct': 'Self-Destruct',
+    'Stealth Ricj': 'Stealth Rock',
+    'Softboiled': 'Soft-Boiled',
+    'Omnious Wind': 'Ominous Wind',
+    'SmellingSalt': 'Smelling Salts',
+    'Smoke Screen': 'Smokescreen',
+    'SmokeScreen': 'Smokescreen',
+    'Judgement': 'Judgment',
 }
 
 
@@ -148,13 +155,22 @@ def slugify(name):
     if name.startswith('HP '):
         name = 'Hidden Power'
 
+    if name.startswith('NG '):
+        name = 'Natural Gift'
+
     if name in TYPO_REPLACEMENTS:
         name = TYPO_REPLACEMENTS[name]
+
+    match = re.match(r'([A-Z][a-z]+)([A-Z][a-z]+)([A-Z][a-z]+)?', name)
+
+    if match:
+        name = '{} {} {}'.format(match.group(1), match.group(2), match.group(3) or '').strip()
 
     name = name.replace(' (Sand)', ' (Sandy)')
     if name.endswith('-Sand'):
         name = name.replace('-Sand', '-Sandy')
 
+    name = name.replace('é', 'e')
     name = re.sub(r' \((\d+( [bB][pP])?|max)\)', '', name)  # Things like "Frustation (90)"
     name = re.sub(r' \(.+cnf\)', '', name)
     name = name.lower().replace(' ', '-')

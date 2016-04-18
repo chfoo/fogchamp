@@ -259,3 +259,59 @@ class PokedexReader(Reader):
                 weight_map[pokemon_num] = weight
 
         return weight_map
+
+    def read_item_names(self, lang=9):
+        name_map = {}
+
+        with self.read_csv('item_names.csv') as reader:
+            for index, row in enumerate(reader):
+                if index == 0:
+                    continue
+
+                item_id, row_lang, name = row
+                item_id = int(item_id)
+                row_lang = int(row_lang)
+
+                if row_lang != lang:
+                    continue
+
+                name_map[item_id] = name
+
+        return name_map
+
+    def read_item_descriptions(self, lang=9):
+        desc_map = {}
+
+        with self.read_csv('item_flavor_text.csv') as reader:
+            for index, row in enumerate(reader):
+                if index == 0:
+                    continue
+
+                ability_id = int(row[0])
+                lang_id = int(row[2])
+                description = row[3]
+
+                if lang_id != lang:
+                    continue
+
+                desc_map[ability_id] = description
+
+        return desc_map
+
+    def read_items(self):
+        name_map = self.read_item_names()
+        desc_map = self.read_item_descriptions()
+
+        with self.read_csv('items.csv') as reader:
+            for index, row in enumerate(reader):
+                if index == 0:
+                    continue
+
+                ability_id = int(row[0])
+                slug = row[1]
+
+                yield {
+                    'slug': slug,
+                    'name': name_map[ability_id],
+                    'description': desc_map.get(ability_id)
+                }
