@@ -10,9 +10,9 @@ typedef DatasetDoc = {
 
 
 class PokemonDataset extends Dataset {
-    static public var DATASET_FILES(default, null) = ["pbr-gold.json", "pbr-platinum.json", "pbr-seel.json", "pbr-gold-1.2.json", "pbr-gold-1.2-2015-11-07.json"];
-    static public var DATASET_NAMES(default, null) = ["Nkekev PBR Gold", "Nkekev PBR Platinum", "TPPVisuals PBR Seel", "Addarash1/Chaos_lord PBR Gold 1.2", "Chauzu PBR Gold 1.2 2015-11-07"];
-    static public var DEFAULT_INDEX = 4;
+    static public var DATASET_FILES(default, null) = ["pbr-gold.json", "pbr-platinum.json", "pbr-seel.json", "pbr-gold-1.2.json", "pbr-gold-1.2-2015-11-07.json", "pbr-2.0.json"];
+    static public var DATASET_NAMES(default, null) = ["Nkekev PBR Gold", "Nkekev PBR Platinum", "TPPVisuals PBR Seel", "Addarash1/Chaos_lord PBR Gold 1.2", "Chauzu PBR Gold 1.2 2015-11-07", "Addarash1 PBR 2.0"];
+    static public var DEFAULT_INDEX = 5;
 
     var datasets:Array<DatasetDoc>;
 

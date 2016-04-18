@@ -4,6 +4,7 @@ from util.readers.base import Reader
 
 
 TYPO_REPLACEMENTS = {
+    'AncientPower': 'Ancient Power',
     'Aurasphere': 'Aura Sphere',
     'DynamicPunch': 'Dynamic Punch',
     'Solarbeam': 'Solar Beam',
@@ -154,7 +155,8 @@ def slugify(name):
     if name.endswith('-Sand'):
         name = name.replace('-Sand', '-Sandy')
 
-    name = re.sub(r' \((\d+|max)\)', '', name)  # Things like "Frustation (90)"
+    name = re.sub(r' \((\d+( [bB][pP])?|max)\)', '', name)  # Things like "Frustation (90)"
+    name = re.sub(r' \(.+cnf\)', '', name)
     name = name.lower().replace(' ', '-')
     name = name.replace('toxik', 'toxic')
     name = re.sub(r'[^a-zA-Z0-9-]', '', name)
