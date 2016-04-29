@@ -134,7 +134,7 @@ Ditto,132,Quick Powder,Limber,Transform,--,--,--,300,118,132,132,132,214
 Eevee,133,--,Adaptability,Take Down,Iron Tail,Quick Attack,Curse,298,209,153,113,166,160
 Vaporeon,134,Awakening,Water Absorb,Muddy Water,Shadow Ball,Fake Tears,Acid Armor,382,147,137,237,207,147
 Jolteon,135,Power Herb,Volt Absorb,Charge Beam,Shadow Ball,Skull Bash,Baton Pass,267,177,151,225,221,291
-Flareon,136,Durin Berry,Flash Fire,Flare Blitz,Natural Gift,Quick Attack,Tail Whip,275,243,170,220,250,172
+Flareon,136,Durin Berry,Flash Fire,Flare Blitz,NG Water 80,Quick Attack,Tail Whip,275,243,170,220,250,172
 Porygon,137,--,Download,Tri Attack,Iron Tail,Conversion 2,Pain Split,240,156,262,206,249,76
 Omanyte,138,Helix Fossil,Swift Swim,Surf,AncientPower,Ice Beam,Rain Dance,230,116,245,239,182,145
 Omastar,139,Helix Fossil,Shell Armor,Muddy Water,AncientPower,Mud Shot,Spikes,279,154,284,264,174,144
@@ -149,7 +149,7 @@ Dratini,147,--,Shed Skin,Outrage,ExtremeSpeed,Waterfall,Dragon Dance,265,203,147
 Dragonair,148,--,Marvel Scale,Dragon Rush,Waterfall,Dragon Dance,Rest,270,200,164,136,204,172
 Dragonite,149,Max Revive,Inner Focus,Dragon Rush,Zap Cannon,Surf,Defog,292,245,195,225,205,165
 Mewtwo,150,--,Pressure,Psycho Cut,Me First,Disable,Miracle Eye,334,237,197,325,197,277
-Mew,151,--,Synchronize,Psychic,Superpower,Me First ,Metronome,310,205,205,184,205,248
+Mew,151,--,Synchronize,Psychic,Superpower,Me First ,Transform,310,205,205,184,205,248
 Chikorita,152,Big Root,Overgrow,Seed Bomb,Leech Seed,Counter,Light Screen,294,135,166,120,251,126
 Bayleef,153,Wise Glasses,Overgrow,Seed Bomb,Body Slam,Nature Power,Swords Dance,300,200,218,145,218,178
 Meganium,154,Aspear Berry,Overgrow,Frenzy Plant,Iron Tail,Outrage,Sweet Scent,296,214,231,197,231,171
@@ -303,7 +303,7 @@ Delcatty,301,Micle Berry,Normalize,Rollout,Defense Curl,Sing,Foresight,344,175,1
 Sableye,302,Sea Incense,Stall,Payback,Octazooka,Magic Coat,Snatch,304,186,197,228,177,122
 Mawile,303,Zoom Lens,Intimidate,Iron Head,Mega Kick,Fire Blast,Sing,266,231,231,190,171,94
 Aron,304,Metal Coat,Rock Head,Head Smash,Iron Head,Superpower,Rock Polish,266,201,261,104,141,135
-Lairon,305,Salac Berry,Sturdy,Stone Edge,Iron Tail,Dragon Rush,Natural Gift,324,216,316,122,173,158
+Lairon,305,Salac Berry,Sturdy,Stone Edge,Iron Tail,Dragon Rush,NG Fighting 80,324,216,316,122,173,158
 Aggron,306,--,Sturdy,Flash Cannon,AncientPower,Flamethrower,Metal Sound,286,202,379,222,161,139
 Meditite,307,Custap Berry,Pure Power,Hi Jump Kick,Zen Headbutt,Bullet Punch,Meditate,264,134,177,104,177,156
 Medicham,308,--,Pure Power,Psycho Cut,Force Palm,Power Trick,Foresight,267,126,234,141,213,202
@@ -469,7 +469,7 @@ Mantyke,458,Wacan Berry,Water Veil,Surf,Ice Beam,Confuse Ray,Toxic,243,79,148,18
 Snover,459,Coba Berry,Snow Warning,Blizzard,Wood Hammer,Ice Shard,Swords Dance,286,205,161,185,181,104
 Abomasnow,460,--,Snow Warning,Seed Bomb,Icy Wind,Focus Blast,Ingrain,319,218,184,218,204,154
 Weavile,461,--,Pressure,Ice Beam,Surf,Shadow Ball,Nasty Plot,302,267,205,147,227,307
-Magnezone,462,Occa Berry,Magnet Pull,Spark,Magnet Bomb,Natural Gift,Bide,306,223,291,238,241,181
+Magnezone,462,Occa Berry,Magnet Pull,Spark,Magnet Bomb,NG Fire 60,Bide,306,223,291,238,241,181
 Lickilicky,463,Lum Berry,Own Tempo,Wring Out,Hyper Beam,DynamicPunch,Rollout,357,202,222,192,222,132
 Rhyperior,464,Protector,Lightning Rod,Rock Blast,Magnitude,Fling,Stealth Rock,386,297,311,161,177,131
 Tangrowth,465,Pecha Berry,Leaf Guard,SolarBeam,AncientPower,Stun Spore,Sunny Day,339,209,284,228,149,134
@@ -482,7 +482,7 @@ Glaceon,471,--,Snow Cloak,Icy Wind,Trump Card,Aqua Tail,Rain Dance,283,188,241,3
 Gliscor,472,Poison Barb,Hyper Cutter,Dig,Cross Poison,Fling,Power Trick,287,199,310,122,182,222
 Mamoswine,473,Soda Pop,Snow Cloak,Earth Power,Ice Fang,Scary Face,Hail,355,261,190,187,150,190
 Porygon-Z,474,--,Adaptability,Swift,Shadow Ball,Defense Curl,Conversion,305,209,170,270,180,210
-Gallade,475,Spelon Berry,Steadfast,Psycho Cut,Drain Punch,Natural Gift,Recycle,272,252,177,161,261,191
+Gallade,475,Spelon Berry,Steadfast,Psycho Cut,Drain Punch,NG Dark 70,Recycle,272,252,177,161,261,191
 Probopass,476,Chople Berry,Magnet Pull,Stone Edge,Zap Cannon,Dynamic Punch,Gravity,324,195,326,218,302,116
 Dusknoir,477,Reaper Cloth,Pressure,Astonish,Rock Smash,Disable,Trick Room,293,328,307,166,307,85
 Froslass,478,Dawn Stone,Snow Cloak,Ominous Wind,Weather Ball,Hail,Destiny Bond,293,208,188,208,188,268
