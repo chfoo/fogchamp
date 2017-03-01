@@ -291,13 +291,13 @@ class UI {
         var template = new JQuery("#pokemonMovesTemplate").html();
 
         var rendered = renderTemplate(template, {
-            pokemonMoves: buildMoves()
+            pokemonMoves: buildMovesRenderDocs()
         });
 
         new JQuery("#pokemonMoves").html(rendered);
     }
 
-    function buildMoves():Array<MovesItem> {
+    function buildMovesRenderDocs():Array<MovesItem> {
         var movesList = new Array<MovesItem>();
 
         for (slotNum in [2, 1, 0, 3, 4, 5]) {
@@ -356,11 +356,11 @@ class UI {
         var text = "";
 
         if (category == "ability") {
-            var ability = Reflect.field(descriptionsDataset.abilities, slug);
+            var ability = descriptionsDataset.abilities.get(slug);
             title = ability.name;
             text = ability.description;
         } else if (category == "item") {
-            var item = Reflect.field(descriptionsDataset.items, slug);
+            var item = descriptionsDataset.items.get(slug);
             title = item.name;
             text = item.description;
         } else if (category == "move") {
