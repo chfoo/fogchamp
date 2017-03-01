@@ -36,11 +36,11 @@ class Formula {
     public static var VARIABLE_POWER_MOVE = ["magnitude"];
 
     static public function computeResult(
-            userPokemonStat:Dynamic, foePokemonStat:Dynamic,
-            userMoveStat:Dynamic, descriptionsDataset:DescriptionsDataset,
+            userPokemonStat:PokemonStats, foePokemonStat:PokemonStats,
+            userMoveStat:MoveStats, descriptionsDataset:DescriptionsDataset,
             formulaOptions:FormulaOptions
     ):DamageResult {
-        var userMoveType:String = userMoveStat.move_type;
+        var userMoveType:String = userMoveStat.moveType;
         var userTypes:Array<String> = userPokemonStat.types;
         var foeTypes:Array<String> = foePokemonStat.types;
         var factor = descriptionsDataset.getTypeEfficacy(userMoveType, foeTypes[0], foeTypes[1]);
@@ -64,16 +64,16 @@ class Formula {
         var userAttack;
         var foeDefense;
 
-        if (userMoveStat.damage_category == "physical") {
+        if (userMoveStat.damageCategory == "physical") {
             userAttack = userPokemonStat.attack;
         } else {
-            userAttack = userPokemonStat.special_attack;
+            userAttack = userPokemonStat.specialAttack;
         }
 
-        if (userMoveStat.damage_category == "physical") {
+        if (userMoveStat.damageCategory == "physical") {
             foeDefense = foePokemonStat.defense;
         } else {
-            foeDefense = foePokemonStat.special_defense;
+            foeDefense = foePokemonStat.specialDefense;
         }
 
         var stab = userTypes.indexOf(userMoveType) != -1;
@@ -100,14 +100,14 @@ class Formula {
             damageResult = Formula.computeDamage(userAttack, foeDefense, userBasePower, stab, factor);
         }
 
-        if (userMoveStat.max_hits != null) {
-            damageResult = Formula.modifyHits(damageResult, userMoveStat.min_hits, userMoveStat.max_hits);
+        if (userMoveStat.maxHits != null) {
+            damageResult = Formula.modifyHits(damageResult, userMoveStat.minHits, userMoveStat.maxHits);
         }
 
         return damageResult;
     }
 
-    static public function computeBasePower(userPokemonStat:Dynamic, foePokemonStat:Dynamic, userMoveStat:Dynamic):Int {
+    static public function computeBasePower(userPokemonStat:PokemonStats, foePokemonStat:PokemonStats, userMoveStat:MoveStats):Int {
         switch (userMoveStat.slug) {
             case "low-kick" | "grass-knot":
                 if (foePokemonStat.weight != null) {

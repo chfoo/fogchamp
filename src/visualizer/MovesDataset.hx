@@ -17,12 +17,11 @@ class MovesDataset extends Dataset {
         super.loadDone(data);
     }
 
-    public function getMoveStats(slug:String, ?pokemonStat:Dynamic):Dynamic {
-        var moveStat = Reflect.field(moves, slug);
-        Reflect.setField(moveStat, "slug", slug);
+    public function getMoveStats(slug:String, ?pokemonStat:PokemonStats):MoveStats {
+        var moveStat = MoveStats.fromJson(slug, Reflect.field(moves, slug));
 
-        if (pokemonStat != null && slug == "hidden-power" && Reflect.hasField(pokemonStat, "move_type_override")) {
-            Reflect.setField(moveStat, "move_type", pokemonStat.move_type_override);
+        if (pokemonStat != null && slug == "hidden-power" && pokemonStat.moveTypeOverride != null) {
+            moveStat.moveType = pokemonStat.moveTypeOverride;
         }
 
         return moveStat;

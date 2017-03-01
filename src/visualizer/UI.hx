@@ -238,13 +238,27 @@ class UI {
         var template = new JQuery("#pokemonStatsTemplate").html();
 
         var rendered = renderTemplate(template, {
-            pokemonStats: buildStats(true)
+            pokemonStats: buildPokemonStatsRenderDocs(true)
         });
 
         new JQuery("#pokemonStats").html(rendered);
     }
 
-    function buildStats(?visualBlueHorizontalOrder:Bool) {
+    function getPokemonStatsSelected():Array<PokemonStats> {
+        var slotNums = [0, 1, 2, 3, 4, 5];
+        var statsList = new Array<PokemonStats>();
+
+        for (slotNum in slotNums) {
+            var slug = getSlotSlug(slotNum);
+            var pokemonStats = pokemonDataset.getPokemonStats(slug);
+
+            statsList.push(pokemonStats);
+        }
+
+        return statsList;
+    }
+
+    function buildPokemonStatsRenderDocs(?visualBlueHorizontalOrder:Bool):Array<Dynamic> {
         var slotNums = [0, 1, 2, 3, 4, 5];
 
         if (visualBlueHorizontalOrder) {
@@ -263,7 +277,7 @@ class UI {
                 itemName = descriptionsDataset.getItemName(pokemonStats.item);
             }
 
-            var renderDoc = Reflect.copy(pokemonStats);
+            var renderDoc = pokemonStats.toJson();
             Reflect.setField(renderDoc, 'ability_name', abilityName);
             Reflect.setField(renderDoc, 'item_name', itemName);
             Reflect.setField(renderDoc, 'slot_number', slotNum);
@@ -295,17 +309,17 @@ class UI {
 
             for (moveSlug in moveSlugs) {
                 var moveStats = movesDataset.getMoveStats(moveSlug, pokemonStat);
-                var moveRenderDoc = Reflect.copy(moveStats);
+                var moveRenderDoc = moveStats.toJson();
                 Reflect.setField(moveRenderDoc, "move_slug", moveSlug);
                 Reflect.setField(moveRenderDoc, "move_name", moveStats.name);
-                var damageCategory:String = moveStats.damage_category;
+                var damageCategory:String = moveStats.damageCategory;
                 Reflect.setField(moveRenderDoc, "damage_category_short", damageCategory.substr(0, 2));
 
-                if (moveRenderDoc.power == null) {
+                if (moveStats.power == null) {
                     Reflect.setField(moveRenderDoc, "power", "--");
                 }
 
-                if (moveRenderDoc.accuracy == null) {
+                if (moveStats.accuracy == null) {
                     Reflect.setField(moveRenderDoc, "accuracy", "--");
                 }
 
@@ -375,7 +389,7 @@ class UI {
 
     function renderChart() {
         var matchupChart = new MatchupChart(pokemonDataset, movesDataset, descriptionsDataset, formulaOptions);
-        matchupChart.setPokemon(buildStats());
+        matchupChart.setPokemon(getPokemonStatsSelected());
         var tableElement = matchupChart.renderTable();
 
         new JQuery("#pokemonDiamond").empty().append(tableElement);

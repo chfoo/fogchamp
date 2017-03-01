@@ -28,7 +28,7 @@ class MatchupChart {
     var pokemonDataset:PokemonDataset;
     var movesDataset:MovesDataset;
     var descriptionsDataset:DescriptionsDataset;
-    var pokemonStats:Array<Dynamic>;
+    var pokemonStats:Array<PokemonStats>;
     var tableElement:TableElement;
     var formulaOptions:FormulaOptions;
 
@@ -39,7 +39,7 @@ class MatchupChart {
         this.formulaOptions = formulaOptions;
     }
 
-    public function setPokemon(pokemonStats:Array<Dynamic>) {
+    public function setPokemon(pokemonStats:Array<PokemonStats>) {
         this.pokemonStats = pokemonStats;
     }
 
@@ -106,7 +106,7 @@ class MatchupChart {
 
     }
 
-    function renderVersusMatrix(rowElement:TableRowElement, leftMoveIndex:Int, leftPokemonStat:Dynamic, topPokemonStat:Dynamic) {
+    function renderVersusMatrix(rowElement:TableRowElement, leftMoveIndex:Int, leftPokemonStat:PokemonStats, topPokemonStat:PokemonStats) {
         if (leftMoveIndex == -1) {
             var dividerCell = renderDividerCell(rowElement, "first");
             var dividerCellWhoFaster;
@@ -159,7 +159,7 @@ class MatchupChart {
         processPokemonLabelCell(pokemonStat, labelCell, "left");
     }
 
-    function renderMoveLabelCell(pokemonStat:Dynamic, moveIndex:Int, rowElement:TableRowElement, position:String) {
+    function renderMoveLabelCell(pokemonStat:PokemonStats, moveIndex:Int, rowElement:TableRowElement, position:String) {
         var labelCell = cast(rowElement.insertCell(-1), TableCellElement);
         var moveSlugs:Array<String> = pokemonStat.moves;
 
@@ -171,7 +171,7 @@ class MatchupChart {
         }
     }
 
-    function processPokemonLabelCell(pokemonStat:Dynamic, cell:TableCellElement, position:String) {
+    function processPokemonLabelCell(pokemonStat:PokemonStats, cell:TableCellElement, position:String) {
         var container:DivElement = Browser.document.createDivElement();
         container.classList.add('matchupChartLabel-$position');
 
@@ -230,7 +230,7 @@ class MatchupChart {
         return dividerCell;
     }
 
-    function processCellEfficacy(cell:TableCellElement, userMoveStat:Dynamic, userPokemonStat:Dynamic, foePokemonStat:Dynamic, ?position:String) {
+    function processCellEfficacy(cell:TableCellElement, userMoveStat:MoveStats, userPokemonStat:PokemonStats, foePokemonStat:PokemonStats, ?position:String) {
         cell.classList.add('matchupChartEfficacyCell-$position');
 
         if (userMoveStat.accuracy == null && userMoveStat.power == null) {
@@ -266,7 +266,7 @@ class MatchupChart {
 
 
         if (damageResult.maxHP == null) {
-            if (userMoveStat.damage_category == "status") {
+            if (userMoveStat.damageCategory == "status") {
                 if (factor == 0) {
                     span.textContent = "✕";
                 } else {
