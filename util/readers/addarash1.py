@@ -40,7 +40,7 @@ class AddarashReader(Reader):
                         move_b,
                         move_c,
                         move_d,
-                        nature,
+                        hp,
                         attack,
                         defense,
                         special_attack,
@@ -49,7 +49,7 @@ class AddarashReader(Reader):
                         *dummy
                     ) = row
                     iv = None
-                    hp = None
+                    nature = None
 
                 if not name.strip():
                     continue
@@ -57,7 +57,7 @@ class AddarashReader(Reader):
                 name = rewrite_pokemon_name(name)
                 number = int(number)
                 iv = int(iv) if iv else None
-                hp = int(hp) if hp else None
+                hp = int(hp)
                 attack = int(attack)
                 defense = int(defense)
                 special_attack = int(special_attack)
@@ -101,7 +101,7 @@ class AddarashReader(Reader):
                     'special_attack': special_attack,
                     'special_defense': special_defense,
                     'speed': speed,
-                    'nature': slugify(nature),
+                    'nature': slugify(nature) if nature else None,
                     'item': slugify(item),
                     'happiness': happiness,
                 }
