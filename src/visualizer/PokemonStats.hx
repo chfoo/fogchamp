@@ -72,4 +72,8 @@ class PokemonStats {
             "weight": weight
         }
     }
+
+    public function clone():PokemonStats {
+        return PokemonStats.fromJson(slug, toJson());
+    }
 }

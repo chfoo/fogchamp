@@ -47,5 +47,9 @@ class MoveStats {
             "slug": slug
         }
     }
+
+    public function clone():MoveStats {
+        return MoveStats.fromJson(slug, toJson());
+    }
 }
 
