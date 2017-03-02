@@ -1,0 +1,765 @@
+{
+    "created_at": "2017-03-01 18:51:04.177904",
+    "finished_at": null,
+    "game": "pbr",
+    "gimmick": "pinpoint",
+    "id": 33780,
+    "pokeyen_bets": {
+        "139110051": {
+            "amount": 500,
+            "team": 1
+        }
+    },
+    "stage": "gateway",
+    "started": false,
+    "started_at": "2017-03-01 18:54:34.388916",
+    "switching": true,
+    "teams": [
+        [
+            {
+                "ability": {
+                    "description": "",
+                    "id": 99,
+                    "name": "No Guard"
+                },
+                "ball": {
+                    "description": "",
+                    "id": 15,
+                    "name": "Quick Ball"
+                },
+                "biddable": true,
+                "displayname": "Smeargle",
+                "evs": {
+                    "atk": 172,
+                    "def": 112,
+                    "hp": 112,
+                    "spA": 0,
+                    "spD": 112,
+                    "spe": 0
+                },
+                "form": 0,
+                "gender": "m",
+                "happiness": 255,
+                "hidden": false,
+                "ingamename": "SMEARGLE",
+                "item": {
+                    "description": "",
+                    "id": 158,
+                    "name": "Sitrus Berry"
+                },
+                "ivs": {
+                    "atk": 31,
+                    "def": 31,
+                    "hp": 31,
+                    "spA": 31,
+                    "spD": 31,
+                    "spe": 0
+                },
+                "level": 100,
+                "moves": [
+                    {
+                        "accuracy": 100,
+                        "category": "Physical",
+                        "displayname": "Quick Attack",
+                        "id": 98,
+                        "name": "Quick Attack",
+                        "name_id": "quickattack",
+                        "power": 40,
+                        "pp": 30,
+                        "pp_ups": 0,
+                        "type": "Normal"
+                    },
+                    {
+                        "accuracy": 100,
+                        "category": "Physical",
+                        "displayname": "Aqua Jet",
+                        "id": 453,
+                        "name": "Aqua Jet",
+                        "name_id": "aquajet",
+                        "power": 40,
+                        "pp": 20,
+                        "pp_ups": 0,
+                        "type": "Water"
+                    },
+                    {
+                        "accuracy": 100,
+                        "category": "Status",
+                        "displayname": "Spore",
+                        "id": 147,
+                        "name": "Spore",
+                        "name_id": "spore",
+                        "power": 0,
+                        "pp": 15,
+                        "pp_ups": 0,
+                        "type": "Grass"
+                    },
+                    {
+                        "accuracy": null,
+                        "category": "Status",
+                        "displayname": "Belly Drum",
+                        "id": 187,
+                        "name": "Belly Drum",
+                        "name_id": "bellydrum",
+                        "power": 0,
+                        "pp": 10,
+                        "pp_ups": 0,
+                        "type": "Normal"
+                    }
+                ],
+                "nature": {
+                    "decreased": "spe",
+                    "id": 2,
+                    "increased": "atk",
+                    "name": "Brave"
+                },
+                "rarity": 0.4,
+                "setname": "Priority",
+                "shiny": false,
+                "species": {
+                    "basestats": {
+                        "atk": 20,
+                        "def": 35,
+                        "hp": 55,
+                        "spA": 20,
+                        "spD": 45,
+                        "spe": 75
+                    },
+                    "id": 235,
+                    "name": "Smeargle",
+                    "types": [
+                        "Normal"
+                    ]
+                },
+                "stats": {
+                    "atk": 130,
+                    "def": 134,
+                    "hp": 279,
+                    "spA": 76,
+                    "spD": 154,
+                    "spe": 139
+                }
+            },
+            {
+                "ability": {
+                    "description": "",
+                    "id": 99,
+                    "name": "No Guard"
+                },
+                "ball": {
+                    "description": "",
+                    "id": 11,
+                    "name": "Luxury Ball"
+                },
+                "biddable": true,
+                "displayname": "Meowth",
+                "evs": {
+                    "atk": 252,
+                    "def": 56,
+                    "hp": 56,
+                    "spA": 0,
+                    "spD": 56,
+                    "spe": 88
+                },
+                "form": 0,
+                "gender": "m",
+                "happiness": 150,
+                "hidden": false,
+                "ingamename": "MEOWTH",
+                "item": {
+                    "description": "",
+                    "id": 221,
+                    "name": "King\u0027s Rock"
+                },
+                "ivs": {
+                    "atk": 31,
+                    "def": 31,
+                    "hp": 31,
+                    "spA": 31,
+                    "spD": 31,
+                    "spe": 31
+                },
+                "level": 100,
+                "moves": [
+                    {
+                        "accuracy": 100,
+                        "category": "Physical",
+                        "displayname": "Fake Out",
+                        "id": 252,
+                        "name": "Fake Out",
+                        "name_id": "fakeout",
+                        "power": 40,
+                        "pp": 10,
+                        "pp_ups": 0,
+                        "type": "Normal"
+                    },
+                    {
+                        "accuracy": 100,
+                        "category": "Physical",
+                        "displayname": "Body Slam",
+                        "id": 34,
+                        "name": "Body Slam",
+                        "name_id": "bodyslam",
+                        "power": 85,
+                        "pp": 15,
+                        "pp_ups": 0,
+                        "type": "Normal"
+                    },
+                    {
+                        "accuracy": 100,
+                        "category": "Physical",
+                        "displayname": "Seed Bomb",
+                        "id": 402,
+                        "name": "Seed Bomb",
+                        "name_id": "seedbomb",
+                        "power": 80,
+                        "pp": 15,
+                        "pp_ups": 0,
+                        "type": "Grass"
+                    },
+                    {
+                        "accuracy": 55,
+                        "category": "Status",
+                        "displayname": "Sing",
+                        "id": 47,
+                        "name": "Sing",
+                        "name_id": "sing",
+                        "power": 0,
+                        "pp": 15,
+                        "pp_ups": 0,
+                        "type": "Normal"
+                    }
+                ],
+                "nature": {
+                    "decreased": "spA",
+                    "id": 3,
+                    "increased": "atk",
+                    "name": "Adamant"
+                },
+                "rarity": 1.0,
+                "setname": "Physical",
+                "shiny": false,
+                "species": {
+                    "basestats": {
+                        "atk": 45,
+                        "def": 35,
+                        "hp": 40,
+                        "spA": 40,
+                        "spD": 40,
+                        "spe": 90
+                    },
+                    "id": 52,
+                    "name": "Meowth",
+                    "types": [
+                        "Normal"
+                    ]
+                },
+                "stats": {
+                    "atk": 207,
+                    "def": 120,
+                    "hp": 235,
+                    "spA": 104,
+                    "spD": 130,
+                    "spe": 238
+                }
+            },
+            {
+                "ability": {
+                    "description": "",
+                    "id": 99,
+                    "name": "No Guard"
+                },
+                "ball": {
+                    "description": "",
+                    "id": 9,
+                    "name": "Repeat Ball"
+                },
+                "biddable": true,
+                "displayname": "Spinarak",
+                "evs": {
+                    "atk": 100,
+                    "def": 100,
+                    "hp": 100,
+                    "spA": 0,
+                    "spD": 100,
+                    "spe": 108
+                },
+                "form": 0,
+                "gender": "f",
+                "happiness": 255,
+                "hidden": false,
+                "ingamename": "SPINARAK",
+                "item": {
+                    "description": "",
+                    "id": 206,
+                    "name": "Lansat Berry"
+                },
+                "ivs": {
+                    "atk": 31,
+                    "def": 31,
+                    "hp": 31,
+                    "spA": 31,
+                    "spD": 31,
+                    "spe": 31
+                },
+                "level": 100,
+                "moves": [
+                    {
+                        "accuracy": 100,
+                        "category": "Physical",
+                        "displayname": "Cross Poison",
+                        "id": 440,
+                        "name": "Cross Poison",
+                        "name_id": "crosspoison",
+                        "power": 70,
+                        "pp": 20,
+                        "pp_ups": 0,
+                        "type": "Poison"
+                    },
+                    {
+                        "accuracy": 100,
+                        "category": "Physical",
+                        "displayname": "Night Slash",
+                        "id": 400,
+                        "name": "Night Slash",
+                        "name_id": "nightslash",
+                        "power": 70,
+                        "pp": 15,
+                        "pp_ups": 0,
+                        "type": "Dark"
+                    },
+                    {
+                        "accuracy": 100,
+                        "category": "Physical",
+                        "displayname": "Dig",
+                        "id": 91,
+                        "name": "Dig",
+                        "name_id": "dig",
+                        "power": 80,
+                        "pp": 10,
+                        "pp_ups": 0,
+                        "type": "Ground"
+                    },
+                    {
+                        "accuracy": null,
+                        "category": "Status",
+                        "displayname": "Substitute",
+                        "id": 164,
+                        "name": "Substitute",
+                        "name_id": "substitute",
+                        "power": 0,
+                        "pp": 10,
+                        "pp_ups": 0,
+                        "type": "Normal"
+                    }
+                ],
+                "nature": {
+                    "decreased": "spA",
+                    "id": 3,
+                    "increased": "atk",
+                    "name": "Adamant"
+                },
+                "rarity": 1.0,
+                "setname": "Sniper",
+                "shiny": false,
+                "species": {
+                    "basestats": {
+                        "atk": 60,
+                        "def": 40,
+                        "hp": 40,
+                        "spA": 40,
+                        "spD": 40,
+                        "spe": 30
+                    },
+                    "id": 167,
+                    "name": "Spinarak",
+                    "types": [
+                        "Bug",
+                        "Poison"
+                    ]
+                },
+                "stats": {
+                    "atk": 199,
+                    "def": 141,
+                    "hp": 246,
+                    "spA": 104,
+                    "spD": 141,
+                    "spe": 123
+                }
+            }
+        ],
+        [
+            {
+                "ability": {
+                    "description": "",
+                    "id": 99,
+                    "name": "No Guard"
+                },
+                "ball": {
+                    "description": "",
+                    "id": 5,
+                    "name": "Safari Ball"
+                },
+                "biddable": true,
+                "displayname": "Nidoking",
+                "evs": {
+                    "atk": 0,
+                    "def": 0,
+                    "hp": 0,
+                    "spA": 0,
+                    "spD": 0,
+                    "spe": 0
+                },
+                "form": 0,
+                "gender": "m",
+                "happiness": 255,
+                "hidden": false,
+                "ingamename": "NIDOKING",
+                "item": {
+                    "description": "",
+                    "id": 0,
+                    "name": null
+                },
+                "ivs": {
+                    "atk": 21,
+                    "def": 21,
+                    "hp": 21,
+                    "spA": 21,
+                    "spD": 21,
+                    "spe": 21
+                },
+                "level": 100,
+                "moves": [
+                    {
+                        "accuracy": 100,
+                        "category": "Physical",
+                        "displayname": "Earthquake",
+                        "id": 89,
+                        "name": "Earthquake",
+                        "name_id": "earthquake",
+                        "power": 100,
+                        "pp": 10,
+                        "pp_ups": 0,
+                        "type": "Ground"
+                    },
+                    {
+                        "accuracy": 100,
+                        "category": "Physical",
+                        "displayname": "Poison Jab",
+                        "id": 398,
+                        "name": "Poison Jab",
+                        "name_id": "poisonjab",
+                        "power": 80,
+                        "pp": 20,
+                        "pp_ups": 0,
+                        "type": "Poison"
+                    },
+                    {
+                        "accuracy": 100,
+                        "category": "Physical",
+                        "displayname": "Sucker Punch",
+                        "id": 389,
+                        "name": "Sucker Punch",
+                        "name_id": "suckerpunch",
+                        "power": 80,
+                        "pp": 5,
+                        "pp_ups": 0,
+                        "type": "Dark"
+                    },
+                    {
+                        "accuracy": 80,
+                        "category": "Physical",
+                        "displayname": "Stone Edge",
+                        "id": 444,
+                        "name": "Stone Edge",
+                        "name_id": "stoneedge",
+                        "power": 100,
+                        "pp": 5,
+                        "pp_ups": 0,
+                        "type": "Rock"
+                    }
+                ],
+                "nature": {
+                    "decreased": "atk",
+                    "id": 15,
+                    "increased": "spA",
+                    "name": "Modest"
+                },
+                "rarity": 1.0,
+                "setname": "Physical",
+                "shiny": false,
+                "species": {
+                    "basestats": {
+                        "atk": 92,
+                        "def": 77,
+                        "hp": 81,
+                        "spA": 85,
+                        "spD": 75,
+                        "spe": 85
+                    },
+                    "id": 34,
+                    "name": "Nidoking",
+                    "types": [
+                        "Poison",
+                        "Ground"
+                    ]
+                },
+                "stats": {
+                    "atk": 189,
+                    "def": 180,
+                    "hp": 293,
+                    "spA": 215,
+                    "spD": 176,
+                    "spe": 196
+                }
+            },
+            {
+                "ability": {
+                    "description": "",
+                    "id": 99,
+                    "name": "No Guard"
+                },
+                "ball": {
+                    "description": "",
+                    "id": 7,
+                    "name": "Dive Ball"
+                },
+                "biddable": true,
+                "displayname": "Lotad",
+                "evs": {
+                    "atk": 252,
+                    "def": 44,
+                    "hp": 88,
+                    "spA": 0,
+                    "spD": 44,
+                    "spe": 80
+                },
+                "form": 0,
+                "gender": "m",
+                "happiness": 255,
+                "hidden": false,
+                "ingamename": "LOTAD",
+                "item": {
+                    "description": "",
+                    "id": 158,
+                    "name": "Sitrus Berry"
+                },
+                "ivs": {
+                    "atk": 31,
+                    "def": 31,
+                    "hp": 31,
+                    "spA": 31,
+                    "spD": 31,
+                    "spe": 31
+                },
+                "level": 100,
+                "moves": [
+                    {
+                        "accuracy": 100,
+                        "category": "Physical",
+                        "displayname": "Seed Bomb",
+                        "id": 402,
+                        "name": "Seed Bomb",
+                        "name_id": "seedbomb",
+                        "power": 80,
+                        "pp": 15,
+                        "pp_ups": 0,
+                        "type": "Grass"
+                    },
+                    {
+                        "accuracy": 90,
+                        "category": "Physical",
+                        "displayname": "Zen Headbutt",
+                        "id": 428,
+                        "name": "Zen Headbutt",
+                        "name_id": "zenheadbutt",
+                        "power": 80,
+                        "pp": 15,
+                        "pp_ups": 0,
+                        "type": "Psychic"
+                    },
+                    {
+                        "accuracy": 100,
+                        "category": "Status",
+                        "displayname": "Tickle",
+                        "id": 321,
+                        "name": "Tickle",
+                        "name_id": "tickle",
+                        "power": 0,
+                        "pp": 20,
+                        "pp_ups": 0,
+                        "type": "Normal"
+                    },
+                    {
+                        "accuracy": null,
+                        "category": "Status",
+                        "displayname": "Rain Dance",
+                        "id": 240,
+                        "name": "Rain Dance",
+                        "name_id": "raindance",
+                        "power": 0,
+                        "pp": 5,
+                        "pp_ups": 0,
+                        "type": "Water"
+                    }
+                ],
+                "nature": {
+                    "decreased": "spA",
+                    "id": 3,
+                    "increased": "atk",
+                    "name": "Adamant"
+                },
+                "rarity": 0.7,
+                "setname": "Physical",
+                "shiny": false,
+                "species": {
+                    "basestats": {
+                        "atk": 30,
+                        "def": 30,
+                        "hp": 40,
+                        "spA": 40,
+                        "spD": 50,
+                        "spe": 30
+                    },
+                    "id": 270,
+                    "name": "Lotad",
+                    "types": [
+                        "Water",
+                        "Grass"
+                    ]
+                },
+                "stats": {
+                    "atk": 174,
+                    "def": 107,
+                    "hp": 243,
+                    "spA": 104,
+                    "spD": 147,
+                    "spe": 116
+                }
+            },
+            {
+                "ability": {
+                    "description": "",
+                    "id": 99,
+                    "name": "No Guard"
+                },
+                "ball": {
+                    "description": "",
+                    "id": 16,
+                    "name": "Cherish Ball"
+                },
+                "biddable": true,
+                "displayname": "Ho-Oh",
+                "evs": {
+                    "atk": 0,
+                    "def": 0,
+                    "hp": 0,
+                    "spA": 252,
+                    "spD": 0,
+                    "spe": 0
+                },
+                "form": 0,
+                "gender": null,
+                "happiness": 255,
+                "hidden": false,
+                "ingamename": "HO-OH",
+                "item": {
+                    "description": "",
+                    "id": 165,
+                    "name": "Bluk Berry"
+                },
+                "ivs": {
+                    "atk": 0,
+                    "def": 0,
+                    "hp": 0,
+                    "spA": 31,
+                    "spD": 0,
+                    "spe": 0
+                },
+                "level": 100,
+                "moves": [
+                    {
+                        "accuracy": 100,
+                        "category": "Physical",
+                        "displayname": "Wing Attack",
+                        "id": 17,
+                        "name": "Wing Attack",
+                        "name_id": "wingattack",
+                        "power": 60,
+                        "pp": 35,
+                        "pp_ups": 0,
+                        "type": "Flying"
+                    },
+                    {
+                        "accuracy": 100,
+                        "category": "Physical",
+                        "displayname": "NG Fire [70]",
+                        "id": 363,
+                        "name": "Natural Gift",
+                        "name_id": "naturalgift",
+                        "power": 70,
+                        "pp": 15,
+                        "pp_ups": 0,
+                        "type": "Fire"
+                    },
+                    {
+                        "accuracy": 90,
+                        "category": "Physical",
+                        "displayname": "Steel Wing",
+                        "id": 211,
+                        "name": "Steel Wing",
+                        "name_id": "steelwing",
+                        "power": 70,
+                        "pp": 25,
+                        "pp_ups": 0,
+                        "type": "Steel"
+                    },
+                    {
+                        "accuracy": null,
+                        "category": "Status",
+                        "displayname": "Mimic",
+                        "id": 102,
+                        "name": "Mimic",
+                        "name_id": "mimic",
+                        "power": 0,
+                        "pp": 10,
+                        "pp_ups": 0,
+                        "type": "Normal"
+                    }
+                ],
+                "nature": {
+                    "decreased": "atk",
+                    "id": 15,
+                    "increased": "spA",
+                    "name": "Modest"
+                },
+                "rarity": 0.9,
+                "setname": "Physical",
+                "shiny": false,
+                "species": {
+                    "basestats": {
+                        "atk": 130,
+                        "def": 90,
+                        "hp": 106,
+                        "spA": 110,
+                        "spD": 154,
+                        "spe": 90
+                    },
+                    "id": 250,
+                    "name": "Ho-Oh",
+                    "types": [
+                        "Fire",
+                        "Flying"
+                    ]
+                },
+                "stats": {
+                    "atk": 238,
+                    "def": 185,
+                    "hp": 322,
+                    "spA": 350,
+                    "spD": 313,
+                    "spe": 185
+                }
+            }
+        ]
+    ]
+}

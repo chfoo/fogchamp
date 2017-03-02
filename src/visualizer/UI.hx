@@ -28,6 +28,7 @@ class UI {
     static var DEFAULT_POKEMON:Vector<Int> = Vector.fromArrayCopy([493, 257, 462, 244, 441, 139]);
     var previousUrlHash:String = null;
     var formulaOptions:FormulaOptions;
+    var apiFacade:APIFacade;
 
     public function new(pokemonDataset:PokemonDataset, movesDataset:MovesDataset, descriptionsDataset:DescriptionsDataset) {
         this.pokemonDataset = pokemonDataset;
@@ -35,6 +36,7 @@ class UI {
         this.descriptionsDataset = descriptionsDataset;
         userMessage = new UserMessage();
         formulaOptions = new FormulaOptions();
+        apiFacade = new APIFacade(pokemonDataset);
     }
 
     static function renderTemplate(template:String, data:Dynamic):String {
@@ -46,6 +48,7 @@ class UI {
         attachSelectChangeListeners();
         renderEditionSelect();
         attachUrlFragmentChangeListener();
+        attachFetchFromAPIButtonListener();
         setSelectionByNumbers(DEFAULT_POKEMON);
         attachOptionsListeners();
         readUrlFragment();
@@ -169,6 +172,27 @@ class UI {
 
         previousUrlHash = '#$fragment';
         Browser.location.hash = fragment;
+    }
+
+    function attachFetchFromAPIButtonListener() {
+        new JQuery("#fetchMatchFromAPIButton").click(function (event:JqEvent) {
+            fetchFromAPI();
+        });
+    }
+
+    function fetchFromAPI() {
+        new JQuery("#fetchMatchFromAPIButton").prop("disabled", true);
+        pokemonDataset.datasetIndex = PokemonDataset.CUSTOMIZABLE_INDEX;
+        userMessage.showMessage("Fetching current match from TPP API...");
+
+        apiFacade.getCurrentMatch(function (success:Bool, errorMessage:String, pokemonStatsList:Array<PokemonStats>) {
+            new JQuery("#fetchMatchFromAPIButton").prop("disabled", false);
+            if (success) {
+                applyCustomPokemonList(pokemonStatsList);
+            } else {
+                userMessage.showMessage('An error occurred fetching current match: "$errorMessage". Complain to Felk if error persists.');
+            }
+        });
     }
 
     function setSelectionByNumbers(pokemonNums:Vector<Int>) {
@@ -522,9 +546,9 @@ class UI {
         var move4Input = new JQuery("#pokemonEditMove4");
 
         function readValues(event:JqEvent) {
-            pokemonStats.gender = genderInput.find("option:selected").attr("name");
-            pokemonStats.ability = abilityInput.find("option:selected").attr("name");
-            pokemonStats.item = itemInput.find("option:selected").attr("name");
+            pokemonStats.gender = genderInput.val();
+            pokemonStats.ability = abilityInput.val();
+            pokemonStats.item = itemInput.val();
             pokemonStats.hp = Std.parseInt(hpInput.val());
             pokemonStats.attack = Std.parseInt(attackInput.val());
             pokemonStats.defense = Std.parseInt(defenseInput.val());
@@ -563,6 +587,18 @@ class UI {
     function applyCustomPokemon(pokemonStats:PokemonStats) {
         pokemonDataset.setPokemonStats(pokemonStats.slug, pokemonStats);
         renderAll(false);
+    }
+
+    function applyCustomPokemonList(pokemonStatsList:Array<PokemonStats>) {
+        var selectElement = cast(Browser.document.getElementById("pokemonEditionSelect"), SelectElement);
+        selectElement.selectedIndex = PokemonDataset.CUSTOMIZABLE_INDEX;
+
+        for (slotNum in 0...6) {
+            var pokemonStats = pokemonStatsList[slotNum];
+            new JQuery('#selectionSelect$slotNum').val(pokemonStats.slug);
+            pokemonDataset.setPokemonStats(pokemonStats.slug, pokemonStats);
+        }
+        renderAll();
     }
 
     function renderChart() {
