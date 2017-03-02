@@ -21,7 +21,7 @@ a:active, a:hover {
     box-shadow: 0px 0px 0.2em 0.1em orange;
 }
 
-.clickHelp {
+.clickHelp, .clickEdit {
     color: #E8E8E8 !important;
     text-decoration: none;
     cursor: pointer;
@@ -29,7 +29,7 @@ a:active, a:hover {
 }
 
 /* http://stackoverflow.com/a/14329779/1524507 */
-.clickHelp::after {
+.clickHelp::after, .clickEdit::after {
     position: absolute;
     left: 0px;
     right: 0px;
@@ -431,4 +431,19 @@ div[class|="matchupChartMoveLabel"] {
 
 .damageEfficacy-200, .damageEfficacy-400 {
     color: #BFE6BC;
+}
+
+.pokemonEditContainer {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 0.8em;
+}
+
+.editFormRow {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.editFormRow input, .editFormRow select {
+    display: block;
+    width: 10em;
 }

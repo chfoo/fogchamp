@@ -1,5 +1,6 @@
 package visualizer;
 
+import visualizer.PokemonDataset.DatasetDoc;
 import visualizer.Formula.FormulaOptions;
 import js.html.DivElement;
 import js.html.OptionElement;
@@ -193,6 +194,13 @@ class UI {
             renderChart();
             attachHelpListeners();
 
+            if (pokemonDataset.datasetIndex == PokemonDataset.CUSTOMIZABLE_INDEX) {
+                new JQuery(".pokemonEditContainer").show();
+                attachEditListeners();
+            } else {
+                new JQuery(".pokemonEditContainer").hide();
+            }
+
             if (updateUrlFragment) {
                 writeUrlFragment();
             }
@@ -270,10 +278,15 @@ class UI {
         for (slotNum in slotNums) {
             var slug = getSlotSlug(slotNum);
             var pokemonStats = pokemonDataset.getPokemonStats(slug);
-            var abilityName = descriptionsDataset.getAbilityName(pokemonStats.ability);
+            var abilityName = "";
+
+            if (descriptionsDataset.abilities.exists(pokemonStats.ability)) {
+                abilityName = descriptionsDataset.getAbilityName(pokemonStats.ability);
+            }
+
             var itemName = "";
 
-            if (pokemonStats.item != "") {
+            if (descriptionsDataset.items.exists(pokemonStats.item)) {
                 itemName = descriptionsDataset.getItemName(pokemonStats.item);
             }
 
@@ -385,6 +398,171 @@ class UI {
         }
 
         untyped jquery.dialog("option", "title", title);
+    }
+
+    function attachEditListeners() {
+        for (element in new JQuery("[data-edit-slot]")) {
+            var clickElement = new JQuery("<a href=>");
+            clickElement.addClass("clickEdit");
+            clickElement.click(function () {
+                clickedEdit(Std.parseInt(element.attr("data-edit-slot")));
+                return false;
+            });
+
+            element.wrapInner(clickElement);
+        }
+    }
+
+    function clickedEdit(slotNum:Int) {
+        var slug = getSlotSlug(slotNum);
+        var pokemonStats = pokemonDataset.getPokemonStats(slug);
+
+        var template = new JQuery("#pokemonEditTemplate").html();
+        var html = renderTemplate(
+            template, {
+                "gender": buildEditGenderRenderDoc(pokemonStats),
+                "ability": buildEditAbilityRenderDoc(pokemonStats),
+                "item": buildEditItemRenderDoc(pokemonStats),
+                "hp": pokemonStats.hp,
+                "attack": pokemonStats.attack,
+                "defense": pokemonStats.defense,
+                "special_attack": pokemonStats.specialAttack,
+                "special_defense": pokemonStats.specialDefense,
+                "speed": pokemonStats.speed,
+                "move1": buildEditMoveRenderDoc(pokemonStats, 0),
+                "move2": buildEditMoveRenderDoc(pokemonStats, 1),
+                "move3": buildEditMoveRenderDoc(pokemonStats, 2),
+                "move4": buildEditMoveRenderDoc(pokemonStats, 3)
+            }
+        );
+
+        var jquery = new JQuery("#editDialog").html(html);
+        untyped jquery.dialog({"maxHeight": 500});
+
+        var inViewport:Bool = untyped jquery.visible();
+
+        if (!inViewport) {
+            untyped jquery.dialog({position: {my: "center top", at: "center top", of: Browser.window}});
+        }
+
+        attachEditFormListeners(pokemonStats);
+
+        untyped jquery.dialog("option", "title", 'Editing $slug');
+    }
+
+    function buildEditGenderRenderDoc(pokemonStats:PokemonStats):Dynamic {
+        var genderRenderList = [];
+
+        for (genderSlug in ["-", "m", "f"]) {
+            genderRenderList.push({
+                "slug": genderSlug,
+                "label": genderSlug,
+                "selected": (genderSlug == pokemonStats.gender)? "selected": ""
+            });
+        }
+
+        return genderRenderList;
+    }
+
+    function buildEditAbilityRenderDoc(pokemonStats:PokemonStats):Dynamic {
+        var abilityRenderList = [{"slug": "", "label": "-", "selected": ""}];
+
+        for (abilitySlug in descriptionsDataset.abilities.keys()) {
+            abilityRenderList.push({
+                "slug": abilitySlug,
+                "label": descriptionsDataset.abilities.get(abilitySlug).name,
+                "selected": (abilitySlug == pokemonStats.ability)? "selected": ""
+            });
+        }
+
+        return abilityRenderList;
+    }
+
+    function buildEditItemRenderDoc(pokemonStats:PokemonStats):Dynamic {
+        var itemRenderList = [{"slug": "", "label": "-", "selected": ""}];
+
+        for (itemSlug in descriptionsDataset.items.keys()) {
+            itemRenderList.push({
+                "slug": itemSlug,
+                "label": descriptionsDataset.items.get(itemSlug).name,
+                "selected": (itemSlug == pokemonStats.item)? "selected": ""
+            });
+        }
+
+        return itemRenderList;
+    }
+
+    function buildEditMoveRenderDoc(pokemonStats:PokemonStats, slot:Int):Dynamic {
+        var moveRenderList = [{"slug": "", "label": "-", "selected": ""}];
+
+        for (moveSlug in movesDataset.moves.keys()) {
+            moveRenderList.push({
+                "slug": moveSlug,
+                "label": movesDataset.getMoveStats(moveSlug).name,
+                "selected": (moveSlug == pokemonStats.moves[slot])? "selected": ""
+            });
+        }
+
+        return moveRenderList;
+    }
+
+    function attachEditFormListeners(pokemonStats:PokemonStats) {
+        var genderInput = new JQuery("#pokemonEditGender");
+        var abilityInput = new JQuery("#pokemonEditAbility");
+        var itemInput = new JQuery("#pokemonEditItem");
+        var hpInput = new JQuery("#pokemonEditHP");
+        var attackInput = new JQuery("#pokemonEditAttack");
+        var defenseInput = new JQuery("#pokemonEditDefense");
+        var specialAttackInput = new JQuery("#pokemonEditSpecialAttack");
+        var specialDefenseInput = new JQuery("#pokemonEditSpecialDefense");
+        var speedInput = new JQuery("#pokemonEditSpeed");
+        var move1Input = new JQuery("#pokemonEditMove1");
+        var move2Input = new JQuery("#pokemonEditMove2");
+        var move3Input = new JQuery("#pokemonEditMove3");
+        var move4Input = new JQuery("#pokemonEditMove4");
+
+        function readValues(event:JqEvent) {
+            pokemonStats.gender = genderInput.find("option:selected").attr("name");
+            pokemonStats.ability = abilityInput.find("option:selected").attr("name");
+            pokemonStats.item = itemInput.find("option:selected").attr("name");
+            pokemonStats.hp = Std.parseInt(hpInput.val());
+            pokemonStats.attack = Std.parseInt(attackInput.val());
+            pokemonStats.defense = Std.parseInt(defenseInput.val());
+            pokemonStats.specialAttack = Std.parseInt(specialAttackInput.val());
+            pokemonStats.specialDefense = Std.parseInt(specialDefenseInput.val());
+            pokemonStats.speed = Std.parseInt(speedInput.val());
+
+            var moves = [
+                move1Input.find("option:selected").attr("name"),
+                move2Input.find("option:selected").attr("name"),
+                move3Input.find("option:selected").attr("name"),
+                move4Input.find("option:selected").attr("name")
+            ];
+            moves = moves.filter(function (item:String) { return item != "";});
+            pokemonStats.moves = moves;
+
+            trace(pokemonStats);
+            applyCustomPokemon(pokemonStats);
+        }
+
+        genderInput.change(readValues);
+        abilityInput.change(readValues);
+        itemInput.change(readValues);
+        hpInput.change(readValues);
+        attackInput.change(readValues);
+        defenseInput.change(readValues);
+        specialAttackInput.change(readValues);
+        specialDefenseInput.change(readValues);
+        speedInput.change(readValues);
+        move1Input.change(readValues);
+        move2Input.change(readValues);
+        move3Input.change(readValues);
+        move4Input.change(readValues);
+    }
+
+    function applyCustomPokemon(pokemonStats:PokemonStats) {
+        pokemonDataset.setPokemonStats(pokemonStats.slug, pokemonStats);
+        renderAll(false);
     }
 
     function renderChart() {

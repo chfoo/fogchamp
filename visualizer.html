@@ -15,6 +15,7 @@
 
 <div id="messageContainer">Loading...</div>
 <div id="helpDialog"></div>
+<div id="editDialog"></div>
 
 <div id="bodyContainer">
     <div id="pokemonSelection">
@@ -64,6 +65,7 @@
         <br>
         <span class="pokemonStatsName">
             {{name}}<sup class="pokemonGender-{{gender}}">{{gender}}</sup>
+            <span class="pokemonEditContainer" style="display:none"><span data-edit-slot="{{slot_number}}" aria-label="Edit">✏</span></span>
         </span>
         <br>
         {{#types}}
@@ -110,6 +112,90 @@
         {{/moves}}
    </div>
     {{/pokemonMoves}}
+</script>
+<script id="pokemonEditTemplate" type="x-tmpl-mustache">
+    <div class="pokemonEditContainer editForm">
+        <div class="editFormRow">
+            <label for="pokemonEditGender">Gender:</label>
+            <select id="pokemonEditGender">
+                {{#gender}}
+                <option name="{{slug}}" {{selected}}>{{label}}</option>
+                {{/gender}}>
+            </select>
+        </div>
+        <div class="editFormRow">
+            <label for="pokemonEditAbility">Ability:</label>
+            <select id="pokemonEditAbility">
+                {{#ability}}
+                <option name="{{slug}}" {{selected}}>{{label}}</option>
+                {{/ability}}>
+            </select>
+        </div>
+        <div class="editFormRow">
+            <label for="pokemonEditItem">Item:</label>
+            <select id="pokemonEditItem">
+                {{#item}}
+                <option name="{{slug}}" {{selected}}>{{label}}</option>
+                {{/item}}>
+            </select>
+        </div>
+        <div class="editFormRow">
+            <label for="pokemonEditHP">HP:</label>
+            <input id="pokemonEditHP" type="number" value="{{hp}}">
+        </div>
+        <div class="editFormRow">
+            <label for="pokemonEditAttack">Attack:</label>
+            <input id="pokemonEditAttack" type="number" value="{{attack}}">
+        </div>
+        <div class="editFormRow">
+            <label for="pokemonEditDefense">Defence:</label>
+            <input id="pokemonEditDefense" type="number" value="{{defense}}">
+        </div>
+        <div class="editFormRow">
+            <label for="pokemonEditSpecialAttack">Special Attack:</label>
+            <input id="pokemonEditSpecialAttack" type="number" value="{{special_attack}}">
+        </div>
+        <div class="editFormRow">
+            <label for="pokemonEditSpecialDefense">Special Defence:</label>
+            <input id="pokemonEditSpecialDefense" type="number" value="{{special_defense}}">
+        </div>
+        <div class="editFormRow">
+            <label for="pokemonEditSpeed">Speed:</label>
+            <input id="pokemonEditSpeed" type="number" value="{{speed}}">
+        </div>
+        <div class="editFormRow">
+            <label for="pokemonEditMove1">Move 1:</label>
+            <select id="pokemonEditMove1">
+                {{#move1}}
+                <option name="{{slug}}" {{selected}}>{{label}}</option>
+                {{/move1}}>
+            </select>
+        </div>
+        <div class="editFormRow">
+            <label for="pokemonEditMove2">Move 2:</label>
+            <select id="pokemonEditMove2">
+                {{#move2}}
+                <option name="{{slug}}" {{selected}}>{{label}}</option>
+                {{/move2}}>
+            </select>
+        </div>
+        <div class="editFormRow">
+            <label for="pokemonEditMove3">Move 3:</label>
+            <select id="pokemonEditMove3">
+                {{#move3}}
+                <option name="{{slug}}" {{selected}}>{{label}}</option>
+                {{/move3}}>
+            </select>
+        </div>
+        <div class="editFormRow">
+            <label for="pokemonEditMove4">Move 4:</label>
+            <select id="pokemonEditMove4">
+                {{#move4}}
+                <option name="{{slug}}" {{selected}}>{{label}}</option>
+                {{/move4}}>
+            </select>
+        </div>
+    </div>
 </script>
 
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
