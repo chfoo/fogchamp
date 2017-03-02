@@ -178,7 +178,7 @@ class MatchupChart {
         var span:SpanElement = Browser.document.createSpanElement();
         span.classList.add('matchupChartLabelRotate-$position');
 
-        var pokemonTypes:Array<String> = pokemonStat.types;
+        var pokemonTypes = pokemonStat.types;
 
         for (pokemonType in pokemonTypes) {
             var typeIcon:SpanElement = Browser.document.createSpanElement();
@@ -196,7 +196,7 @@ class MatchupChart {
         cell.appendChild(container);
     }
 
-    function processMoveLabelCell(moveStats:Dynamic, cell:TableCellElement, position:String) {
+    function processMoveLabelCell(moveStats:MoveStats, cell:TableCellElement, position:String) {
         cell.classList.add('matchupChartMoveCell-$position');
 
         var container:DivElement = Browser.document.createDivElement();
@@ -206,7 +206,7 @@ class MatchupChart {
         span.classList.add('matchupChartMoveLabelRotate-$position');
 
         var typeIcon:SpanElement = Browser.document.createSpanElement();
-        typeIcon.classList.add('pokemonType-${moveStats.move_type}');
+        typeIcon.classList.add('pokemonType-${moveStats.moveType}');
         typeIcon.classList.add("miniPokemonTypeIcon");
         typeIcon.textContent = " ";
         span.appendChild(typeIcon);
