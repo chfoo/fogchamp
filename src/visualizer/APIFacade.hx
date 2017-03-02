@@ -26,7 +26,15 @@ class APIFacade {
                 if (Reflect.hasField(jsonResult, "message")) {
                     callback(false, Reflect.field(jsonResult, "message"), null);
                 } else {
-                    callback(true, null, parseMatchPokemon(jsonResult));
+                    var pokemonResults;
+                    try {
+                        pokemonResults = parseMatchPokemon(jsonResult);
+                    } catch (error:Dynamic) {
+                        callback(false, null, null);
+                        return;
+                    }
+                    callback(true, null, pokemonResults);
+
                 }
             },
             function (xhr:JqXHR, textStatus:String, error:Dynamic) {

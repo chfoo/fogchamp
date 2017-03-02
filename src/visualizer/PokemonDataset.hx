@@ -78,17 +78,23 @@ class PokemonDataset extends Dataset {
         return datasets[datasetIndex].stats;
     }
 
-    public function getPokemonStats(slug:String):PokemonStats {
-        if (datasetIndex == CUSTOMIZABLE_INDEX && customStats.exists(slug)) {
-            return customStats.get(slug).clone();
+    public function getPokemonStats(slug:String, ?slotNum:Int):PokemonStats {
+        if (slotNum == null) {
+            slotNum = 0;
+        }
+        if (datasetIndex == CUSTOMIZABLE_INDEX && customStats.exists('$slug*$slotNum')) {
+            return customStats.get('$slug*$slotNum').clone();
         } else {
             var pokemonStat = PokemonStats.fromJson(slug, Reflect.field(stats, slug));
             return pokemonStat;
         }
     }
 
-    public function setPokemonStats(slug:String, stats:PokemonStats) {
-        customStats.set(slug, stats.clone());
+    public function setPokemonStats(slug:String, stats:PokemonStats, ?slotNum:Int) {
+        if (slotNum == null) {
+            slotNum = 0;
+        }
+        customStats.set('$slug*$slotNum', stats.clone());
     }
 
     public function getSlug(pokemonNum:Int):String {

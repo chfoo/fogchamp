@@ -190,7 +190,11 @@ class UI {
             if (success) {
                 applyCustomPokemonList(pokemonStatsList);
             } else {
-                userMessage.showMessage('An error occurred fetching current match: "$errorMessage". Complain to Felk if error persists.');
+                if (errorMessage != null) {
+                    userMessage.showMessage('An error occurred fetching current match: "$errorMessage". Complain to Felk if error persists.');
+                } else {
+                    userMessage.showMessage("An error occured while attempting to parse the data. File a bug report if this persists.");
+                }
             }
         });
     }
@@ -282,7 +286,7 @@ class UI {
 
         for (slotNum in slotNums) {
             var slug = getSlotSlug(slotNum);
-            var pokemonStats = pokemonDataset.getPokemonStats(slug);
+            var pokemonStats = pokemonDataset.getPokemonStats(slug, slotNum);
 
             statsList.push(pokemonStats);
         }
@@ -301,7 +305,7 @@ class UI {
 
         for (slotNum in slotNums) {
             var slug = getSlotSlug(slotNum);
-            var pokemonStats = pokemonDataset.getPokemonStats(slug);
+            var pokemonStats = pokemonDataset.getPokemonStats(slug, slotNum);
             var abilityName = "";
 
             if (descriptionsDataset.abilities.exists(pokemonStats.ability)) {
@@ -339,7 +343,7 @@ class UI {
 
         for (slotNum in [2, 1, 0, 3, 4, 5]) {
             var slug = getSlotSlug(slotNum);
-            var pokemonStat = pokemonDataset.getPokemonStats(slug);
+            var pokemonStat = pokemonDataset.getPokemonStats(slug, slotNum);
             var name = pokemonStat.name;
             var moveSlugs:Array<String> = pokemonStat.moves;
             var moves = new Array<Dynamic>();
@@ -439,7 +443,7 @@ class UI {
 
     function clickedEdit(slotNum:Int) {
         var slug = getSlotSlug(slotNum);
-        var pokemonStats = pokemonDataset.getPokemonStats(slug);
+        var pokemonStats = pokemonDataset.getPokemonStats(slug, slotNum);
 
         var template = new JQuery("#pokemonEditTemplate").html();
         var html = renderTemplate(
@@ -469,7 +473,7 @@ class UI {
             untyped jquery.dialog({position: {my: "center top", at: "center top", of: Browser.window}});
         }
 
-        attachEditFormListeners(pokemonStats);
+        attachEditFormListeners(pokemonStats, slotNum);
 
         untyped jquery.dialog("option", "title", 'Editing $slug');
     }
@@ -530,7 +534,7 @@ class UI {
         return moveRenderList;
     }
 
-    function attachEditFormListeners(pokemonStats:PokemonStats) {
+    function attachEditFormListeners(pokemonStats:PokemonStats, slotNum:Int) {
         var genderInput = new JQuery("#pokemonEditGender");
         var abilityInput = new JQuery("#pokemonEditAbility");
         var itemInput = new JQuery("#pokemonEditItem");
@@ -546,9 +550,9 @@ class UI {
         var move4Input = new JQuery("#pokemonEditMove4");
 
         function readValues(event:JqEvent) {
-            pokemonStats.gender = genderInput.val();
-            pokemonStats.ability = abilityInput.val();
-            pokemonStats.item = itemInput.val();
+            pokemonStats.gender = genderInput.find("option:selected").attr("name");
+            pokemonStats.ability = abilityInput.find("option:selected").attr("name");
+            pokemonStats.item = itemInput.find("option:selected").attr("name");
             pokemonStats.hp = Std.parseInt(hpInput.val());
             pokemonStats.attack = Std.parseInt(attackInput.val());
             pokemonStats.defense = Std.parseInt(defenseInput.val());
@@ -565,8 +569,7 @@ class UI {
             moves = moves.filter(function (item:String) { return item != "";});
             pokemonStats.moves = moves;
 
-            trace(pokemonStats);
-            applyCustomPokemon(pokemonStats);
+            applyCustomPokemon(pokemonStats, slotNum);
         }
 
         genderInput.change(readValues);
@@ -584,8 +587,8 @@ class UI {
         move4Input.change(readValues);
     }
 
-    function applyCustomPokemon(pokemonStats:PokemonStats) {
-        pokemonDataset.setPokemonStats(pokemonStats.slug, pokemonStats);
+    function applyCustomPokemon(pokemonStats:PokemonStats, slotNum:Int) {
+        pokemonDataset.setPokemonStats(pokemonStats.slug, pokemonStats, slotNum);
         renderAll(false);
     }
 
@@ -596,7 +599,7 @@ class UI {
         for (slotNum in 0...6) {
             var pokemonStats = pokemonStatsList[slotNum];
             new JQuery('#selectionSelect$slotNum').val(pokemonStats.slug);
-            pokemonDataset.setPokemonStats(pokemonStats.slug, pokemonStats);
+            pokemonDataset.setPokemonStats(pokemonStats.slug, pokemonStats, slotNum);
         }
         renderAll();
     }
