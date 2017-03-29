@@ -8,10 +8,13 @@ using StringTools;
 typedef AjaxCallback = Dynamic -> String -> JqXHR -> Void;
 typedef FailedAjaxCallback = JqXHR -> String -> Dynamic -> Void;
 typedef CurrentMatchCallback = Bool -> String -> Array<PokemonStats> -> Void;
+typedef PokemonSetsCallback = Bool -> String -> Array<PokemonStats> -> Void;
 
 class APIFacade {
     static var CURRENT_MATCH_API_URL(default, null) = "https://twitchplayspokemon.tv/api/current_match";
 //    static var CURRENT_MATCH_API_URL(default, null) = "/test_data/match.json";
+    static var POKEMON_SETS_API_URL(default, null) = "https://twitchplayspokemon.tv/api/pokemon_sets?id&limit=100";
+    static var CONSUME_CURSOR_API_URL(default, null) = "https://twitchplayspokemon.tv/api/cursor/";
     var pokemonDataset:PokemonDataset;
     var callInProgress = false;
 
@@ -20,40 +23,103 @@ class APIFacade {
     }
 
     public function getCurrentMatch(callback:CurrentMatchCallback) {
+        function successHandler(jsonResult:Dynamic, textStatus:String, xhr:JqXHR) {
+            if (Reflect.hasField(jsonResult, "message")) {
+                callback(false, Reflect.field(jsonResult, "message"), null);
+            } else {
+                var pokemonResults;
+
+                try {
+                    pokemonResults = parseMatchPokemon(jsonResult);
+                } catch (error:Dynamic) {
+                    callback(false, null, null);
+                    return;
+                }
+
+                callback(true, null, pokemonResults);
+            }
+        }
+
+        function errorHandler(xhr:JqXHR, textStatus:String, error:Dynamic) {
+            var jsonResult = untyped xhr.responseJSON;
+            if (jsonResult != null && Reflect.hasField(jsonResult, "message")) {
+                callback(false, Reflect.field(jsonResult, "message"), null);
+            } else {
+                callback(false, xhr.statusText, null);
+            }
+        }
+
         callAPI(
             CURRENT_MATCH_API_URL,
-            function (jsonResult:Dynamic, textStatus:String, xhr:JqXHR) {
-                if (Reflect.hasField(jsonResult, "message")) {
-                    callback(false, Reflect.field(jsonResult, "message"), null);
-                } else {
-                    var pokemonResults;
-                    try {
-                        pokemonResults = parseMatchPokemon(jsonResult);
-                    } catch (error:Dynamic) {
-                        callback(false, null, null);
-                        return;
-                    }
-                    callback(true, null, pokemonResults);
-
-                }
-            },
-            function (xhr:JqXHR, textStatus:String, error:Dynamic) {
-                var jsonResult = untyped xhr.responseJSON;
-                if (jsonResult != null && Reflect.hasField(jsonResult, "message")) {
-                    callback(false, Reflect.field(jsonResult, "message"), null);
-                } else {
-                    callback(false, xhr.statusText, null);
-                }
-            }
+            successHandler,
+            errorHandler
         );
     }
 
-    function callAPI(url:String, done:AjaxCallback, error:FailedAjaxCallback) {
+    public function getPokemonSets(callback:PokemonSetsCallback) {
+        var token:String;
+        var pokemonResults = [];
+
+        function callbackResults() {
+            // TODO:
+        }
+
+        function errorHandler(xhr:JqXHR, textStatus:String, error:Dynamic) {
+            var jsonResult = untyped xhr.responseJSON;
+            if (jsonResult != null && Reflect.hasField(jsonResult, "message")) {
+                callback(false, Reflect.field(jsonResult, "message"), null);
+            } else {
+                callback(false, xhr.statusText, null);
+            }
+        }
+
+        function cursorErrorHandler(xhr:JqXHR, textStatus:String, error:Dynamic) {
+            if (xhr.status == 410) {
+                callbackResults();
+            } else {
+                errorHandler(xhr, textStatus, error);
+            }
+        }
+
+        function cursorPaginateSuccessHandler(jsonResult:Dynamic, textStatus:String, xhr:JqXHR) {
+            callAPI(
+                CONSUME_CURSOR_API_URL + token,
+                cursorPaginateSuccessHandler,
+                cursorErrorHandler
+            );
+        }
+
+        function cursorCreateSuccessHandler(jsonResult:Dynamic, textStatus:String, xhr:JqXHR) {
+            token = jsonResult;
+
+            callAPI(
+                CONSUME_CURSOR_API_URL + token,
+                cursorPaginateSuccessHandler,
+                cursorErrorHandler
+            );
+        }
+
+        callAPI(
+            POKEMON_SETS_API_URL + "&create_cursor=true",
+            cursorCreateSuccessHandler,
+            errorHandler
+        );
+    }
+
+    function callAPI(url:String, done:AjaxCallback, error:FailedAjaxCallback, ?post:Bool) {
         if (callInProgress) {
             throw "Call already in progress";
         }
         callInProgress = true;
-        JQuery.getJSON(url).done(done).fail(error).always(function () {
+        var xhr:JqXHR;
+
+        if (!post) {
+            xhr = JQuery.getJSON(url);
+        } else {
+            xhr = JQuery.post({"url": url, "dataType": "json"});
+        }
+
+        xhr.done(done).fail(error).always(function () {
             callInProgress = false;
         });
     }
@@ -104,6 +170,7 @@ class APIFacade {
             }
         }
 
+        // TODO: load iv
         // stats.iv
 
         stats.moves = [];
