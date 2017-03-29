@@ -1,4 +1,4 @@
-package visualizer;
+package visualizer.dataset;
 
 
 class Dataset {

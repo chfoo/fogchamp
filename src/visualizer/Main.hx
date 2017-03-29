@@ -1,6 +1,9 @@
 package visualizer;
 
 
+import visualizer.dataset.DescriptionsDataset;
+import visualizer.dataset.MovesDataset;
+import visualizer.dataset.PokemonDataset;
 import js.Browser;
 import js.JQuery;
 

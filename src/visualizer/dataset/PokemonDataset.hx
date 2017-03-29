@@ -1,5 +1,6 @@
-package visualizer;
+package visualizer.dataset;
 
+import visualizer.datastruct.PokemonStats;
 import haxe.ds.Vector;
 
 

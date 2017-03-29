@@ -1,5 +1,7 @@
-package visualizer;
+package visualizer.dataset;
 
+import visualizer.datastruct.PokemonStats;
+import visualizer.datastruct.MoveStats;
 
 typedef MovesMap = Map<String,MoveStats>;
 

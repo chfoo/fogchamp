@@ -1,4 +1,4 @@
-package visualizer;
+package visualizer.datastruct;
 
 class PokemonStats {
     public var ability:String;

@@ -1,5 +1,7 @@
-package visualizer;
+package visualizer.api;
 
+import visualizer.dataset.PokemonDataset;
+import visualizer.datastruct.PokemonStats;
 import js.jquery.JQuery;
 import js.jquery.JqXHR;
 

@@ -1,4 +1,4 @@
-package visualizer;
+package visualizer.datastruct;
 
 class MoveStats {
     public var accuracy:Int;

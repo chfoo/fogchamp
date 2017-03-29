@@ -1,6 +1,10 @@
 package visualizer;
 
-import visualizer.PokemonDataset.DatasetDoc;
+import visualizer.datastruct.PokemonStats;
+import visualizer.dataset.DescriptionsDataset;
+import visualizer.dataset.MovesDataset;
+import visualizer.dataset.PokemonDataset;
+import visualizer.api.APIFacade;
 import visualizer.Formula.FormulaOptions;
 import js.html.DivElement;
 import js.html.OptionElement;

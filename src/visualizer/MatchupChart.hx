@@ -1,5 +1,10 @@
 package visualizer;
 
+import visualizer.datastruct.MoveStats;
+import visualizer.datastruct.PokemonStats;
+import visualizer.dataset.DescriptionsDataset;
+import visualizer.dataset.MovesDataset;
+import visualizer.dataset.PokemonDataset;
 import visualizer.Formula.FormulaOptions;
 import js.html.Text;
 import js.html.SpanElement;
