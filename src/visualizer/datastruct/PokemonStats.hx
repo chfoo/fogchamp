@@ -1,6 +1,8 @@
 package visualizer.datastruct;
 
-class PokemonStats {
+class PokemonStats implements Copyable<PokemonStats> {
+    public var slug:String;
+
     public var ability:String;
     public var attack:Int;
     public var defense:Int;
@@ -20,12 +22,16 @@ class PokemonStats {
     public var speed:Int;
     public var types:Array<String>;
     public var weight:Int;
-    public var slug:String;
 
-    public function new() {
+    public function new(?slug:String) {
+        this.slug = slug;
     }
 
     public function fromJsonObject(doc:Dynamic) {
+        if (Reflect.hasField(doc, "slug")) {
+            this.slug = Reflect.field(doc, "slug");
+        }
+
         ability = Reflect.field(doc, "ability");
         attack = Reflect.field(doc, "attack");
         defense = Reflect.field(doc, "defense");
@@ -49,6 +55,7 @@ class PokemonStats {
 
     public function toJsonObject():Dynamic {
         return {
+            "slug": slug,
             "ability": ability,
             "attack": attack,
             "defense": defense,
@@ -71,9 +78,8 @@ class PokemonStats {
         }
     }
 
-    public function clone():PokemonStats {
+    public function copy():PokemonStats {
         var stat = new PokemonStats();
-        stat.slug = slug;
         stat.fromJsonObject(toJsonObject());
         return stat;
     }

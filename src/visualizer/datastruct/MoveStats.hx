@@ -1,6 +1,8 @@
 package visualizer.datastruct;
 
-class MoveStats {
+class MoveStats implements Copyable<MoveStats> {
+    public var slug:String;
+
     public var accuracy:Int;
     public var damageCategory:String;
     public var description:String;
@@ -10,31 +12,30 @@ class MoveStats {
     public var name:String;
     public var power:Int;
     public var pp:Int;
-    public var slug:String;
 
-
-    public function new() {
+    public function new(?slug:String) {
+        this.slug = slug;
     }
 
-    static public function fromJsonObject(slug:String, doc:Dynamic):MoveStats {
-        var stat = new MoveStats();
+    public function fromJsonObject(doc:Dynamic) {
+        accuracy = Reflect.field(doc, "accuracy");
+        damageCategory = Reflect.field(doc, "damage_category");
+        description = Reflect.field(doc, "description");
+        maxHits = Reflect.field(doc, "max_hits");
+        minHits = Reflect.field(doc, "min_hits");
+        moveType = Reflect.field(doc, "move_type");
+        name = Reflect.field(doc, "name");
+        power = Reflect.field(doc, "power");
+        pp = Reflect.field(doc, "pp");
 
-        stat.accuracy = Reflect.field(doc, "accuracy");
-        stat.damageCategory = Reflect.field(doc, "damage_category");
-        stat.description = Reflect.field(doc, "description");
-        stat.maxHits = Reflect.field(doc, "max_hits");
-        stat.minHits = Reflect.field(doc, "min_hits");
-        stat.moveType = Reflect.field(doc, "move_type");
-        stat.name = Reflect.field(doc, "name");
-        stat.power = Reflect.field(doc, "power");
-        stat.pp = Reflect.field(doc, "pp");
-        stat.slug = slug;
-
-        return stat;
+        if (Reflect.hasField(doc, "slug")) {
+            slug = Reflect.field(doc, "slug");
+        }
     }
 
     public function toJsonObject():Dynamic {
         return {
+            "slug": slug,
             "accuracy": accuracy,
             "damage_category": damageCategory,
             "description": description,
@@ -43,13 +44,14 @@ class MoveStats {
             "move_type": moveType,
             "name": name,
             "power": power,
-            "pp": pp,
-            "slug": slug
+            "pp": pp
         }
     }
 
-    public function clone():MoveStats {
-        return MoveStats.fromJsonObject(slug, toJsonObject());
+    public function copy():MoveStats {
+        var stats = new MoveStats();
+        stats.fromJsonObject(toJsonObject());
+        return stats;
     }
 }
 

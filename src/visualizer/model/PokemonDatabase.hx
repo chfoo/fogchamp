@@ -71,7 +71,7 @@ class PokemonDatabase {
 
     public function getPokemonStats(slug:String):PokemonStats {
         if (customStats.exists(slug)) {
-            return customStats.get(slug).clone();
+            return customStats.get(slug).copy();
         } else if (edition == API_EDITION) {
             return apiPokemonDataset.getPokemonStats(slug);
         } else {
@@ -88,7 +88,7 @@ class PokemonDatabase {
     }
 
     public function setCustomPokemonStats(slug:String, stats:PokemonStats) {
-        customStats.set(slug, stats.clone());
+        customStats.set(slug, stats.copy());
     }
 
     public function isCustomized(slug:String):Bool {

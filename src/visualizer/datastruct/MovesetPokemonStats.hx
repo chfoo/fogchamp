@@ -7,8 +7,8 @@ class MovesetPokemonStats extends PokemonStats {
     public var moveSets:Array<Array<String>>;
     public var movesetName:String;
 
-    public function new() {
-        super();
+    public function new(?slug:String) {
+        super(slug);
         abilitySet = new Array<String>();
         itemSet = new Array<String>();
         moveSets = new Array<Array<String>>();
@@ -34,10 +34,9 @@ class MovesetPokemonStats extends PokemonStats {
         return doc;
     }
 
-    override public function clone():MovesetPokemonStats {
-        var stat = new MovesetPokemonStats();
-        stat.slug = slug;
-        stat.fromJsonObject(toJsonObject());
-        return stat;
-    }
+//    override public function copy():MovesetPokemonStats {
+//        var stat = new MovesetPokemonStats();
+//        stat.fromJsonObject(toJsonObject());
+//        return stat;
+//    }
 }

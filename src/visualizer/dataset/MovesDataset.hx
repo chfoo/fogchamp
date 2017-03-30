@@ -27,7 +27,7 @@ class MovesDataset extends Dataset {
     }
 
     public function getMoveStats(slug:String, ?pokemonStat:PokemonStats):MoveStats {
-        var moveStat = moves.get(slug).clone();
+        var moveStat = moves.get(slug).copy();
 
         if (pokemonStat != null && slug == "hidden-power" && pokemonStat.moveTypeOverride != null) {
             moveStat.moveType = pokemonStat.moveTypeOverride;
