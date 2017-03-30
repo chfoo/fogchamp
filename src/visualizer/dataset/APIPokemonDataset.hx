@@ -1,5 +1,6 @@
 package visualizer.dataset;
 
+import visualizer.dataset.Dataset.LoadEvent;
 import haxe.Json;
 import js.Browser;
 import visualizer.datastruct.MovesetPokemonStats;
@@ -25,13 +26,13 @@ class APIPokemonDataset extends Dataset {
         this.apiFacade = new APIFacade();
     }
 
-    override public function load(callback:Bool->Void) {
+    override public function load(callback) {
         apiFacade.getPokemonSets(
             function (success:Bool, errorMessage:String, pokemonStatsList:Array<MovesetPokemonStats>) {
                 if (success) {
                     loadPokemon(pokemonStatsList);
                 }
-                callback(success);
+                callback(new LoadEvent(success, errorMessage));
             }
         );
     }
@@ -84,7 +85,7 @@ class APIPokemonDataset extends Dataset {
             var pokemonStats = stats.get(slug);
             Browser.window.localStorage.setItem(
                 '$STORAGE_KEY:pokemon:$slug',
-                Json.stringify(pokemonStats.toJson())
+                Json.stringify(pokemonStats.toJsonObject())
             );
         }
 

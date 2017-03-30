@@ -1,5 +1,7 @@
 package visualizer.dataset;
 
+import visualizer.dataset.Dataset.LoadEvent;
+import visualizer.dataset.Dataset.LoadEvent;
 import visualizer.datastruct.PokemonStats;
 import haxe.ds.Vector;
 
@@ -35,8 +37,8 @@ class PokemonDataset extends Dataset {
     function loadOneDataset(originalCallback) {
         var filename = DATASET_FILES[datasetIndex];
 
-        makeRequest(filename, function (success) {
-            if (success) {
+        makeRequest(filename, function (loadEvent:LoadEvent) {
+            if (loadEvent.success) {
                 datasetIndex += 1;
 
                 if (datasetIndex < DATASET_FILES.length) {
@@ -47,10 +49,10 @@ class PokemonDataset extends Dataset {
                     } else {
                         datasetIndex -= 1;
                     }
-                    originalCallback(success);
+                    originalCallback(loadEvent);
                 }
             } else {
-                originalCallback(success);
+                originalCallback(loadEvent);
             }
         });
     }

@@ -1,6 +1,7 @@
 package visualizer;
 
 
+import visualizer.dataset.Dataset.LoadEvent;
 import visualizer.dataset.APIPokemonDataset;
 import js.jquery.Event;
 import visualizer.model.PokemonDatabase;
@@ -45,8 +46,8 @@ class Main {
         userMessage.showMessage("Loading Pokemon dataset.");
 
         pokemonDataset.load(
-            function (success:Bool) {
-                if (success) {
+            function (event:LoadEvent) {
+                if (event.success) {
                     userMessage.hide();
                     loadMovesDataset();
                 } else {
@@ -60,8 +61,8 @@ class Main {
         userMessage.showMessage("Loading Moves dataset.");
 
         movesDataset.load(
-            function (success:Bool) {
-                if (success) {
+            function (event:LoadEvent) {
+                if (event.success) {
                     userMessage.hide();
                     loadDescriptionsDataset();
                 } else {
@@ -75,8 +76,8 @@ class Main {
         userMessage.showMessage("Loading Descriptions dataset.");
 
         descriptionsDataset.load(
-            function (success:Bool) {
-                if (success) {
+            function (event:LoadEvent) {
+                if (event.success) {
                     userMessage.hide();
                     loadAPIMovesets();
                 } else {
@@ -100,8 +101,8 @@ class Main {
     function callAPIForMovesets() {
         userMessage.showMessage("Loading Movesets from TPP... This may take a while.");
         apiPokemonDataset.load(
-            function (success:Bool) {
-                if (success) {
+            function (event:LoadEvent) {
+                if (event.success) {
                     userMessage.hide();
                     apiPokemonDataset.saveToStorage();
                 } else {
