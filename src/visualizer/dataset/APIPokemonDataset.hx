@@ -71,7 +71,7 @@ class APIPokemonDataset extends Dataset {
         for (slug in slugs) {
             var jsonStr = Browser.window.localStorage.getItem('$STORAGE_KEY:pokemon:$slug');
             var pokemonStats = new MovesetPokemonStats();
-            pokemonStats.fromJson(Json.parse(jsonStr));
+            pokemonStats.fromJsonObject(Json.parse(jsonStr));
 
             stats.set(slug, pokemonStats);
         }

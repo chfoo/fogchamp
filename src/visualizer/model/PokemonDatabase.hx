@@ -1,5 +1,7 @@
 package visualizer.model;
 
+import visualizer.datastruct.MovesetPokemonStats;
+import visualizer.dataset.APIPokemonDataset;
 import visualizer.dataset.APIPokemonDataset;
 import visualizer.datastruct.PokemonStats;
 import visualizer.dataset.PokemonDataset;
@@ -17,15 +19,16 @@ class PokemonDatabase {
     var customStats:Map<String, PokemonStats>;
     var edition:String;
 
-    public function new(pokemonDataset:PokemonDataset, movesDataset:MovesDataset, descriptionsDataset:DescriptionsDataset) {
+    public function new(pokemonDataset:PokemonDataset, apiPokemonDataset:APIPokemonDataset, movesDataset:MovesDataset, descriptionsDataset:DescriptionsDataset) {
         this.pokemonDataset = pokemonDataset;
+        this.apiPokemonDataset = apiPokemonDataset;
         this.movesDataset = movesDataset;
         this.descriptionsDataset = descriptionsDataset;
 
 
         customStats = new Map<String, PokemonStats>();
 
-        setEdition(getLastStaticEdition());
+        setEdition(PokemonDataset.DATASET_NAMES[0]);
     }
 
     public function getEditionNames():Array<String> {
@@ -54,11 +57,7 @@ class PokemonDatabase {
         var slugs:Array<String>;
 
         if (edition == API_EDITION) {
-            slugs = new Array<String>();
-
-            for (slug in apiPokemonDataset.slugs) {
-                slugs.push(slug);
-            }
+            slugs = apiPokemonDataset.slugs;
         } else {
             slugs = pokemonDataset.slugs.toArray();
         }
@@ -74,14 +73,18 @@ class PokemonDatabase {
         if (customStats.exists(slug)) {
             return customStats.get(slug).clone();
         } else if (edition == API_EDITION) {
-            return null;
+            return apiPokemonDataset.getPokemonStats(slug);
         } else {
             return pokemonDataset.getPokemonStats(slug);
         }
     }
 
     public function getPokemonSlugByID(id:Int):String {
-        return pokemonDataset.getSlug(id);
+        if (edition == API_EDITION) {
+            return apiPokemonDataset.getSlug(id);
+        } else {
+            return pokemonDataset.getSlug(id);
+        }
     }
 
     public function setCustomPokemonStats(slug:String, stats:PokemonStats) {
@@ -104,5 +107,9 @@ class PokemonDatabase {
 
         stats.types = historicalStats.types;
         stats.weight = historicalStats.weight;
+
+        if (stats.moves == null) {
+            stats.moves = [];
+        }
     }
 }

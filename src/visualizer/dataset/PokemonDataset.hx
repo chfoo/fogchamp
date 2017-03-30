@@ -80,7 +80,7 @@ class PokemonDataset extends Dataset {
     public function getPokemonStats(slug:String):PokemonStats {
         var pokemonStat = new PokemonStats();
         pokemonStat.slug = slug;
-        pokemonStat.fromJson(Reflect.field(stats, slug));
+        pokemonStat.fromJsonObject(Reflect.field(stats, slug));
         return pokemonStat;
     }
 

@@ -27,7 +27,7 @@ class Main {
         apiPokemonDataset = new APIPokemonDataset();
         movesDataset = new MovesDataset();
         descriptionsDataset = new DescriptionsDataset();
-        database = new PokemonDatabase(pokemonDataset, movesDataset, descriptionsDataset);
+        database = new PokemonDatabase(pokemonDataset, apiPokemonDataset, movesDataset, descriptionsDataset);
     }
 
     static public function main() {
@@ -78,7 +78,7 @@ class Main {
             function (success:Bool) {
                 if (success) {
                     userMessage.hide();
-                    loadMovesets();
+                    loadAPIMovesets();
                 } else {
                     userMessage.showMessage(LOAD_FAIL_MSG);
                 }
@@ -86,12 +86,24 @@ class Main {
         );
     }
 
-    function loadMovesets() {
-        userMessage.showMessage("Loading Movesets from TPP.");
+    function loadAPIMovesets() {
+        try {
+            apiPokemonDataset.loadFromStorage();
+        } catch (error:StorageEmpty) {
+            callAPIForMovesets();
+            return;
+        }
+
+        loadUI();
+    }
+
+    function callAPIForMovesets() {
+        userMessage.showMessage("Loading Movesets from TPP... This may take a while.");
         apiPokemonDataset.load(
             function (success:Bool) {
                 if (success) {
                     userMessage.hide();
+                    apiPokemonDataset.saveToStorage();
                 } else {
                     userMessage.showMessage("Failed to load movesets from TPP.");
                 }

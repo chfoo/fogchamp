@@ -1,5 +1,6 @@
 package visualizer;
 
+import visualizer.datastruct.MovesetPokemonStats;
 import js.jquery.Event;
 import visualizer.model.PokemonDatabase;
 import visualizer.datastruct.PokemonStats;
@@ -78,9 +79,20 @@ class UI {
         var list = new Array<SelectionItem>();
 
         for (slug in database.getPokemonSlugs()) {
+            var stats = database.getPokemonStats(slug);
+            var name = stats.name;
+            if (stats.nickname != null && name.toLowerCase() != stats.nickname.toLowerCase()) {
+                name += ' (${stats.nickname})';
+            }
+
+            if (Std.is(stats, MovesetPokemonStats)) {
+                var movesetStats = cast(stats, MovesetPokemonStats);
+                name += ' - ${movesetStats.movesetName}';
+            }
+
             list.push({
                 slug: slug,
-                name: database.getPokemonStats(slug).name
+                name: name
             });
         }
 
@@ -122,6 +134,7 @@ class UI {
         }
 
         selectElement.selectedIndex = names.length - 2;
+        database.setEdition(new JQuery(selectElement).val());
     }
 
     function attachEditionSelectListener() {
@@ -222,10 +235,11 @@ class UI {
             if (pokemonStats == null) {
                 var slug = database.getPokemonSlugByID(currentPokemon.get(i).number);
                 pokemonStats = database.getPokemonStats(slug);
+                database.backfillAPIMissingPokemonStats(pokemonStats);
             }
 
             if (pokemonStats == null) {
-                userMessage.showMessage("The dataset for this edition is corrupt or not yet loaded.");
+                userMessage.showMessage("The dataset for this edition is corrupt, unrecognized, or not yet loaded.");
                 throw "Missing dataset";
             }
 
@@ -236,6 +250,7 @@ class UI {
 
     function selectChanged(slotNum:Int, slug:String) {
         currentPokemon.set(slotNum, database.getPokemonStats(slug));
+        database.backfillAPIMissingPokemonStats(currentPokemon.get(slotNum));
 
         renderAll();
     }
@@ -252,12 +267,8 @@ class UI {
             renderChart();
             attachHelpListeners();
 
-//            if (database.getEdition() == PokemonDatabase.CUSTOMIZABLE_EDITION) {
-//                new JQuery(".pokemonEditContainer").show();
-//                attachEditListeners();
-//            } else {
-//                new JQuery(".pokemonEditContainer").hide();
-//            }
+            new JQuery(".pokemonEditContainer").show();
+            attachEditListeners();
 
             if (updateUrlFragment) {
                 writeUrlFragment();
@@ -324,7 +335,7 @@ class UI {
                 itemName = database.descriptionsDataset.getItemName(pokemonStats.item);
             }
 
-            var renderDoc = pokemonStats.toJson();
+            var renderDoc = pokemonStats.toJsonObject();
             Reflect.setField(renderDoc, 'ability_name', abilityName);
             Reflect.setField(renderDoc, 'item_name', itemName);
             Reflect.setField(renderDoc, 'slot_number', slotNum);
@@ -355,7 +366,7 @@ class UI {
 
             for (moveSlug in moveSlugs) {
                 var moveStats = database.movesDataset.getMoveStats(moveSlug, pokemonStat);
-                var moveRenderDoc = moveStats.toJson();
+                var moveRenderDoc = moveStats.toJsonObject();
                 Reflect.setField(moveRenderDoc, "move_slug", moveSlug);
                 Reflect.setField(moveRenderDoc, "move_name", moveStats.name);
                 var damageCategory:String = moveStats.damageCategory;
@@ -479,7 +490,7 @@ class UI {
 
         attachEditFormListeners(pokemonStats, slotNum);
 
-        untyped jquery.dialog("option", "title", 'Editing $slug');
+        untyped jquery.dialog("option", "title", 'Editing ${pokemonStats.name}');
     }
 
     function buildEditGenderRenderDoc(pokemonStats:PokemonStats):Dynamic {
@@ -592,12 +603,21 @@ class UI {
     }
 
     function applyCustomPokemon(pokemonStats:PokemonStats, slotNum:Int) {
-        if (!database.isCustomized(pokemonStats.slug)) {
+        var newCustomization = !database.isCustomized(pokemonStats.slug);
+
+        if (newCustomization) {
             pokemonStats.slug = '${pokemonStats.slug}-custom$slotNum';
             pokemonStats.name = '${pokemonStats.name} - Custom $slotNum';
         }
 
         database.setCustomPokemonStats(pokemonStats.slug, pokemonStats);
+
+        if (newCustomization) {
+            renderSelectionList();
+            attachSelectChangeListeners();
+            setSelectionByEditionChange();
+        }
+
         renderAll(false);
     }
 
@@ -611,7 +631,13 @@ class UI {
         for (slotNum in 0...6) {
             var pokemonStats = pokemonStatsList[slotNum];
             currentPokemon.set(slotNum, pokemonStats);
+            pokemonStats.name = '${pokemonStats.name} - Current $slotNum';
+            database.setCustomPokemonStats('${pokemonStats.name}-Current $slotNum', pokemonStats);
+
         }
+        renderSelectionList();
+        attachSelectChangeListeners();
+        setSelectionByEditionChange();
         renderAll();
     }
 

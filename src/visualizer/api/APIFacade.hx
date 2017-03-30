@@ -1,5 +1,7 @@
 package visualizer.api;
 
+import visualizer.datastruct.MovesetPokemonStats;
+import js.Browser;
 import visualizer.datastruct.PokemonStats;
 import js.jquery.JQuery;
 import js.jquery.JqXHR;
@@ -9,7 +11,7 @@ using StringTools;
 typedef AjaxCallback = Dynamic -> String -> JqXHR -> Void;
 typedef FailedAjaxCallback = JqXHR -> String -> Dynamic -> Void;
 typedef CurrentMatchCallback = Bool -> String -> Array<PokemonStats> -> Void;
-typedef PokemonSetsCallback = Bool -> String -> Array<PokemonStats> -> Void;
+typedef PokemonSetsCallback = Bool -> String -> Array<MovesetPokemonStats> -> Void;
 
 class APIFacade {
     static var CURRENT_MATCH_API_URL(default, null) = "https://twitchplayspokemon.tv/api/current_match";
@@ -60,7 +62,7 @@ class APIFacade {
         var pokemonResults = [];
 
         function callbackResults() {
-            // TODO:
+            callback(true, null, pokemonResults);
         }
 
         function errorHandler(xhr:JqXHR, textStatus:String, error:Dynamic) {
@@ -81,21 +83,36 @@ class APIFacade {
         }
 
         function cursorPaginateSuccessHandler(jsonResult:Dynamic, textStatus:String, xhr:JqXHR) {
-            callAPI(
-                CONSUME_CURSOR_API_URL + token,
-                cursorPaginateSuccessHandler,
-                cursorErrorHandler
-            );
+            try {
+                for (stats in parseMovesetPokemon(jsonResult)) {
+                    pokemonResults.push(stats);
+                }
+            } catch (error:Dynamic) {
+                callback(false, null, null);
+                return;
+            }
+
+            Browser.window.setTimeout(function () {
+                callAPI(
+                    CONSUME_CURSOR_API_URL + token,
+                    cursorPaginateSuccessHandler,
+                    cursorErrorHandler,
+                    true
+                );
+            }, 1);
         }
 
         function cursorCreateSuccessHandler(jsonResult:Dynamic, textStatus:String, xhr:JqXHR) {
             token = jsonResult;
 
-            callAPI(
-                CONSUME_CURSOR_API_URL + token,
-                cursorPaginateSuccessHandler,
-                cursorErrorHandler
-            );
+            Browser.window.setTimeout(function () {
+                callAPI(
+                    CONSUME_CURSOR_API_URL + token,
+                    cursorPaginateSuccessHandler,
+                    cursorErrorHandler,
+                    true
+                );
+            }, 1);
         }
 
         callAPI(
@@ -115,7 +132,7 @@ class APIFacade {
         if (!post) {
             xhr = JQuery.getJSON(url);
         } else {
-            xhr = JQuery.post({"url": url, "dataType": "json"});
+            xhr = JQuery.post(url, "Kappa", null, "json");
         }
 
         xhr.done(done).fail(error).always(function () {
@@ -130,20 +147,60 @@ class APIFacade {
         var pokemonStats = [];
 
         for (pokemonDoc in teamBlue) {
-            pokemonStats.push(parsePokemonStats(pokemonDoc));
+            var stats = new PokemonStats();
+            parsePokemonStats(pokemonDoc, stats);
+            pokemonStats.push(stats);
         }
         for (pokemonDoc in teamRed) {
-            pokemonStats.push(parsePokemonStats(pokemonDoc));
+            var stats = new PokemonStats();
+            parsePokemonStats(pokemonDoc, stats);
+            pokemonStats.push(stats);
         }
 
         return pokemonStats;
     }
 
-    function parsePokemonStats(jsonDoc:Dynamic):PokemonStats {
-        var stats = new PokemonStats();
+    function parseMovesetPokemon(jsonDoc:Dynamic):Array<MovesetPokemonStats> {
+        var movesetInfoDoc:Array<Dynamic> = jsonDoc;
+        var statsList = [];
+
+        for (entryInfoDoc in movesetInfoDoc) {
+            var statsDoc = Reflect.field(entryInfoDoc, "data");
+            var stats = new MovesetPokemonStats();
+            parseMovesetPokemonStats(statsDoc, stats);
+            statsList.push(stats);
+        }
+
+        return statsList;
+    }
+
+    function parseCommonPokemonStats(jsonDoc:Dynamic, stats:PokemonStats) {
         var speciesId:Int = Reflect.field(Reflect.field(jsonDoc, "species"), "id");
         var effectiveStats = Reflect.field(jsonDoc, "stats");
 
+        stats.name = Reflect.field(Reflect.field(jsonDoc, "species"), "name");
+        stats.nickname = Reflect.field(jsonDoc, "ingamename");
+        stats.attack = Reflect.field(effectiveStats, "atk");
+        stats.defense = Reflect.field(effectiveStats, "def");
+        stats.gender = Reflect.field(jsonDoc, "gender");
+        stats.happiness = Reflect.field(jsonDoc, "happiness");
+        stats.hp = Reflect.field(effectiveStats, "hp");
+
+        // TODO: load iv
+        // stats.iv
+
+        if (Reflect.hasField(jsonDoc, "nature") && Reflect.field(jsonDoc, "nature") != null) {
+            stats.nature = slugify(Reflect.field(Reflect.field(jsonDoc, "nature"), "name"));
+        }
+
+        stats.number = speciesId;
+        stats.specialAttack = Reflect.field(effectiveStats, "spA");
+        stats.specialDefense = Reflect.field(effectiveStats, "spD");
+        stats.speed = Reflect.field(effectiveStats, "spe");
+    }
+
+    function parsePokemonStats(jsonDoc:Dynamic, stats:PokemonStats) {
+        parseCommonPokemonStats(jsonDoc, stats);
 
         if (Reflect.hasField(jsonDoc, "ability") && Reflect.field(jsonDoc, "ability") != null) {
             var rawName = Reflect.field(Reflect.field(jsonDoc, "ability"), "name");
@@ -152,21 +209,12 @@ class APIFacade {
             }
         }
 
-        stats.attack = Reflect.field(effectiveStats, "atk");
-        stats.defense = Reflect.field(effectiveStats, "def");
-        stats.gender = Reflect.field(jsonDoc, "gender");
-        stats.happiness = Reflect.field(jsonDoc, "happiness");
-        stats.hp = Reflect.field(effectiveStats, "hp");
-
         if (Reflect.hasField(jsonDoc, "item") && Reflect.field(jsonDoc, "item") != null) {
             var rawName = Reflect.field(Reflect.field(jsonDoc, "item"), "name");
             if (rawName != null) {
                 stats.item = slugify(rawName);
             }
         }
-
-        // TODO: load iv
-        // stats.iv
 
         stats.moves = [];
 
@@ -179,22 +227,47 @@ class APIFacade {
                 stats.moveTypeOverride = slugify(Reflect.field(moveDoc, "type"));
             }
         }
-
-        stats.name = Reflect.field(jsonDoc, "ingamename");
-
-        if (Reflect.hasField(jsonDoc, "nature") && Reflect.field(jsonDoc, "nature") != null) {
-            stats.nature = slugify(Reflect.field(Reflect.field(jsonDoc, "nature"), "name"));
-        }
-
-        stats.number = speciesId;
-        stats.specialAttack = Reflect.field(effectiveStats, "spA");
-        stats.specialDefense = Reflect.field(effectiveStats, "spD");
-        stats.speed = Reflect.field(effectiveStats, "spe");
-
-        return stats;
     }
 
-    static function slugify(text:String, ?noDash:Bool):String {
+    function parseMovesetPokemonStats(jsonDoc:Dynamic, stats:MovesetPokemonStats) {
+        parseCommonPokemonStats(jsonDoc, stats);
+        var abilitiesDoc:Array<Dynamic> = Reflect.field(jsonDoc, "ability");
+        var itemsDoc:Array<Dynamic> = Reflect.field(jsonDoc, "item");
+        var movesDoc:Array<Array<Dynamic>> = Reflect.field(jsonDoc, "moves");
+
+        stats.movesetName = Reflect.field(jsonDoc, "setname");
+
+        for (doc in abilitiesDoc) {
+            var rawName = Reflect.field(doc, "name");
+            if (rawName != null) {
+                stats.itemSet.push(slugify(rawName));
+            }
+        }
+
+        for (doc in itemsDoc) {
+            var rawName = Reflect.field(doc, "name");
+            if (rawName != null) {
+                stats.itemSet.push(slugify(rawName));
+            }
+        }
+
+        for (slotDoc in movesDoc) {
+            var slotMoves = [];
+
+            for (moveDoc in slotDoc) {
+                var moveSlug = slugify(Reflect.field(moveDoc, "name"));
+                slotMoves.push(moveSlug);
+
+                if (moveSlug == "hidden-power") {
+                    stats.moveTypeOverride = slugify(Reflect.field(moveDoc, "type"));
+                }
+            }
+
+            stats.moveSets.push(slotMoves);
+        }
+    }
+
+    static public function slugify(text:String, ?noDash:Bool):String {
         text = text.toLowerCase()
             .replace("♀", "f")
             .replace("♂", "m")

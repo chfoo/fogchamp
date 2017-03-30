@@ -20,7 +20,7 @@ class MovesDataset extends Dataset {
         moves = new MovesMap();
 
         for (slug in Reflect.fields(data)) {
-            moves.set(slug, MoveStats.fromJson(slug, Reflect.field(data, slug)));
+            moves.set(slug, MoveStats.fromJsonObject(slug, Reflect.field(data, slug)));
         }
 
         super.loadDone(data);
