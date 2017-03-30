@@ -1,5 +1,6 @@
 package visualizer;
 
+import visualizer.dataset.Dataset.LoadEvent;
 import visualizer.datastruct.MovesetPokemonStats;
 import js.jquery.Event;
 import visualizer.model.PokemonDatabase;
@@ -30,14 +31,14 @@ class UI {
     var currentPokemon:Vector<PokemonStats>;
     var previousUrlHash:String = null;
     var formulaOptions:FormulaOptions;
-    var apiFacade:APIFacade;
+//    var apiFacade:APIFacade;
 
     public function new(pokemonDatabase:PokemonDatabase) {
         database = pokemonDatabase;
         userMessage = new UserMessage();
         currentPokemon = new Vector(6);
         formulaOptions = new FormulaOptions();
-        apiFacade = new APIFacade();
+//        apiFacade = new APIFacade();
     }
 
     static function renderTemplate(template:String, data:Dynamic):String {
@@ -202,17 +203,13 @@ class UI {
 
         userMessage.showMessage("Fetching current match from TPP API...");
 
-        apiFacade.getCurrentMatch(function (success:Bool, errorMessage:String, pokemonStatsList:Array<PokemonStats>) {
+        database.currentMatchDataset.load(function (loadEvent:LoadEvent) {
             new JQuery("#fetchMatchFromAPIButton").prop("disabled", false);
-            if (success) {
-                for (stat in pokemonStatsList) {
-                    database.backfillMissingPokemonStats(stat);
-                }
-
-                applyAPIPokemonList(pokemonStatsList);
+            if (loadEvent.success) {
+                applyAPIPokemonList(database.getCurrentMatchPokemonStats());
             } else {
-                if (errorMessage != null) {
-                    userMessage.showMessage('An error occurred fetching current match: "$errorMessage". Complain to Felk if error persists.');
+                if (loadEvent.errorMessage != null) {
+                    userMessage.showMessage('An error occurred fetching current match: "${loadEvent.errorMessage}". Complain to Felk if error persists.');
                 } else {
                     userMessage.showMessage("An error occured while attempting to parse the data. File a bug report if this persists.");
                 }
@@ -249,7 +246,6 @@ class UI {
 
     function selectChanged(slotNum:Int, slug:String) {
         currentPokemon.set(slotNum, database.getPokemonStats(slug));
-        database.backfillMissingPokemonStats(currentPokemon.get(slotNum));
 
         renderAll();
     }
@@ -623,9 +619,9 @@ class UI {
     function applyAPIPokemonList(pokemonStatsList:Array<PokemonStats>) {
         var selectElement = cast(Browser.document.getElementById("pokemonEditionSelect"), SelectElement);
 
-        database.setEdition(PokemonDatabase.API_EDITION);
+//        database.setEdition(PokemonDatabase.API_EDITION);
 
-        selectElement.selectedIndex = database.getEditionNames().length - 1;
+//        selectElement.selectedIndex = database.getEditionNames().length - 1;
 
         for (slotNum in 0...6) {
             var pokemonStats = pokemonStatsList[slotNum];
@@ -634,9 +630,9 @@ class UI {
             database.setCustomPokemonStats('${pokemonStats.name}-Current $slotNum', pokemonStats);
 
         }
-        renderSelectionList();
-        attachSelectChangeListeners();
-        setSelectionByEditionChange();
+//        renderSelectionList();
+//        attachSelectChangeListeners();
+//        setSelectionByEditionChange();
         renderAll();
     }
 

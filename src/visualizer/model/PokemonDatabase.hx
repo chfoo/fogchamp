@@ -1,5 +1,6 @@
 package visualizer.model;
 
+import visualizer.dataset.CurrentMatchDataset;
 import visualizer.datastruct.MovesetPokemonStats;
 import visualizer.dataset.APIPokemonDataset;
 import visualizer.datastruct.PokemonStats;
@@ -14,6 +15,7 @@ class PokemonDatabase {
     public var movesDataset(default, null):MovesDataset;
     public var descriptionsDataset(default, null):DescriptionsDataset;
     public var apiPokemonDataset(default, null):APIPokemonDataset;
+    public var currentMatchDataset(default, null):CurrentMatchDataset;
 
     var customStats:Map<String, PokemonStats>;
     var edition:String;
@@ -23,7 +25,7 @@ class PokemonDatabase {
         this.apiPokemonDataset = apiPokemonDataset;
         this.movesDataset = movesDataset;
         this.descriptionsDataset = descriptionsDataset;
-
+        currentMatchDataset = new CurrentMatchDataset();
 
         customStats = new Map<String, PokemonStats>();
 
@@ -96,7 +98,15 @@ class PokemonDatabase {
         return customStats.exists(slug);
     }
 
-    public function backfillMissingPokemonStats(stats:PokemonStats) {
+    public function getCurrentMatchPokemonStats():Array<PokemonStats> {
+        for (stats in currentMatchDataset.pokemonStatsList) {
+            backfillMissingPokemonStats(stats);
+        }
+
+        return currentMatchDataset.pokemonStatsList;
+    }
+
+    function backfillMissingPokemonStats(stats:PokemonStats) {
         if (stats.slug == null) {
             stats.slug = getPokemonSlugByID(stats.number);
         }
