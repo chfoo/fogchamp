@@ -28,6 +28,7 @@ class PokemonDataset extends Dataset {
     }
 
     override public function load(callback) {
+        datasetIndex = 0;
         loadOneDataset(callback);
     }
 
@@ -77,7 +78,9 @@ class PokemonDataset extends Dataset {
     }
 
     public function getPokemonStats(slug:String):PokemonStats {
-        var pokemonStat = PokemonStats.fromJson(slug, Reflect.field(stats, slug));
+        var pokemonStat = new PokemonStats();
+        pokemonStat.slug = slug;
+        pokemonStat.fromJson(Reflect.field(stats, slug));
         return pokemonStat;
     }
 

@@ -13,6 +13,7 @@ class PokemonStats {
     public var moves:Array<String>;
     public var name:String;
     public var nature:String;
+    public var nickname:String;
     public var number:Int;
     public var specialAttack:Int;
     public var specialDefense:Int;
@@ -24,33 +25,29 @@ class PokemonStats {
     public function new() {
     }
 
-    static public function fromJson(slug:String, doc:Dynamic):PokemonStats {
-        var stat = new PokemonStats();
-
-        stat.ability = Reflect.field(doc, "ability");
-        stat.attack = Reflect.field(doc, "attack");
-        stat.defense = Reflect.field(doc, "defense");
-        stat.gender = Reflect.field(doc, "gender");
-        stat.happiness = Reflect.field(doc, "happiness");
-        stat.hp = Reflect.field(doc, "hp");
-        stat.item = Reflect.field(doc, "item");
-        stat.iv = Reflect.field(doc, "iv");
-        stat.moveTypeOverride = Reflect.field(doc, "move_type_override");
-        stat.moves = Reflect.field(doc, "moves");
-        stat.name = Reflect.field(doc, "name");
-        stat.nature = Reflect.field(doc, "nature");
-        stat.number = Reflect.field(doc, "number");
-        stat.specialAttack = Reflect.field(doc, "special_attack");
-        stat.specialDefense = Reflect.field(doc, "special_defense");
-        stat.speed = Reflect.field(doc, "speed");
-        stat.types = Reflect.field(doc, "types");
-        stat.weight = Reflect.field(doc, "weight");
-        stat.slug = slug;
-
-        return stat;
+    public function fromJsonObject(doc:Dynamic) {
+        ability = Reflect.field(doc, "ability");
+        attack = Reflect.field(doc, "attack");
+        defense = Reflect.field(doc, "defense");
+        gender = Reflect.field(doc, "gender");
+        happiness = Reflect.field(doc, "happiness");
+        hp = Reflect.field(doc, "hp");
+        item = Reflect.field(doc, "item");
+        iv = Reflect.field(doc, "iv");
+        moveTypeOverride = Reflect.field(doc, "move_type_override");
+        moves = Reflect.field(doc, "moves");
+        name = Reflect.field(doc, "name");
+        nature = Reflect.field(doc, "nature");
+        nickname = Reflect.field(doc, "nickname");
+        number = Reflect.field(doc, "number");
+        specialAttack = Reflect.field(doc, "special_attack");
+        specialDefense = Reflect.field(doc, "special_defense");
+        speed = Reflect.field(doc, "speed");
+        types = Reflect.field(doc, "types");
+        weight = Reflect.field(doc, "weight");
     }
 
-    public function toJson():Dynamic {
+    public function toJsonObject():Dynamic {
         return {
             "ability": ability,
             "attack": attack,
@@ -64,6 +61,7 @@ class PokemonStats {
             "moves": moves,
             "name": name,
             "nature": nature,
+            "nickname": nickname,
             "number": number,
             "special_attack": specialAttack,
             "special_defense": specialDefense,
@@ -74,6 +72,9 @@ class PokemonStats {
     }
 
     public function clone():PokemonStats {
-        return PokemonStats.fromJson(slug, toJson());
+        var stat = new PokemonStats();
+        stat.slug = slug;
+        stat.fromJsonObject(toJsonObject());
+        return stat;
     }
 }

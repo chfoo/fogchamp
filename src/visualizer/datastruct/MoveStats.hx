@@ -16,7 +16,7 @@ class MoveStats {
     public function new() {
     }
 
-    static public function fromJson(slug:String, doc:Dynamic):MoveStats {
+    static public function fromJsonObject(slug:String, doc:Dynamic):MoveStats {
         var stat = new MoveStats();
 
         stat.accuracy = Reflect.field(doc, "accuracy");
@@ -33,7 +33,7 @@ class MoveStats {
         return stat;
     }
 
-    public function toJson():Dynamic {
+    public function toJsonObject():Dynamic {
         return {
             "accuracy": accuracy,
             "damage_category": damageCategory,
@@ -49,7 +49,7 @@ class MoveStats {
     }
 
     public function clone():MoveStats {
-        return MoveStats.fromJson(slug, toJson());
+        return MoveStats.fromJsonObject(slug, toJsonObject());
     }
 }
 
