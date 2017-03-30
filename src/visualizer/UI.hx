@@ -1,9 +1,8 @@
 package visualizer;
 
+import js.jquery.Event;
+import visualizer.model.PokemonDatabase;
 import visualizer.datastruct.PokemonStats;
-import visualizer.dataset.DescriptionsDataset;
-import visualizer.dataset.MovesDataset;
-import visualizer.dataset.PokemonDataset;
 import visualizer.api.APIFacade;
 import visualizer.Formula.FormulaOptions;
 import js.html.DivElement;
@@ -11,7 +10,7 @@ import js.html.OptionElement;
 import js.html.SelectElement;
 import haxe.ds.Vector;
 import js.Browser;
-import js.JQuery;
+import js.jquery.JQuery;
 
 
 typedef SelectionItem = {
@@ -24,23 +23,20 @@ typedef MovesItem = {
 
 class UI {
     static var Mustache = untyped __js__("Mustache");
-    var jquery:JQuery;
-    var pokemonDataset:PokemonDataset;
-    var movesDataset:MovesDataset;
-    var descriptionsDataset:DescriptionsDataset;
+    var database:PokemonDatabase;
     var userMessage:UserMessage;
     static var DEFAULT_POKEMON:Vector<Int> = Vector.fromArrayCopy([493, 257, 462, 244, 441, 139]);
+    var currentPokemon:Vector<PokemonStats>;
     var previousUrlHash:String = null;
     var formulaOptions:FormulaOptions;
     var apiFacade:APIFacade;
 
-    public function new(pokemonDataset:PokemonDataset, movesDataset:MovesDataset, descriptionsDataset:DescriptionsDataset) {
-        this.pokemonDataset = pokemonDataset;
-        this.movesDataset = movesDataset;
-        this.descriptionsDataset = descriptionsDataset;
+    public function new(pokemonDatabase:PokemonDatabase) {
+        database = pokemonDatabase;
         userMessage = new UserMessage();
+        currentPokemon = new Vector(6);
         formulaOptions = new FormulaOptions();
-        apiFacade = new APIFacade(pokemonDataset);
+        apiFacade = new APIFacade();
     }
 
     static function renderTemplate(template:String, data:Dynamic):String {
@@ -51,6 +47,7 @@ class UI {
         renderSelectionList();
         attachSelectChangeListeners();
         renderEditionSelect();
+        attachEditionSelectListener();
         attachUrlFragmentChangeListener();
         attachFetchFromAPIButtonListener();
         setSelectionByNumbers(DEFAULT_POKEMON);
@@ -80,10 +77,10 @@ class UI {
     function buildSelectionList():Array<SelectionItem> {
         var list = new Array<SelectionItem>();
 
-        for (slug in pokemonDataset.slugs) {
+        for (slug in database.getPokemonSlugs()) {
             list.push({
                 slug: slug,
-                name: pokemonDataset.getPokemonStats(slug).name
+                name: database.getPokemonStats(slug).name
             });
         }
 
@@ -98,14 +95,14 @@ class UI {
         for (i in 0...6) {
             var jquery = new JQuery('#selectionSelect$i');
 
-            jquery.change(function (event:JqEvent) {
-                selectChanged(i);
+            jquery.change(function (event:Event) {
+                selectChanged(i, jquery.val());
             });
 
-            jquery.focus(function (event:JqEvent) {
+            jquery.focus(function (event:Event) {
                 new JQuery('.pokemonIconSlot-$i').addClass("pokemonIcon-focus");
             });
-            jquery.focusout(function (event:JqEvent) {
+            jquery.focusout(function (event:Event) {
                 new JQuery('.pokemonIconSlot-$i').removeClass("pokemonIcon-focus");
             });
         }
@@ -113,24 +110,28 @@ class UI {
 
     function renderEditionSelect() {
         var selectElement = cast(Browser.document.getElementById("pokemonEditionSelect"), SelectElement);
+        var names = database.getEditionNames();
 
-        for (index in 0...PokemonDataset.DATASET_NAMES.length) {
+        for (name in names) {
             var optionElement:OptionElement = Browser.document.createOptionElement();
 
-            optionElement.value = PokemonDataset.DATASET_FILES[index];
-            optionElement.textContent = PokemonDataset.DATASET_NAMES[index];
+            optionElement.value = name;
+            optionElement.textContent = name;
 
             selectElement.add(optionElement);
         }
 
-        if (PokemonDataset.DEFAULT_INDEX >= 0) {
-            selectElement.selectedIndex = PokemonDataset.DEFAULT_INDEX;
-        } else {
-            selectElement.selectedIndex = PokemonDataset.DATASET_FILES.length - 1;
-        }
+        selectElement.selectedIndex = names.length - 2;
+    }
 
-        new JQuery("#pokemonEditionSelect").change(function (event:JqEvent) {
-            pokemonDataset.datasetIndex = selectElement.selectedIndex;
+    function attachEditionSelectListener() {
+        var selectElement = cast(Browser.document.getElementById("pokemonEditionSelect"), SelectElement);
+
+        new JQuery("#pokemonEditionSelect").change(function (event:Event) {
+            database.setEdition(new JQuery(selectElement).val());
+            renderSelectionList();
+            attachSelectChangeListeners();
+            setSelectionByEditionChange();
             renderAll(false);
         });
     }
@@ -164,8 +165,7 @@ class UI {
         var fragment = "#";
 
         for (i in 0...6) {
-            var slug = getSlotSlug(i);
-            var pokemonNum = pokemonDataset.getPokemonStats(slug).number;
+            var pokemonNum = currentPokemon[i].number;
 
             if (i == 5) {
                 fragment += '$pokemonNum';
@@ -179,20 +179,24 @@ class UI {
     }
 
     function attachFetchFromAPIButtonListener() {
-        new JQuery("#fetchMatchFromAPIButton").click(function (event:JqEvent) {
+        new JQuery("#fetchMatchFromAPIButton").click(function (event:Event) {
             fetchFromAPI();
         });
     }
 
     function fetchFromAPI() {
         new JQuery("#fetchMatchFromAPIButton").prop("disabled", true);
-        pokemonDataset.datasetIndex = PokemonDataset.CUSTOMIZABLE_INDEX;
+
         userMessage.showMessage("Fetching current match from TPP API...");
 
         apiFacade.getCurrentMatch(function (success:Bool, errorMessage:String, pokemonStatsList:Array<PokemonStats>) {
             new JQuery("#fetchMatchFromAPIButton").prop("disabled", false);
             if (success) {
-                applyCustomPokemonList(pokemonStatsList);
+                for (stat in pokemonStatsList) {
+                    database.backfillAPIMissingPokemonStats(stat);
+                }
+
+                applyAPIPokemonList(pokemonStatsList);
             } else {
                 if (errorMessage != null) {
                     userMessage.showMessage('An error occurred fetching current match: "$errorMessage". Complain to Felk if error persists.');
@@ -205,12 +209,34 @@ class UI {
 
     function setSelectionByNumbers(pokemonNums:Vector<Int>) {
         for (i in 0...6) {
-            var slug = pokemonDataset.getSlug(pokemonNums.get(i));
-            setSlotSlug(i, slug);
+            var slug = database.getPokemonSlugByID(pokemonNums.get(i));
+            currentPokemon.set(i, database.getPokemonStats(slug));
+            new JQuery('#selectionSelect$i').val(slug);
         }
     }
 
-    function selectChanged(slotNum:Int) {
+    function setSelectionByEditionChange() {
+        for (i in 0...6) {
+            var pokemonStats = database.getPokemonStats(currentPokemon.get(i).slug);
+
+            if (pokemonStats == null) {
+                var slug = database.getPokemonSlugByID(currentPokemon.get(i).number);
+                pokemonStats = database.getPokemonStats(slug);
+            }
+
+            if (pokemonStats == null) {
+                userMessage.showMessage("The dataset for this edition is corrupt or not yet loaded.");
+                throw "Missing dataset";
+            }
+
+            currentPokemon.set(i, pokemonStats);
+            new JQuery('#selectionSelect$i').val(pokemonStats.slug);
+        }
+    }
+
+    function selectChanged(slotNum:Int, slug:String) {
+        currentPokemon.set(slotNum, database.getPokemonStats(slug));
+
         renderAll();
     }
 
@@ -226,12 +252,12 @@ class UI {
             renderChart();
             attachHelpListeners();
 
-            if (pokemonDataset.datasetIndex == PokemonDataset.CUSTOMIZABLE_INDEX) {
-                new JQuery(".pokemonEditContainer").show();
-                attachEditListeners();
-            } else {
-                new JQuery(".pokemonEditContainer").hide();
-            }
+//            if (database.getEdition() == PokemonDatabase.CUSTOMIZABLE_EDITION) {
+//                new JQuery(".pokemonEditContainer").show();
+//                attachEditListeners();
+//            } else {
+//                new JQuery(".pokemonEditContainer").hide();
+//            }
 
             if (updateUrlFragment) {
                 writeUrlFragment();
@@ -247,14 +273,6 @@ class UI {
         }
     }
 
-    function getSlotSlug(slotNum:Int):String {
-        return new JQuery('#selectionSelect$slotNum').val();
-    }
-
-    function setSlotSlug(slotNum:Int, slug:String) {
-        new JQuery('#selectionSelect$slotNum').val(slug);
-    }
-
     function renderMatchCommand() {
         var numbers = getMatchNumbers();
 
@@ -266,8 +284,7 @@ class UI {
         var numbers = [];
 
         for (i in 0...6) {
-            var slug = getSlotSlug(i);
-            var pokemonNum = pokemonDataset.getPokemonStats(slug).number;
+            var pokemonNum = currentPokemon.get(i).number;
             numbers.push(pokemonNum);
         }
 
@@ -284,20 +301,6 @@ class UI {
         new JQuery("#pokemonStats").html(rendered);
     }
 
-    function getPokemonStatsSelected():Array<PokemonStats> {
-        var slotNums = [0, 1, 2, 3, 4, 5];
-        var statsList = new Array<PokemonStats>();
-
-        for (slotNum in slotNums) {
-            var slug = getSlotSlug(slotNum);
-            var pokemonStats = pokemonDataset.getPokemonStats(slug, slotNum);
-
-            statsList.push(pokemonStats);
-        }
-
-        return statsList;
-    }
-
     function buildPokemonStatsRenderDocs(?visualBlueHorizontalOrder:Bool):Array<Dynamic> {
         var slotNums = [0, 1, 2, 3, 4, 5];
 
@@ -308,18 +311,17 @@ class UI {
         var statsList = new Array<Dynamic>();
 
         for (slotNum in slotNums) {
-            var slug = getSlotSlug(slotNum);
-            var pokemonStats = pokemonDataset.getPokemonStats(slug, slotNum);
+            var pokemonStats = currentPokemon.get(slotNum);
             var abilityName = "";
 
-            if (descriptionsDataset.abilities.exists(pokemonStats.ability)) {
-                abilityName = descriptionsDataset.getAbilityName(pokemonStats.ability);
+            if (database.descriptionsDataset.abilities.exists(pokemonStats.ability)) {
+                abilityName = database.descriptionsDataset.getAbilityName(pokemonStats.ability);
             }
 
             var itemName = "";
 
-            if (descriptionsDataset.items.exists(pokemonStats.item)) {
-                itemName = descriptionsDataset.getItemName(pokemonStats.item);
+            if (database.descriptionsDataset.items.exists(pokemonStats.item)) {
+                itemName = database.descriptionsDataset.getItemName(pokemonStats.item);
             }
 
             var renderDoc = pokemonStats.toJson();
@@ -346,14 +348,13 @@ class UI {
         var movesList = new Array<MovesItem>();
 
         for (slotNum in [2, 1, 0, 3, 4, 5]) {
-            var slug = getSlotSlug(slotNum);
-            var pokemonStat = pokemonDataset.getPokemonStats(slug, slotNum);
+            var pokemonStat = currentPokemon.get(slotNum);
             var name = pokemonStat.name;
             var moveSlugs:Array<String> = pokemonStat.moves;
             var moves = new Array<Dynamic>();
 
             for (moveSlug in moveSlugs) {
-                var moveStats = movesDataset.getMoveStats(moveSlug, pokemonStat);
+                var moveStats = database.movesDataset.getMoveStats(moveSlug, pokemonStat);
                 var moveRenderDoc = moveStats.toJson();
                 Reflect.setField(moveRenderDoc, "move_slug", moveSlug);
                 Reflect.setField(moveRenderDoc, "move_name", moveStats.name);
@@ -381,10 +382,10 @@ class UI {
     }
 
     function attachHelpListeners() {
-        for (element in new JQuery("[data-help-slug]")) {
+        for (element in new JQuery("[data-help-slug]").elements()) {
             var clickElement = new JQuery("<a href=>");
             clickElement.addClass("clickHelp");
-            clickElement.click(function () {
+            clickElement.click(function (event:Event) {
                 clickedHelp(element.attr("data-help-slug"));
                 return false;
             });
@@ -401,15 +402,15 @@ class UI {
         var text = "";
 
         if (category == "ability") {
-            var ability = descriptionsDataset.abilities.get(slug);
+            var ability = database.descriptionsDataset.abilities.get(slug);
             title = ability.name;
             text = ability.description;
         } else if (category == "item") {
-            var item = descriptionsDataset.items.get(slug);
+            var item = database.descriptionsDataset.items.get(slug);
             title = item.name;
             text = item.description;
         } else if (category == "move") {
-            var move = movesDataset.getMoveStats(slug);
+            var move = database.movesDataset.getMoveStats(slug);
             title = move.name;
             text = move.description;
         } else if (category == "damage") {
@@ -433,10 +434,10 @@ class UI {
     }
 
     function attachEditListeners() {
-        for (element in new JQuery("[data-edit-slot]")) {
+        for (element in new JQuery("[data-edit-slot]").elements()) {
             var clickElement = new JQuery("<a href=>");
             clickElement.addClass("clickEdit");
-            clickElement.click(function () {
+            clickElement.click(function (event:Event) {
                 clickedEdit(Std.parseInt(element.attr("data-edit-slot")));
                 return false;
             });
@@ -446,8 +447,7 @@ class UI {
     }
 
     function clickedEdit(slotNum:Int) {
-        var slug = getSlotSlug(slotNum);
-        var pokemonStats = pokemonDataset.getPokemonStats(slug, slotNum);
+        var pokemonStats = currentPokemon.get(slotNum);
 
         var template = new JQuery("#pokemonEditTemplate").html();
         var html = renderTemplate(
@@ -499,10 +499,10 @@ class UI {
     function buildEditAbilityRenderDoc(pokemonStats:PokemonStats):Dynamic {
         var abilityRenderList = [{"slug": "", "label": "-", "selected": ""}];
 
-        for (abilitySlug in descriptionsDataset.abilities.keys()) {
+        for (abilitySlug in database.descriptionsDataset.abilities.keys()) {
             abilityRenderList.push({
                 "slug": abilitySlug,
-                "label": descriptionsDataset.abilities.get(abilitySlug).name,
+                "label": database.descriptionsDataset.abilities.get(abilitySlug).name,
                 "selected": (abilitySlug == pokemonStats.ability)? "selected": ""
             });
         }
@@ -513,10 +513,10 @@ class UI {
     function buildEditItemRenderDoc(pokemonStats:PokemonStats):Dynamic {
         var itemRenderList = [{"slug": "", "label": "-", "selected": ""}];
 
-        for (itemSlug in descriptionsDataset.items.keys()) {
+        for (itemSlug in database.descriptionsDataset.items.keys()) {
             itemRenderList.push({
                 "slug": itemSlug,
-                "label": descriptionsDataset.items.get(itemSlug).name,
+                "label": database.descriptionsDataset.items.get(itemSlug).name,
                 "selected": (itemSlug == pokemonStats.item)? "selected": ""
             });
         }
@@ -527,10 +527,10 @@ class UI {
     function buildEditMoveRenderDoc(pokemonStats:PokemonStats, slot:Int):Dynamic {
         var moveRenderList = [{"slug": "", "label": "-", "selected": ""}];
 
-        for (moveSlug in movesDataset.moves.keys()) {
+        for (moveSlug in database.movesDataset.moves.keys()) {
             moveRenderList.push({
                 "slug": moveSlug,
-                "label": movesDataset.getMoveStats(moveSlug).name,
+                "label": database.movesDataset.getMoveStats(moveSlug).name,
                 "selected": (moveSlug == pokemonStats.moves[slot])? "selected": ""
             });
         }
@@ -553,7 +553,7 @@ class UI {
         var move3Input = new JQuery("#pokemonEditMove3");
         var move4Input = new JQuery("#pokemonEditMove4");
 
-        function readValues(event:JqEvent) {
+        function readValues(event:Event) {
             pokemonStats.gender = genderInput.find("option:selected").attr("name");
             pokemonStats.ability = abilityInput.find("option:selected").attr("name");
             pokemonStats.item = itemInput.find("option:selected").attr("name");
@@ -592,32 +592,39 @@ class UI {
     }
 
     function applyCustomPokemon(pokemonStats:PokemonStats, slotNum:Int) {
-        pokemonDataset.setPokemonStats(pokemonStats.slug, pokemonStats, slotNum);
+        if (!database.isCustomized(pokemonStats.slug)) {
+            pokemonStats.slug = '${pokemonStats.slug}-custom$slotNum';
+            pokemonStats.name = '${pokemonStats.name} - Custom $slotNum';
+        }
+
+        database.setCustomPokemonStats(pokemonStats.slug, pokemonStats);
         renderAll(false);
     }
 
-    function applyCustomPokemonList(pokemonStatsList:Array<PokemonStats>) {
+    function applyAPIPokemonList(pokemonStatsList:Array<PokemonStats>) {
         var selectElement = cast(Browser.document.getElementById("pokemonEditionSelect"), SelectElement);
-        selectElement.selectedIndex = PokemonDataset.CUSTOMIZABLE_INDEX;
+
+        database.setEdition(PokemonDatabase.API_EDITION);
+
+        selectElement.selectedIndex = database.getEditionNames().length - 1;
 
         for (slotNum in 0...6) {
             var pokemonStats = pokemonStatsList[slotNum];
-            new JQuery('#selectionSelect$slotNum').val(pokemonStats.slug);
-            pokemonDataset.setPokemonStats(pokemonStats.slug, pokemonStats, slotNum);
+            currentPokemon.set(slotNum, pokemonStats);
         }
         renderAll();
     }
 
     function renderChart() {
-        var matchupChart = new MatchupChart(pokemonDataset, movesDataset, descriptionsDataset, formulaOptions);
-        matchupChart.setPokemon(getPokemonStatsSelected());
+        var matchupChart = new MatchupChart(database, formulaOptions);
+        matchupChart.setPokemon(currentPokemon.toArray());
         var tableElement = matchupChart.renderTable();
 
         new JQuery("#pokemonDiamond").empty().append(tableElement);
     }
 
     function attachOptionsListeners() {
-        new JQuery("#formulaOptions-typeImmunities").change(function (event:JqEvent) {
+        new JQuery("#formulaOptions-typeImmunities").change(function (event:Event) {
             var checked:Bool = new JQuery("#formulaOptions-typeImmunities").prop("checked");
             formulaOptions.typeImmunities = checked;
             renderAll(false);

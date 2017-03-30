@@ -1,18 +1,13 @@
 package visualizer;
 
+import visualizer.model.PokemonDatabase;
 import visualizer.datastruct.MoveStats;
 import visualizer.datastruct.PokemonStats;
-import visualizer.dataset.DescriptionsDataset;
-import visualizer.dataset.MovesDataset;
-import visualizer.dataset.PokemonDataset;
 import visualizer.Formula.FormulaOptions;
-import js.html.Text;
 import js.html.SpanElement;
 import js.html.DivElement;
-import js.JQuery;
 import js.html.TableRowElement;
 import js.html.TableCellElement;
-import js.html.TableRowElement;
 import js.html.TableElement;
 import js.Browser;
 
@@ -30,17 +25,13 @@ class MatchupChart {
     static var POKEMON_MOVES_LABEL = 1;
     static var DIVIDER = 1;
 
-    var pokemonDataset:PokemonDataset;
-    var movesDataset:MovesDataset;
-    var descriptionsDataset:DescriptionsDataset;
+    var database:PokemonDatabase;
     var pokemonStats:Array<PokemonStats>;
     var tableElement:TableElement;
     var formulaOptions:FormulaOptions;
 
-    public function new(pokemonDataset:PokemonDataset, movesDataset:MovesDataset, descriptionsDataset:DescriptionsDataset, formulaOptions:FormulaOptions) {
-        this.pokemonDataset = pokemonDataset;
-        this.movesDataset = movesDataset;
-        this.descriptionsDataset = descriptionsDataset;
+    public function new(pokemonDatabase:PokemonDatabase, formulaOptions:FormulaOptions) {
+        database = pokemonDatabase;
         this.formulaOptions = formulaOptions;
     }
 
@@ -132,7 +123,7 @@ class MatchupChart {
                 cell.rowSpan = topMoveIndex + 1;
 
                 if (topMoveIndex < topPokemonMoveSlugs.length) {
-                    var moveStat = movesDataset.getMoveStats(topPokemonMoveSlugs[topMoveIndex], topPokemonStat);
+                    var moveStat = database.movesDataset.getMoveStats(topPokemonMoveSlugs[topMoveIndex], topPokemonStat);
 
                     processCellEfficacy(cell, moveStat, topPokemonStat, leftPokemonStat, "top");
                 }
@@ -144,7 +135,7 @@ class MatchupChart {
             var leftPokemonMoveSlugs:Array<String> = leftPokemonStat.moves;
 
             if (leftMoveIndex < leftPokemonMoveSlugs.length) {
-                var moveStat = movesDataset.getMoveStats(leftPokemonMoveSlugs[leftMoveIndex], leftPokemonStat);
+                var moveStat = database.movesDataset.getMoveStats(leftPokemonMoveSlugs[leftMoveIndex], leftPokemonStat);
 
                 processCellEfficacy(cell, moveStat, leftPokemonStat, topPokemonStat, "left");
             }
@@ -170,7 +161,7 @@ class MatchupChart {
 
         if (moveIndex < moveSlugs.length) {
             var moveSlug = moveSlugs[moveIndex];
-            var moveStats = movesDataset.getMoveStats(moveSlug, pokemonStat);
+            var moveStats = database.movesDataset.getMoveStats(moveSlug, pokemonStat);
 
             processMoveLabelCell(moveStats, labelCell, position);
         }
@@ -248,7 +239,7 @@ class MatchupChart {
         var span:SpanElement = Browser.document.createSpanElement();
         span.classList.add('matchupChartEfficacyRotate-$position');
 
-        var damageResult = Formula.computeResult(userPokemonStat, foePokemonStat, userMoveStat, descriptionsDataset, formulaOptions);
+        var damageResult = Formula.computeResult(userPokemonStat, foePokemonStat, userMoveStat, database.descriptionsDataset, formulaOptions);
         var factor = damageResult.factor;
         var factorString;
 

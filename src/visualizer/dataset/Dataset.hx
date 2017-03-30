@@ -8,11 +8,12 @@ class Dataset {
     }
 
     public function load(callback:Bool->Void) {
+        throw "Not implemented";
     }
 
     function makeRequest(url:String, callback:Bool->Void) {
         this.callback = callback;
-        untyped __js__("jQuery.getJSON")(url).done(loadDone).fail(loadFailed);
+        js.jquery.JQuery.getJSON(url).done(loadDone).fail(loadFailed);
     }
 
     function loadDone(data:Dynamic) {

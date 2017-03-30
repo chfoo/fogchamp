@@ -1,6 +1,5 @@
 package visualizer.api;
 
-import visualizer.dataset.PokemonDataset;
 import visualizer.datastruct.PokemonStats;
 import js.jquery.JQuery;
 import js.jquery.JqXHR;
@@ -17,11 +16,9 @@ class APIFacade {
 //    static var CURRENT_MATCH_API_URL(default, null) = "/test_data/match.json";
     static var POKEMON_SETS_API_URL(default, null) = "https://twitchplayspokemon.tv/api/pokemon_sets?id&limit=100";
     static var CONSUME_CURSOR_API_URL(default, null) = "https://twitchplayspokemon.tv/api/cursor/";
-    var pokemonDataset:PokemonDataset;
     var callInProgress = false;
 
-    public function new(pokemonDataset:PokemonDataset) {
-        this.pokemonDataset = pokemonDataset;
+    public function new() {
     }
 
     public function getCurrentMatch(callback:CurrentMatchCallback) {
@@ -146,11 +143,7 @@ class APIFacade {
         var stats = new PokemonStats();
         var speciesId:Int = Reflect.field(Reflect.field(jsonDoc, "species"), "id");
         var effectiveStats = Reflect.field(jsonDoc, "stats");
-        stats.slug = pokemonDataset.getSlug(speciesId);
-        var originalDBIndex = pokemonDataset.datasetIndex;
-        pokemonDataset.datasetIndex = 5;
-        var historicalStats = pokemonDataset.getPokemonStats(stats.slug);
-        pokemonDataset.datasetIndex = originalDBIndex;
+
 
         if (Reflect.hasField(jsonDoc, "ability") && Reflect.field(jsonDoc, "ability") != null) {
             var rawName = Reflect.field(Reflect.field(jsonDoc, "ability"), "name");
@@ -197,8 +190,6 @@ class APIFacade {
         stats.specialAttack = Reflect.field(effectiveStats, "spA");
         stats.specialDefense = Reflect.field(effectiveStats, "spD");
         stats.speed = Reflect.field(effectiveStats, "spe");
-        stats.types = historicalStats.types;
-        stats.weight = historicalStats.weight;
 
         return stats;
     }

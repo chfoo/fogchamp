@@ -11,13 +11,11 @@ typedef DatasetDoc = {
 
 
 class PokemonDataset extends Dataset {
-    static public var DATASET_FILES(default, null) = ["pbr-gold.json", "pbr-platinum.json", "pbr-seel.json", "pbr-gold-1.2.json", "pbr-gold-1.2-2015-11-07.json", "pbr-2.0.json", "pbr-2.0.json"];
-    static public var DATASET_NAMES(default, null) = ["Nkekev PBR Gold", "Nkekev PBR Platinum", "TPPVisuals PBR Seel", "Addarash1/Chaos_lord PBR Gold 1.2", "Chauzu PBR Gold 1.2 2015-11-07", "Addarash1 PBR 2.0", "Customizable (2017)"];
-    static public var DEFAULT_INDEX(default, null) = 6;
-    static public var CUSTOMIZABLE_INDEX(default, null) = 6;
+    static public var DATASET_FILES(default, null) = ["pbr-gold.json", "pbr-platinum.json", "pbr-seel.json", "pbr-gold-1.2.json", "pbr-gold-1.2-2015-11-07.json", "pbr-2.0.json"];
+    static public var DATASET_NAMES(default, null) = ["Nkekev PBR Gold", "Nkekev PBR Platinum", "TPPVisuals PBR Seel", "Addarash1/Chaos_lord PBR Gold 1.2", "Chauzu PBR Gold 1.2 2015-11-07", "Addarash1 PBR 2.0"];
+    static public var DEFAULT_INDEX(default, null) = 5;
 
     var datasets:Array<DatasetDoc>;
-    var customStats:Map<String, PokemonStats>;
 
     public var slugs(get, null):Vector<String>;
     public var stats(get, null):Map<String, Dynamic>;
@@ -27,7 +25,6 @@ class PokemonDataset extends Dataset {
     public function new() {
         super();
         datasets = new Array<DatasetDoc>();
-        customStats = new Map<String, PokemonStats>();
     }
 
     override public function load(callback) {
@@ -79,23 +76,9 @@ class PokemonDataset extends Dataset {
         return datasets[datasetIndex].stats;
     }
 
-    public function getPokemonStats(slug:String, ?slotNum:Int):PokemonStats {
-        if (slotNum == null) {
-            slotNum = 0;
-        }
-        if (datasetIndex == CUSTOMIZABLE_INDEX && customStats.exists('$slug*$slotNum')) {
-            return customStats.get('$slug*$slotNum').clone();
-        } else {
-            var pokemonStat = PokemonStats.fromJson(slug, Reflect.field(stats, slug));
-            return pokemonStat;
-        }
-    }
-
-    public function setPokemonStats(slug:String, stats:PokemonStats, ?slotNum:Int) {
-        if (slotNum == null) {
-            slotNum = 0;
-        }
-        customStats.set('$slug*$slotNum', stats.clone());
+    public function getPokemonStats(slug:String):PokemonStats {
+        var pokemonStat = PokemonStats.fromJson(slug, Reflect.field(stats, slug));
+        return pokemonStat;
     }
 
     public function getSlug(pokemonNum:Int):String {

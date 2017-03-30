@@ -1,31 +1,38 @@
 package visualizer;
 
 
+import visualizer.dataset.APIPokemonDataset;
+import js.jquery.Event;
+import visualizer.model.PokemonDatabase;
 import visualizer.dataset.DescriptionsDataset;
 import visualizer.dataset.MovesDataset;
 import visualizer.dataset.PokemonDataset;
 import js.Browser;
-import js.JQuery;
+import js.jquery.JQuery;
 
 
 class Main {
     static var LOAD_FAIL_MSG = "Loading dataset failed. Reload the page.";
     var userMessage:UserMessage;
     var pokemonDataset:PokemonDataset;
+    var apiPokemonDataset:APIPokemonDataset;
     var movesDataset:MovesDataset;
     var descriptionsDataset:DescriptionsDataset;
+    var database:PokemonDatabase;
     var ui:UI;
 
     public function new() {
         userMessage = new UserMessage();
         pokemonDataset = new PokemonDataset();
+        apiPokemonDataset = new APIPokemonDataset();
         movesDataset = new MovesDataset();
         descriptionsDataset = new DescriptionsDataset();
+        database = new PokemonDatabase(pokemonDataset, movesDataset, descriptionsDataset);
     }
 
     static public function main() {
         var app = new Main();
-        new JQuery(Browser.document.body).ready(function (event:JqEvent) {
+        new JQuery(Browser.document.body).ready(function (event:Event) {
             app.run();
         });
     }
@@ -71,7 +78,7 @@ class Main {
             function (success:Bool) {
                 if (success) {
                     userMessage.hide();
-                    loadUI();
+                    loadMovesets();
                 } else {
                     userMessage.showMessage(LOAD_FAIL_MSG);
                 }
@@ -79,8 +86,22 @@ class Main {
         );
     }
 
+    function loadMovesets() {
+        userMessage.showMessage("Loading Movesets from TPP.");
+        apiPokemonDataset.load(
+            function (success:Bool) {
+                if (success) {
+                    userMessage.hide();
+                } else {
+                    userMessage.showMessage("Failed to load movesets from TPP.");
+                }
+                loadUI();
+            }
+        );
+    }
+
     function loadUI() {
-        ui = new UI(pokemonDataset, movesDataset, descriptionsDataset);
+        ui = new UI(database);
         ui.setup();
     }
 }
