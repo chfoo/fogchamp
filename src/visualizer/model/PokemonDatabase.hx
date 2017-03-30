@@ -2,7 +2,6 @@ package visualizer.model;
 
 import visualizer.datastruct.MovesetPokemonStats;
 import visualizer.dataset.APIPokemonDataset;
-import visualizer.dataset.APIPokemonDataset;
 import visualizer.datastruct.PokemonStats;
 import visualizer.dataset.PokemonDataset;
 import visualizer.dataset.DescriptionsDataset;
@@ -73,7 +72,9 @@ class PokemonDatabase {
         if (customStats.exists(slug)) {
             return customStats.get(slug).copy();
         } else if (edition == API_EDITION) {
-            return apiPokemonDataset.getPokemonStats(slug);
+            var stats = apiPokemonDataset.getPokemonStats(slug);
+            backfillMissingPokemonStats(stats);
+            return stats;
         } else {
             return pokemonDataset.getPokemonStats(slug);
         }
@@ -95,7 +96,7 @@ class PokemonDatabase {
         return customStats.exists(slug);
     }
 
-    public function backfillAPIMissingPokemonStats(stats:PokemonStats) {
+    public function backfillMissingPokemonStats(stats:PokemonStats) {
         if (stats.slug == null) {
             stats.slug = getPokemonSlugByID(stats.number);
         }

@@ -206,7 +206,7 @@ class UI {
             new JQuery("#fetchMatchFromAPIButton").prop("disabled", false);
             if (success) {
                 for (stat in pokemonStatsList) {
-                    database.backfillAPIMissingPokemonStats(stat);
+                    database.backfillMissingPokemonStats(stat);
                 }
 
                 applyAPIPokemonList(pokemonStatsList);
@@ -235,7 +235,6 @@ class UI {
             if (pokemonStats == null) {
                 var slug = database.getPokemonSlugByID(currentPokemon.get(i).number);
                 pokemonStats = database.getPokemonStats(slug);
-                database.backfillAPIMissingPokemonStats(pokemonStats);
             }
 
             if (pokemonStats == null) {
@@ -250,7 +249,7 @@ class UI {
 
     function selectChanged(slotNum:Int, slug:String) {
         currentPokemon.set(slotNum, database.getPokemonStats(slug));
-        database.backfillAPIMissingPokemonStats(currentPokemon.get(slotNum));
+        database.backfillMissingPokemonStats(currentPokemon.get(slotNum));
 
         renderAll();
     }
