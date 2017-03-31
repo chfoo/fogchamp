@@ -1,6 +1,7 @@
 package visualizer;
 
 import visualizer.datastruct.VisualizerPokemonStats;
+import visualizer.datastruct.VisualizerPokemonStats;
 import visualizer.dataset.Dataset.LoadEvent;
 import visualizer.datastruct.MovesetPokemonStats;
 import js.jquery.Event;
@@ -600,10 +601,17 @@ class UI {
         return genderRenderList;
     }
 
-    function buildEditAbilityRenderDoc(pokemonStats:PokemonStats):Dynamic {
+    function buildEditAbilityRenderDoc(pokemonStats:VisualizerPokemonStats):Dynamic {
         var abilityRenderList = [{"slug": "", "label": "-", "selected": ""}];
+        var setList;
 
-        for (abilitySlug in database.descriptionsDataset.abilities.keys()) {
+        if (pokemonStats.abilitySet != null) {
+            setList = pokemonStats.abilitySet.iterator();
+        } else {
+            setList = database.descriptionsDataset.abilities.keys();
+        }
+
+        for (abilitySlug in setList) {
             abilityRenderList.push({
                 "slug": abilitySlug,
                 "label": database.descriptionsDataset.abilities.get(abilitySlug).name,
@@ -614,10 +622,17 @@ class UI {
         return abilityRenderList;
     }
 
-    function buildEditItemRenderDoc(pokemonStats:PokemonStats):Dynamic {
+    function buildEditItemRenderDoc(pokemonStats:VisualizerPokemonStats):Dynamic {
         var itemRenderList = [{"slug": "", "label": "-", "selected": ""}];
+        var setList;
 
-        for (itemSlug in database.descriptionsDataset.items.keys()) {
+        if (pokemonStats.itemSet != null) {
+            setList = pokemonStats.itemSet.iterator();
+        } else {
+            setList = database.descriptionsDataset.items.keys();
+        }
+
+        for (itemSlug in setList) {
             itemRenderList.push({
                 "slug": itemSlug,
                 "label": database.descriptionsDataset.items.get(itemSlug).name,
@@ -628,10 +643,18 @@ class UI {
         return itemRenderList;
     }
 
-    function buildEditMoveRenderDoc(pokemonStats:PokemonStats, slot:Int):Dynamic {
+    function buildEditMoveRenderDoc(pokemonStats:VisualizerPokemonStats, slot:Int):Dynamic {
         var moveRenderList = [{"slug": "", "label": "-", "selected": ""}];
 
-        for (moveSlug in database.movesDataset.moves.keys()) {
+        var setList;
+
+        if (pokemonStats.itemSet != null && slot <= pokemonStats.moveSets.length - 1) {
+            setList = pokemonStats.moveSets[slot].iterator();
+        } else {
+            setList = database.movesDataset.moves.keys();
+        }
+
+        for (moveSlug in setList) {
             moveRenderList.push({
                 "slug": moveSlug,
                 "label": database.movesDataset.getMoveStats(moveSlug).name,
