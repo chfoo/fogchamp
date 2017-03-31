@@ -1,5 +1,7 @@
-package visualizer;
+package visualizer.dataset;
 
+import visualizer.datastruct.PokemonStats;
+import visualizer.datastruct.MoveStats;
 
 typedef MovesMap = Map<String,MoveStats>;
 
@@ -18,14 +20,16 @@ class MovesDataset extends Dataset {
         moves = new MovesMap();
 
         for (slug in Reflect.fields(data)) {
-            moves.set(slug, MoveStats.fromJson(slug, Reflect.field(data, slug)));
+            var moveStats = new MoveStats(slug);
+            moveStats.fromJsonObject(Reflect.field(data, slug));
+            moves.set(slug, moveStats);
         }
 
         super.loadDone(data);
     }
 
     public function getMoveStats(slug:String, ?pokemonStat:PokemonStats):MoveStats {
-        var moveStat = moves.get(slug).clone();
+        var moveStat = moves.get(slug).copy();
 
         if (pokemonStat != null && slug == "hidden-power" && pokemonStat.moveTypeOverride != null) {
             moveStat.moveType = pokemonStat.moveTypeOverride;

@@ -1,6 +1,9 @@
 package visualizer;
 
 
+import visualizer.dataset.DescriptionsDataset;
+import visualizer.datastruct.MoveStats;
+import visualizer.datastruct.PokemonStats;
 typedef DamageResult = {
     factor: Int,
     minHP: Float,
@@ -36,9 +39,9 @@ class Formula {
     public static var VARIABLE_POWER_MOVE = ["magnitude"];
 
     static public function computeResult(
-            userPokemonStat:PokemonStats, foePokemonStat:PokemonStats,
-            userMoveStat:MoveStats, descriptionsDataset:DescriptionsDataset,
-            formulaOptions:FormulaOptions
+        userPokemonStat:PokemonStats, foePokemonStat:PokemonStats,
+        userMoveStat:MoveStats, descriptionsDataset:DescriptionsDataset,
+        formulaOptions:FormulaOptions
     ):DamageResult {
         var userMoveType:String = userMoveStat.moveType;
         var userTypes:Array<String> = userPokemonStat.types;
