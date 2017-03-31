@@ -5,7 +5,6 @@ import visualizer.datastruct.MovesetPokemonStats;
 import js.jquery.Event;
 import visualizer.model.PokemonDatabase;
 import visualizer.datastruct.PokemonStats;
-import visualizer.api.APIFacade;
 import visualizer.Formula.FormulaOptions;
 import js.html.DivElement;
 import js.html.OptionElement;
@@ -31,14 +30,12 @@ class UI {
     var currentPokemon:Vector<PokemonStats>;
     var previousUrlHash:String = null;
     var formulaOptions:FormulaOptions;
-//    var apiFacade:APIFacade;
 
     public function new(pokemonDatabase:PokemonDatabase) {
         database = pokemonDatabase;
         userMessage = new UserMessage();
         currentPokemon = new Vector(6);
         formulaOptions = new FormulaOptions();
-//        apiFacade = new APIFacade();
     }
 
     static function renderTemplate(template:String, data:Dynamic):String {
@@ -626,8 +623,8 @@ class UI {
         for (slotNum in 0...6) {
             var pokemonStats = pokemonStatsList[slotNum];
             currentPokemon.set(slotNum, pokemonStats);
-            pokemonStats.name = '${pokemonStats.name} - Current $slotNum';
-            database.setCustomPokemonStats('${pokemonStats.name}-Current $slotNum', pokemonStats);
+//            pokemonStats.name = '${pokemonStats.name} - Current $slotNum';
+//            database.setCustomPokemonStats('${pokemonStats.name}-Current $slotNum', pokemonStats);
 
         }
 //        renderSelectionList();

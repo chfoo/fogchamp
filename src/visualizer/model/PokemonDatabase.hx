@@ -67,12 +67,20 @@ class PokemonDatabase {
             slugs.push(slug);
         }
 
+        if (currentMatchDataset.slugs != null) {
+            for (slug in currentMatchDataset.slugs) {
+                slugs.push(slug);
+            }
+        }
+
         return slugs;
     }
 
     public function getPokemonStats(slug:String):PokemonStats {
         if (customStats.exists(slug)) {
             return customStats.get(slug).copy();
+        } else if (currentMatchDataset.slugs != null && currentMatchDataset.slugs.indexOf(slug) >= 0) {
+            return currentMatchDataset.getPokemonStats(slug);
         } else if (edition == API_EDITION) {
             var stats = apiPokemonDataset.getPokemonStats(slug);
             backfillMissingPokemonStats(stats);
