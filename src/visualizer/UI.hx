@@ -28,7 +28,7 @@ class UI {
     var userMessage:UserMessage;
     static var DEFAULT_POKEMON:Vector<Int> = Vector.fromArrayCopy([493, 257, 462, 244, 441, 139]);
     var currentPokemon:Vector<PokemonStats>;
-    var previousUrlHash:String = null;
+    var currentUrlHash:String;
     var formulaOptions:FormulaOptions;
 
     public function new(pokemonDatabase:PokemonDatabase) {
@@ -153,7 +153,7 @@ class UI {
     function readUrlFragment() {
         var fragment = Browser.location.hash;
 
-        if (fragment == previousUrlHash) {
+        if (fragment == currentUrlHash) {
             return;
         }
 
@@ -184,7 +184,11 @@ class UI {
             }
         }
 
-        previousUrlHash = '#$fragment';
+        // Setting the hash will trigger hashchange event.
+        // Disabling the hander while setting the hash does not work since
+        // it is asynchronous. As a result, we need to keep state and ignore
+        // the event if we see that we set the hash ourselves.
+        currentUrlHash = fragment;
         Browser.location.hash = fragment;
     }
 
@@ -214,7 +218,6 @@ class UI {
     }
 
     function setSelectionByNumbers(pokemonNums:Vector<Int>) {
-        trace("set by number");
         for (i in 0...6) {
             var slug = database.getPokemonSlugByID(pokemonNums.get(i));
             currentPokemon.set(i, database.getPokemonStats(slug));
@@ -223,7 +226,6 @@ class UI {
     }
 
     function updateCurrentToNearestStatsByEdition() {
-        trace("update nearest");
         for (i in 0...6) {
             var pokemonStats = database.getPokemonStats(currentPokemon.get(i).slug);
 
@@ -256,7 +258,6 @@ class UI {
     }
 
     function selectChanged(slotNum:Int, slug:String) {
-        trace("select changed");
         currentPokemon.set(slotNum, database.getPokemonStats(slug));
 
         renderAll();
@@ -271,12 +272,10 @@ class UI {
         for (i in 0...6) {
             var stats = currentPokemon.get(i);
             // Disable to prevent onchange firing while setting
-            trace('set val');
             new JQuery('#selectionSelect$i')
                 .prop("disabled", "disabled")
                 .val(stats.slug)
                 .prop("disabled", false);
-            trace('set val end');
         }
     }
 
