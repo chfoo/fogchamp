@@ -3,6 +3,12 @@ package visualizer.dataset;
 import js.jquery.JqXHR;
 
 
+class DatasetItemNotFoundError {
+    public function new() {
+
+    }
+}
+
 class LoadEvent {
     public var success:Bool;
     public var errorMessage:String;

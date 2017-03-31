@@ -1,5 +1,6 @@
 package visualizer.model;
 
+import visualizer.dataset.Dataset;
 import visualizer.datastruct.VisualizerPokemonStats;
 import visualizer.dataset.CurrentMatchDataset;
 import visualizer.datastruct.MovesetPokemonStats;
@@ -8,6 +9,12 @@ import visualizer.datastruct.PokemonStats;
 import visualizer.dataset.PokemonDataset;
 import visualizer.dataset.DescriptionsDataset;
 import visualizer.dataset.MovesDataset;
+
+class StatsNotFoundError {
+    public function new() {
+
+    }
+}
 
 class PokemonDatabase {
     static public var API_EDITION = "API";
@@ -91,14 +98,19 @@ class PokemonDatabase {
             if (stats != null) {
                 pokemonStats.update(stats);
                 backfillMissingPokemonStats(pokemonStats);
+                pokemonStats.fillDefaultSets();
+                return pokemonStats;
+            } else {
+                throw new StatsNotFoundError();
             }
-            return pokemonStats;
         } else {
-            var stats = pokemonDataset.getPokemonStats(slug);
-            if (stats != null) {
+            try {
+                var stats = pokemonDataset.getPokemonStats(slug);
                 pokemonStats.update(stats);
+                return pokemonStats;
+            } catch (error:DatasetItemNotFoundError) {
+                throw new StatsNotFoundError();
             }
-            return pokemonStats;
         }
     }
 

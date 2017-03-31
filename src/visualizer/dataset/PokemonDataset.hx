@@ -1,7 +1,6 @@
 package visualizer.dataset;
 
-import visualizer.dataset.Dataset.LoadEvent;
-import visualizer.dataset.Dataset.LoadEvent;
+import visualizer.dataset.Dataset;
 import visualizer.datastruct.PokemonStats;
 import haxe.ds.Vector;
 
@@ -80,6 +79,10 @@ class PokemonDataset extends Dataset {
     }
 
     public function getPokemonStats(slug:String):PokemonStats {
+        if (!Reflect.hasField(stats, slug)) {
+            throw new DatasetItemNotFoundError();
+        }
+
         var pokemonStat = new PokemonStats();
         pokemonStat.slug = slug;
         pokemonStat.fromJsonObject(Reflect.field(stats, slug));
@@ -94,6 +97,6 @@ class PokemonDataset extends Dataset {
             }
         }
 
-        throw "Unknown Pokemon number.";
+        throw new DatasetItemNotFoundError();
     }
 }

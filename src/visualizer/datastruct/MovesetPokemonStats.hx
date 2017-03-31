@@ -14,6 +14,23 @@ class MovesetPokemonStats extends PokemonStats {
         moveSets = new Array<Array<String>>();
     }
 
+    public function fillDefaultSets() {
+        if (ability == null && abilitySet != null && abilitySet.length > 0) {
+            ability = abilitySet[0];
+        }
+
+        if (item == null && itemSet != null && itemSet.length > 0) {
+            item = itemSet[0];
+        }
+
+        if ((moves == null || moves != null && moves.length == 0) && moveSets != null) {
+            moves = new Array<String>();
+            for (slotMovesSet in moveSets) {
+                moves.push(slotMovesSet[0]);
+            }
+        }
+    }
+
     override public function fromJsonObject(doc:Dynamic) {
         super.fromJsonObject(doc);
 

@@ -58,16 +58,17 @@ class UI {
 
     function renderSelectionList() {
         var template = new JQuery("#pokemonSelectionTemplate").html();
+        var selections = buildSelectionList();
 
         var rendered = renderTemplate(template, {
-            selections: buildSelectionList(),
+            selections: selections,
             slots: [0, 1, 2]
         });
 
         new JQuery("#pokemonSelectionBlue").html(rendered);
 
         var rendered = renderTemplate(template, {
-            selections: buildSelectionList(),
+            selections: selections,
             slots: [3, 4, 5]
         });
 
@@ -227,18 +228,19 @@ class UI {
 
     function updateCurrentToNearestStatsByEdition() {
         for (i in 0...6) {
-            var pokemonStats = database.getPokemonStats(currentPokemon.get(i).slug);
+            var pokemonStats;
 
-            if (pokemonStats == null) {
-                var slug = database.getPokemonSlugByID(currentPokemon.get(i).number);
-                pokemonStats = database.getPokemonStats(slug);
+            try {
+                pokemonStats = database.getPokemonStats(currentPokemon.get(i).slug);
+            } catch (error:StatsNotFoundError) {
+                try {
+                    var slug = database.getPokemonSlugByID(currentPokemon.get(i).number);
+                    pokemonStats = database.getPokemonStats(slug);
+                } catch (error:StatsNotFoundError) {
+                    userMessage.showMessage("The dataset for this edition is corrupt, unrecognized, or not yet loaded.");
+                    throw "Missing dataset";
+                }
             }
-
-            if (pokemonStats == null) {
-                userMessage.showMessage("The dataset for this edition is corrupt, unrecognized, or not yet loaded.");
-                throw "Missing dataset";
-            }
-
             currentPokemon.set(i, pokemonStats);
         }
         syncSelectionListToCurrent();
@@ -633,7 +635,7 @@ class UI {
         if (newCustomization) {
             pokemonStats = pokemonStats.copy();
             pokemonStats.slug = '${pokemonStats.slug}-custom$slotNum';
-            pokemonStats.name = '${pokemonStats.name} - Custom $slotNum';
+            pokemonStats.movesetName = 'Custom $slotNum';
         }
 
         currentPokemon.set(slotNum, pokemonStats);
