@@ -1,5 +1,6 @@
 package visualizer.model;
 
+import visualizer.datastruct.VisualizerPokemonStats;
 import visualizer.dataset.CurrentMatchDataset;
 import visualizer.datastruct.MovesetPokemonStats;
 import visualizer.dataset.APIPokemonDataset;
@@ -76,19 +77,28 @@ class PokemonDatabase {
         return slugs;
     }
 
-    public function getPokemonStats(slug:String):PokemonStats {
+    public function getPokemonStats(slug:String):VisualizerPokemonStats {
+        var pokemonStats = new VisualizerPokemonStats();
+
         if (customStats.exists(slug)) {
-            return customStats.get(slug).copy();
+            pokemonStats.update(customStats.get(slug));
+            return pokemonStats;
         } else if (currentMatchDataset.slugs != null && currentMatchDataset.slugs.indexOf(slug) >= 0) {
-            return currentMatchDataset.getPokemonStats(slug);
+            pokemonStats.update(currentMatchDataset.getPokemonStats(slug));
+            return pokemonStats;
         } else if (edition == API_EDITION) {
             var stats = apiPokemonDataset.getPokemonStats(slug);
             if (stats != null) {
-                backfillMissingPokemonStats(stats);
+                pokemonStats.update(stats);
+                backfillMissingPokemonStats(pokemonStats);
             }
-            return stats;
+            return pokemonStats;
         } else {
-            return pokemonDataset.getPokemonStats(slug);
+            var stats = pokemonDataset.getPokemonStats(slug);
+            if (stats != null) {
+                pokemonStats.update(stats);
+            }
+            return pokemonStats;
         }
     }
 
@@ -108,7 +118,7 @@ class PokemonDatabase {
         return customStats.exists(slug);
     }
 
-    public function getCurrentMatchPokemonStats():Array<PokemonStats> {
+    public function getCurrentMatchPokemonStats():Array<MovesetPokemonStats> {
         for (stats in currentMatchDataset.pokemonStatsList) {
             backfillMissingPokemonStats(stats);
         }

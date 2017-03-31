@@ -80,7 +80,11 @@ class PokemonStats implements Copyable<PokemonStats> {
 
     public function copy():PokemonStats {
         var stat = new PokemonStats();
-        stat.fromJsonObject(toJsonObject());
+        stat.update(this);
         return stat;
+    }
+
+    public function update(other:PokemonStats) {
+        fromJsonObject(other.toJsonObject());
     }
 }

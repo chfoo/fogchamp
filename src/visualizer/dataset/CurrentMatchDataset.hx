@@ -1,6 +1,7 @@
 package visualizer.dataset;
 
 
+import visualizer.datastruct.MovesetPokemonStats;
 import visualizer.datastruct.PokemonStats;
 import visualizer.api.APIFacade;
 import visualizer.dataset.Dataset;
@@ -8,7 +9,7 @@ import visualizer.dataset.Dataset;
 
 class CurrentMatchDataset implements DatasetLoadable {
     var apiFacade:APIFacade;
-    public var pokemonStatsList:Array<PokemonStats>;
+    public var pokemonStatsList:Array<MovesetPokemonStats>;
     public var slugs:Array<String>;
 
     public function new() {
@@ -16,7 +17,7 @@ class CurrentMatchDataset implements DatasetLoadable {
     }
 
     public function load(callback:DatasetLoadCallback) {
-        apiFacade.getCurrentMatch(function (success:Bool, errorMessage:String, pokemonStatsList:Array<PokemonStats>) {
+        apiFacade.getCurrentMatch(function (success:Bool, errorMessage:String, pokemonStatsList:Array<MovesetPokemonStats>) {
             if (success) {
                 this.pokemonStatsList = pokemonStatsList;
 
@@ -24,7 +25,7 @@ class CurrentMatchDataset implements DatasetLoadable {
 
                 for (stats in pokemonStatsList) {
                     stats.slug = APIFacade.slugify('${stats.name}-current');
-                    stats.name = '${stats.name} - Current';
+                    stats.movesetName = "Current";
                     slugs.push(stats.slug);
                 }
 

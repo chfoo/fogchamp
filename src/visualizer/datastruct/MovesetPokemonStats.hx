@@ -34,9 +34,9 @@ class MovesetPokemonStats extends PokemonStats {
         return doc;
     }
 
-//    override public function copy():MovesetPokemonStats {
-//        var stat = new MovesetPokemonStats();
-//        stat.fromJsonObject(toJsonObject());
-//        return stat;
-//    }
+    override public function copy():MovesetPokemonStats {
+        var stat = new MovesetPokemonStats();
+        stat.update(this);
+        return stat;
+    }
 }

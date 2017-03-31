@@ -140,19 +140,19 @@ class APIFacade {
         });
     }
 
-    function parseMatchPokemon(jsonDoc:Dynamic):Array<PokemonStats> {
+    function parseMatchPokemon(jsonDoc:Dynamic):Array<MovesetPokemonStats> {
         var teams:Array<Dynamic> = Reflect.field(jsonDoc, "teams");
         var teamBlue:Array<Dynamic> = teams[0];
         var teamRed:Array<Dynamic> = teams[1];
         var pokemonStats = [];
 
         for (pokemonDoc in teamBlue) {
-            var stats = new PokemonStats();
+            var stats = new MovesetPokemonStats();
             parsePokemonStats(pokemonDoc, stats);
             pokemonStats.push(stats);
         }
         for (pokemonDoc in teamRed) {
-            var stats = new PokemonStats();
+            var stats = new MovesetPokemonStats();
             parsePokemonStats(pokemonDoc, stats);
             pokemonStats.push(stats);
         }
