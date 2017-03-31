@@ -140,10 +140,9 @@ class UI {
 
         new JQuery("#pokemonEditionSelect").change(function (event:Event) {
             database.setEdition(new JQuery(selectElement).val());
-            renderSelectionList();
-            attachSelectChangeListeners();
-            setSelectionByEditionChange();
-            renderAll(false);
+            reloadSelectionList();
+            updateCurrentToNearestStatsByEdition();
+            renderAll();
         });
     }
 
@@ -203,7 +202,7 @@ class UI {
         database.currentMatchDataset.load(function (loadEvent:LoadEvent) {
             new JQuery("#fetchMatchFromAPIButton").prop("disabled", false);
             if (loadEvent.success) {
-                applyAPIPokemonList(database.getCurrentMatchPokemonStats());
+                setSelectionByAPI(database.getCurrentMatchPokemonStats());
             } else {
                 if (loadEvent.errorMessage != null) {
                     userMessage.showMessage('An error occurred fetching current match: "${loadEvent.errorMessage}". Complain to Felk if error persists.');
@@ -215,14 +214,16 @@ class UI {
     }
 
     function setSelectionByNumbers(pokemonNums:Vector<Int>) {
+        trace("set by number");
         for (i in 0...6) {
             var slug = database.getPokemonSlugByID(pokemonNums.get(i));
             currentPokemon.set(i, database.getPokemonStats(slug));
-            new JQuery('#selectionSelect$i').val(slug);
         }
+        syncSelectionListToCurrent();
     }
 
-    function setSelectionByEditionChange() {
+    function updateCurrentToNearestStatsByEdition() {
+        trace("update nearest");
         for (i in 0...6) {
             var pokemonStats = database.getPokemonStats(currentPokemon.get(i).slug);
 
@@ -237,14 +238,46 @@ class UI {
             }
 
             currentPokemon.set(i, pokemonStats);
-            new JQuery('#selectionSelect$i').val(pokemonStats.slug);
         }
+        syncSelectionListToCurrent();
+    }
+
+    function setSelectionByAPI(pokemonStatsList:Array<PokemonStats>) {
+        var selectElement = cast(Browser.document.getElementById("pokemonEditionSelect"), SelectElement);
+
+        for (slotNum in 0...6) {
+            var pokemonStats = pokemonStatsList[slotNum];
+            currentPokemon.set(slotNum, pokemonStats);
+
+        }
+        reloadSelectionList();
+        syncSelectionListToCurrent();
+        renderAll();
     }
 
     function selectChanged(slotNum:Int, slug:String) {
+        trace("select changed");
         currentPokemon.set(slotNum, database.getPokemonStats(slug));
 
         renderAll();
+    }
+
+    function reloadSelectionList() {
+        renderSelectionList();
+        attachSelectChangeListeners();
+    }
+
+    function syncSelectionListToCurrent() {
+        for (i in 0...6) {
+            var stats = currentPokemon.get(i);
+            // Disable to prevent onchange firing while setting
+            trace('set val');
+            new JQuery('#selectionSelect$i')
+                .prop("disabled", "disabled")
+                .val(stats.slug)
+                .prop("disabled", false);
+            trace('set val end');
+        }
     }
 
     function renderAll(?updateUrlFragment:Bool) {
@@ -605,32 +638,10 @@ class UI {
         database.setCustomPokemonStats(pokemonStats.slug, pokemonStats);
 
         if (newCustomization) {
-            renderSelectionList();
-            attachSelectChangeListeners();
-            setSelectionByEditionChange();
+            reloadSelectionList();
         }
 
         renderAll(false);
-    }
-
-    function applyAPIPokemonList(pokemonStatsList:Array<PokemonStats>) {
-        var selectElement = cast(Browser.document.getElementById("pokemonEditionSelect"), SelectElement);
-
-//        database.setEdition(PokemonDatabase.API_EDITION);
-
-//        selectElement.selectedIndex = database.getEditionNames().length - 1;
-
-        for (slotNum in 0...6) {
-            var pokemonStats = pokemonStatsList[slotNum];
-            currentPokemon.set(slotNum, pokemonStats);
-//            pokemonStats.name = '${pokemonStats.name} - Current $slotNum';
-//            database.setCustomPokemonStats('${pokemonStats.name}-Current $slotNum', pokemonStats);
-
-        }
-//        renderSelectionList();
-//        attachSelectChangeListeners();
-//        setSelectionByEditionChange();
-        renderAll();
     }
 
     function renderChart() {
