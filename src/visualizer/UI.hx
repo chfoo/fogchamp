@@ -50,10 +50,14 @@ class UI {
         attachEditionSelectListener();
         attachUrlFragmentChangeListener();
         attachFetchFromAPIButtonListener();
+        attachMovesetDownloadButtonLisenter();
         setSelectionByNumbers(DEFAULT_POKEMON);
+        var editions = database.getEditionNames();
+        selectEdition(editions[editions.length - 2]);
         attachOptionsListeners();
         readUrlFragment();
         renderAll();
+        promptToDownloadMovesets();
     }
 
     function renderSelectionList() {
@@ -131,20 +135,29 @@ class UI {
 
             selectElement.add(optionElement);
         }
-
-        selectElement.selectedIndex = names.length - 2;
-        database.setEdition(new JQuery(selectElement).val());
     }
 
     function attachEditionSelectListener() {
         var selectElement = cast(Browser.document.getElementById("pokemonEditionSelect"), SelectElement);
 
         new JQuery("#pokemonEditionSelect").change(function (event:Event) {
-            database.setEdition(new JQuery(selectElement).val());
-            reloadSelectionList();
-            updateCurrentToNearestStatsByEdition();
-            renderAll();
+            selectEdition(new JQuery(selectElement).val());
         });
+    }
+
+    function selectEdition(name:String) {
+        if (name == PokemonDatabase.API_EDITION) {
+            new JQuery("#downloadMovesetsButton").prop("disabled", false);
+        } else {
+            new JQuery("#downloadMovesetsButton").prop("disabled", "disabled");
+        }
+
+        database.setEdition(name);
+        var selectElement = cast(Browser.document.getElementById("pokemonEditionSelect"), SelectElement);
+        selectElement.selectedIndex = database.getEditionNames().indexOf(name);
+        reloadSelectionList();
+        updateCurrentToNearestStatsByEdition();
+        renderAll();
     }
 
     function attachUrlFragmentChangeListener() {
@@ -199,9 +212,14 @@ class UI {
         });
     }
 
-    function fetchFromAPI() {
-        new JQuery("#fetchMatchFromAPIButton").prop("disabled", true);
+    function attachMovesetDownloadButtonLisenter() {
+        new JQuery("#downloadMovesetsButton").click(function (event:Event) {
+            new JQuery("#downloadMovesetsButton").prop("disabled", "disabled");
+            fetchMovesetsFromAPI();
+        });
+    }
 
+    function fetchFromAPI() {
         userMessage.showMessage("Fetching current match from TPP API...");
 
         database.currentMatchDataset.load(function (loadEvent:LoadEvent) {
@@ -216,6 +234,54 @@ class UI {
                 }
             }
         });
+    }
+
+    function promptToDownloadMovesets() {
+        if (database.apiPokemonDataset.slugs.length == 0) {
+            untyped new JQuery("#promptDialog").html("
+            <p>
+            <big><strong>Download the latest movesets from TPP?</strong></big>
+            </p>
+            <p>Downloading will take a while but this only has to be done once.</p>
+            ")
+            .dialog({
+                modal: true,
+                buttons: {
+                    "Skip": function () {
+                        new JQuery("#promptDialog").dialog("close");
+                    },
+                    "Download": function() {
+                        new JQuery("#downloadMovesetsButton").prop("disabled", "disabled");
+                        fetchMovesetsFromAPI();
+                        new JQuery("#promptDialog").dialog("close");
+                    }
+                },
+                open: function () {
+                    new JQuery(".ui-dialog-buttonset button:nth-child(2)").focus();
+                }
+            });
+        }
+    }
+
+    function fetchMovesetsFromAPI() {
+        userMessage.showMessage("Loading Movesets from TPP. This may take a while...");
+
+        function showProgressCallback(value:Int) {
+            userMessage.showMessage('Loading Movesets from TPP. Progress: $value');
+        }
+
+        database.apiPokemonDataset.clearStorage();
+        database.apiPokemonDataset.apiFacade.progressCallback = showProgressCallback;
+        database.apiPokemonDataset.load(
+            function (event:LoadEvent) {
+                if (event.success) {
+                    userMessage.hide();
+                    database.apiPokemonDataset.saveToStorage();
+                } else {
+                    userMessage.showMessage('Failed to load movesets from TPP: ${event.errorMessage}');
+                }
+            }
+        );
     }
 
     function setSelectionByNumbers(pokemonNums:Vector<Int>) {

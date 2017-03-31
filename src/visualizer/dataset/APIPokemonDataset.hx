@@ -1,10 +1,12 @@
 package visualizer.dataset;
 
-import visualizer.dataset.Dataset.LoadEvent;
+import visualizer.dataset.Dataset;
 import haxe.Json;
 import js.Browser;
 import visualizer.datastruct.MovesetPokemonStats;
 import visualizer.api.APIFacade;
+
+using StringTools;
 
 
 class StorageEmpty {
@@ -17,7 +19,7 @@ class APIPokemonDataset extends Dataset {
     public var slugs(default, null):Array<String>;
 
     var stats:Map<String, MovesetPokemonStats>;
-    var apiFacade:APIFacade;
+    public var apiFacade(default, null):APIFacade;
 
     public function new() {
         super();
@@ -27,6 +29,9 @@ class APIPokemonDataset extends Dataset {
     }
 
     override public function load(callback) {
+        slugs = [];
+        stats = new Map<String, MovesetPokemonStats>();
+
         apiFacade.getPokemonSets(
             function (success:Bool, errorMessage:String, pokemonStatsList:Array<MovesetPokemonStats>) {
                 if (success) {
@@ -49,7 +54,7 @@ class APIPokemonDataset extends Dataset {
             }
         }
 
-        throw "Unknown Pokemon number.";
+        throw new DatasetItemNotFoundError();
     }
 
     function loadPokemon(pokemonStatsList:Array<MovesetPokemonStats>) {
@@ -92,5 +97,21 @@ class APIPokemonDataset extends Dataset {
         Browser.window.localStorage.setItem(
             '$STORAGE_KEY:slugs', Json.stringify(slugs)
         );
+    }
+
+    public function clearStorage() {
+        var deleteKeys = [];
+
+        for (i in 0...Browser.window.localStorage.length) {
+            var key = Browser.window.localStorage.key(i);
+
+            if (key.startsWith(STORAGE_KEY)) {
+                deleteKeys.push(key);
+            }
+        }
+
+        for (key in deleteKeys) {
+            Browser.window.localStorage.removeItem(key);
+        }
     }
 }

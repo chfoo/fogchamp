@@ -91,26 +91,10 @@ class Main {
         try {
             apiPokemonDataset.loadFromStorage();
         } catch (error:StorageEmpty) {
-            callAPIForMovesets();
-            return;
+            // User can try again later
         }
 
         loadUI();
-    }
-
-    function callAPIForMovesets() {
-        userMessage.showMessage("Loading Movesets from TPP... This may take a while.");
-        apiPokemonDataset.load(
-            function (event:LoadEvent) {
-                if (event.success) {
-                    userMessage.hide();
-                    apiPokemonDataset.saveToStorage();
-                } else {
-                    userMessage.showMessage("Failed to load movesets from TPP.");
-                }
-                loadUI();
-            }
-        );
     }
 
     function loadUI() {

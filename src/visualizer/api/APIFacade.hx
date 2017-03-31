@@ -10,7 +10,7 @@ using StringTools;
 
 typedef AjaxCallback = Dynamic -> String -> JqXHR -> Void;
 typedef FailedAjaxCallback = JqXHR -> String -> Dynamic -> Void;
-typedef CurrentMatchCallback = Bool -> String -> Array<PokemonStats> -> Void;
+typedef CurrentMatchCallback = Bool -> String -> Array<MovesetPokemonStats> -> Void;
 typedef PokemonSetsCallback = Bool -> String -> Array<MovesetPokemonStats> -> Void;
 
 class APIFacade {
@@ -19,6 +19,7 @@ class APIFacade {
     static var POKEMON_SETS_API_URL(default, null) = "https://twitchplayspokemon.tv/api/pokemon_sets?id&limit=100";
     static var CONSUME_CURSOR_API_URL(default, null) = "https://twitchplayspokemon.tv/api/cursor/";
     var callInProgress = false;
+    public var progressCallback:Int->Void;
 
     public function new() {
     }
@@ -62,10 +63,12 @@ class APIFacade {
         var pokemonResults = [];
 
         function callbackResults() {
+            progressCallback = null;
             callback(true, null, pokemonResults);
         }
 
         function errorHandler(xhr:JqXHR, textStatus:String, error:Dynamic) {
+            progressCallback = null;
             var jsonResult = untyped xhr.responseJSON;
             if (jsonResult != null && Reflect.hasField(jsonResult, "message")) {
                 callback(false, Reflect.field(jsonResult, "message"), null);
@@ -75,6 +78,7 @@ class APIFacade {
         }
 
         function cursorErrorHandler(xhr:JqXHR, textStatus:String, error:Dynamic) {
+            progressCallback = null;
             if (xhr.status == 410) {
                 callbackResults();
             } else {
@@ -91,6 +95,8 @@ class APIFacade {
                 callback(false, null, null);
                 return;
             }
+
+            progressCallback(pokemonResults.length);
 
             Browser.window.setTimeout(function () {
                 callAPI(
@@ -240,7 +246,7 @@ class APIFacade {
         for (doc in abilitiesDoc) {
             var rawName = Reflect.field(doc, "name");
             if (rawName != null) {
-                stats.itemSet.push(slugify(rawName));
+                stats.abilitySet.push(slugify(rawName));
             }
         }
 

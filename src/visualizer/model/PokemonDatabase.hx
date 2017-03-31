@@ -115,10 +115,14 @@ class PokemonDatabase {
     }
 
     public function getPokemonSlugByID(id:Int):String {
-        if (edition == API_EDITION) {
-            return apiPokemonDataset.getSlug(id);
-        } else {
-            return pokemonDataset.getSlug(id);
+        try {
+            if (edition == API_EDITION) {
+                return apiPokemonDataset.getSlug(id);
+            } else {
+                return pokemonDataset.getSlug(id);
+            }
+        } catch (error:DatasetItemNotFoundError) {
+            throw new StatsNotFoundError();
         }
     }
 
