@@ -267,7 +267,7 @@ class UI {
         userMessage.showMessage("Loading Movesets from TPP. This may take a while...");
 
         function showProgressCallback(value:Int) {
-            userMessage.showMessage('Loading Movesets from TPP. Progress: $value');
+            userMessage.showMessage('Loading Movesets from TPP. Progress: $value movesets loaded');
         }
 
         database.apiPokemonDataset.clearStorage();
