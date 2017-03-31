@@ -3,6 +3,7 @@ package visualizer.datastruct;
 
 class MovesetPokemonStats extends PokemonStats {
     public var abilitySet:Array<String>;
+    public var genderSet:Array<String>;
     public var itemSet:Array<String>;
     public var moveSets:Array<Array<String>>;
     public var movesetName:String;
@@ -17,6 +18,10 @@ class MovesetPokemonStats extends PokemonStats {
     public function fillDefaultSets() {
         if (ability == null && abilitySet != null && abilitySet.length > 0) {
             ability = abilitySet[0];
+        }
+
+        if (gender == null && genderSet != null && genderSet.length > 0) {
+            gender = genderSet[0];
         }
 
         if (item == null && itemSet != null && itemSet.length > 0) {
@@ -35,6 +40,7 @@ class MovesetPokemonStats extends PokemonStats {
         super.fromJsonObject(doc);
 
         abilitySet = Reflect.field(doc, "ability_set");
+        genderSet = Reflect.field(doc, "gender_set");
         itemSet = Reflect.field(doc, "item_set");
         moveSets = Reflect.field(doc, "move_sets");
         movesetName = Reflect.field(doc, "set_name");
@@ -44,6 +50,7 @@ class MovesetPokemonStats extends PokemonStats {
         var doc = super.toJsonObject();
 
         Reflect.setField(doc, "ability_set", abilitySet);
+        Reflect.setField(doc, "gender_set", genderSet);
         Reflect.setField(doc, "item_set", itemSet);
         Reflect.setField(doc, "move_sets", moveSets);
         Reflect.setField(doc, "set_name", movesetName);

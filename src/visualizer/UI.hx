@@ -1,6 +1,7 @@
 package visualizer;
 
 import visualizer.datastruct.VisualizerPokemonStats;
+import visualizer.datastruct.VisualizerPokemonStats;
 import visualizer.dataset.Dataset.LoadEvent;
 import visualizer.datastruct.MovesetPokemonStats;
 import js.jquery.Event;
@@ -267,7 +268,7 @@ class UI {
         userMessage.showMessage("Loading Movesets from TPP. This may take a while...");
 
         function showProgressCallback(value:Int) {
-            userMessage.showMessage('Loading Movesets from TPP. Progress: $value');
+            userMessage.showMessage('Loading Movesets from TPP. Progress: $value movesets loaded');
         }
 
         database.apiPokemonDataset.clearStorage();
@@ -581,7 +582,7 @@ class UI {
             untyped jquery.dialog({position: {my: "center top", at: "center top", of: Browser.window}});
         }
 
-        attachEditFormListeners(pokemonStats, slotNum);
+        attachEditFormListeners(slotNum);
 
         untyped jquery.dialog("option", "title", 'Editing ${pokemonStats.name}');
     }
@@ -600,10 +601,17 @@ class UI {
         return genderRenderList;
     }
 
-    function buildEditAbilityRenderDoc(pokemonStats:PokemonStats):Dynamic {
+    function buildEditAbilityRenderDoc(pokemonStats:VisualizerPokemonStats):Dynamic {
         var abilityRenderList = [{"slug": "", "label": "-", "selected": ""}];
+        var setList;
 
-        for (abilitySlug in database.descriptionsDataset.abilities.keys()) {
+        if (pokemonStats.abilitySet != null) {
+            setList = pokemonStats.abilitySet.iterator();
+        } else {
+            setList = database.descriptionsDataset.abilities.keys();
+        }
+
+        for (abilitySlug in setList) {
             abilityRenderList.push({
                 "slug": abilitySlug,
                 "label": database.descriptionsDataset.abilities.get(abilitySlug).name,
@@ -614,10 +622,17 @@ class UI {
         return abilityRenderList;
     }
 
-    function buildEditItemRenderDoc(pokemonStats:PokemonStats):Dynamic {
+    function buildEditItemRenderDoc(pokemonStats:VisualizerPokemonStats):Dynamic {
         var itemRenderList = [{"slug": "", "label": "-", "selected": ""}];
+        var setList;
 
-        for (itemSlug in database.descriptionsDataset.items.keys()) {
+        if (pokemonStats.itemSet != null) {
+            setList = pokemonStats.itemSet.iterator();
+        } else {
+            setList = database.descriptionsDataset.items.keys();
+        }
+
+        for (itemSlug in setList) {
             itemRenderList.push({
                 "slug": itemSlug,
                 "label": database.descriptionsDataset.items.get(itemSlug).name,
@@ -628,10 +643,18 @@ class UI {
         return itemRenderList;
     }
 
-    function buildEditMoveRenderDoc(pokemonStats:PokemonStats, slot:Int):Dynamic {
+    function buildEditMoveRenderDoc(pokemonStats:VisualizerPokemonStats, slot:Int):Dynamic {
         var moveRenderList = [{"slug": "", "label": "-", "selected": ""}];
 
-        for (moveSlug in database.movesDataset.moves.keys()) {
+        var setList;
+
+        if (pokemonStats.itemSet != null && slot <= pokemonStats.moveSets.length - 1) {
+            setList = pokemonStats.moveSets[slot].iterator();
+        } else {
+            setList = database.movesDataset.moves.keys();
+        }
+
+        for (moveSlug in setList) {
             moveRenderList.push({
                 "slug": moveSlug,
                 "label": database.movesDataset.getMoveStats(moveSlug).name,
@@ -642,7 +665,7 @@ class UI {
         return moveRenderList;
     }
 
-    function attachEditFormListeners(pokemonStats:VisualizerPokemonStats, slotNum:Int) {
+    function attachEditFormListeners(slotNum:Int) {
         var genderInput = new JQuery("#pokemonEditGender");
         var abilityInput = new JQuery("#pokemonEditAbility");
         var itemInput = new JQuery("#pokemonEditItem");
@@ -658,6 +681,7 @@ class UI {
         var move4Input = new JQuery("#pokemonEditMove4");
 
         function readValues(event:Event) {
+            var pokemonStats = currentPokemon.get(slotNum);
             pokemonStats.gender = genderInput.find("option:selected").attr("name");
             pokemonStats.ability = abilityInput.find("option:selected").attr("name");
             pokemonStats.item = itemInput.find("option:selected").attr("name");

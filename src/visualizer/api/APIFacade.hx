@@ -240,8 +240,17 @@ class APIFacade {
         var abilitiesDoc:Array<Dynamic> = Reflect.field(jsonDoc, "ability");
         var itemsDoc:Array<Dynamic> = Reflect.field(jsonDoc, "item");
         var movesDoc:Array<Array<Dynamic>> = Reflect.field(jsonDoc, "moves");
+        var genders:Array<String> = Reflect.field(jsonDoc, "gender");
 
         stats.movesetName = Reflect.field(jsonDoc, "setname");
+
+        stats.gender = null;
+        stats.genderSet = new Array<String>();
+        for (gender in genders) {
+            if (gender != null) {
+                stats.genderSet.push(gender);
+            }
+        }
 
         for (doc in abilitiesDoc) {
             var rawName = Reflect.field(doc, "name");

@@ -16,15 +16,19 @@ class StorageEmpty {
 
 class APIPokemonDataset extends Dataset {
     static public var STORAGE_KEY = "tpp-api-moveset";
+    static public var STORAGE_VERISON = 1;
+    static public var MIN_STORAGE_VERSION = 1;
     public var slugs(default, null):Array<String>;
 
     var stats:Map<String, MovesetPokemonStats>;
+    var speciesIdToSlugMap:Map<Int, String>;
     public var apiFacade(default, null):APIFacade;
 
     public function new() {
         super();
         slugs = [];
         stats = new Map<String, MovesetPokemonStats>();
+        speciesIdToSlugMap = new Map<Int, String>();
         this.apiFacade = new APIFacade();
     }
 
@@ -47,11 +51,8 @@ class APIPokemonDataset extends Dataset {
     }
 
     public function getSlug(pokemonNum:Int):String {
-        for (slug in slugs) {
-            var stats = getPokemonStats(slug);
-            if (stats.number == pokemonNum) {
-                return slug;
-            }
+        if (speciesIdToSlugMap.exists(pokemonNum)) {
+            return speciesIdToSlugMap.get(pokemonNum);
         }
 
         throw new DatasetItemNotFoundError();
@@ -63,9 +64,23 @@ class APIPokemonDataset extends Dataset {
             slugs.push(pokemonStats.slug);
             stats.set(pokemonStats.slug, pokemonStats);
         }
+
+        buildSpeciesIdSlugMap();
     }
 
     public function loadFromStorage() {
+        var versionStr = Browser.window.localStorage.getItem('$STORAGE_KEY:version');
+
+        if (versionStr == null) {
+            throw new StorageEmpty();
+        }
+
+        var version = Json.parse(versionStr);
+
+        if (version < MIN_STORAGE_VERSION) {
+            throw new StorageEmpty();
+        }
+
         var slugs:Array<String> = Json.parse(
             Browser.window.localStorage.getItem('$STORAGE_KEY:slugs')
         );
@@ -83,6 +98,8 @@ class APIPokemonDataset extends Dataset {
         }
 
         this.slugs = slugs;
+
+        buildSpeciesIdSlugMap();
     }
 
     public function saveToStorage() {
@@ -96,6 +113,10 @@ class APIPokemonDataset extends Dataset {
 
         Browser.window.localStorage.setItem(
             '$STORAGE_KEY:slugs', Json.stringify(slugs)
+        );
+
+        Browser.window.localStorage.setItem(
+            '$STORAGE_KEY:version', Json.stringify(STORAGE_VERISON)
         );
     }
 
@@ -112,6 +133,12 @@ class APIPokemonDataset extends Dataset {
 
         for (key in deleteKeys) {
             Browser.window.localStorage.removeItem(key);
+        }
+    }
+
+    function buildSpeciesIdSlugMap() {
+        for (pokemonStats in stats.iterator()) {
+            speciesIdToSlugMap.set(pokemonStats.number, pokemonStats.slug);
         }
     }
 }
