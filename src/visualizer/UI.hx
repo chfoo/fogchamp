@@ -1,5 +1,6 @@
 package visualizer;
 
+import visualizer.datastruct.VisualizerPokemonStats;
 import visualizer.dataset.Dataset.LoadEvent;
 import visualizer.datastruct.MovesetPokemonStats;
 import js.jquery.Event;
@@ -27,7 +28,7 @@ class UI {
     var database:PokemonDatabase;
     var userMessage:UserMessage;
     static var DEFAULT_POKEMON:Vector<Int> = Vector.fromArrayCopy([493, 257, 462, 244, 441, 139]);
-    var currentPokemon:Vector<PokemonStats>;
+    var currentPokemon:Vector<VisualizerPokemonStats>;
     var currentUrlHash:String;
     var formulaOptions:FormulaOptions;
 
@@ -83,9 +84,8 @@ class UI {
                 name += ' (${stats.nickname})';
             }
 
-            if (Std.is(stats, MovesetPokemonStats)) {
-                var movesetStats = cast(stats, MovesetPokemonStats);
-                name += ' - ${movesetStats.movesetName}';
+            if (stats.movesetName != null) {
+                name += ' - ${stats.movesetName}';
             }
 
             list.push({
@@ -244,11 +244,12 @@ class UI {
         syncSelectionListToCurrent();
     }
 
-    function setSelectionByAPI(pokemonStatsList:Array<PokemonStats>) {
+    function setSelectionByAPI(pokemonStatsList:Array<MovesetPokemonStats>) {
         var selectElement = cast(Browser.document.getElementById("pokemonEditionSelect"), SelectElement);
 
         for (slotNum in 0...6) {
-            var pokemonStats = pokemonStatsList[slotNum];
+            var pokemonStats = new VisualizerPokemonStats();
+            pokemonStats.update(pokemonStatsList[slotNum]);
             currentPokemon.set(slotNum, pokemonStats);
 
         }
@@ -573,7 +574,7 @@ class UI {
         return moveRenderList;
     }
 
-    function attachEditFormListeners(pokemonStats:PokemonStats, slotNum:Int) {
+    function attachEditFormListeners(pokemonStats:VisualizerPokemonStats, slotNum:Int) {
         var genderInput = new JQuery("#pokemonEditGender");
         var abilityInput = new JQuery("#pokemonEditAbility");
         var itemInput = new JQuery("#pokemonEditItem");
@@ -626,7 +627,7 @@ class UI {
         move4Input.change(readValues);
     }
 
-    function applyCustomPokemon(pokemonStats:PokemonStats, slotNum:Int) {
+    function applyCustomPokemon(pokemonStats:VisualizerPokemonStats, slotNum:Int) {
         var newCustomization = !database.isCustomized(pokemonStats.slug);
 
         if (newCustomization) {
@@ -648,7 +649,8 @@ class UI {
 
     function renderChart() {
         var matchupChart = new MatchupChart(database, formulaOptions);
-        matchupChart.setPokemon(currentPokemon.toArray());
+        var array:Array<PokemonStats> = cast currentPokemon.toArray();
+        matchupChart.setPokemon(array);
         var tableElement = matchupChart.renderTable();
 
         new JQuery("#pokemonDiamond").empty().append(tableElement);
