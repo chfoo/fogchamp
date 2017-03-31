@@ -83,7 +83,9 @@ class PokemonDatabase {
             return currentMatchDataset.getPokemonStats(slug);
         } else if (edition == API_EDITION) {
             var stats = apiPokemonDataset.getPokemonStats(slug);
-            backfillMissingPokemonStats(stats);
+            if (stats != null) {
+                backfillMissingPokemonStats(stats);
+            }
             return stats;
         } else {
             return pokemonDataset.getPokemonStats(slug);
