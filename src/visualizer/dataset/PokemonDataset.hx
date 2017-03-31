@@ -7,7 +7,7 @@ import haxe.ds.Vector;
 
 typedef DatasetDoc = {
     slugs: Vector<String>,
-    stats: Map<String, Dynamic>
+    stats: Map<String, PokemonStats>
 };
 
 
@@ -17,15 +17,17 @@ class PokemonDataset extends Dataset {
     static public var DEFAULT_INDEX(default, null) = 5;
 
     var datasets:Array<DatasetDoc>;
+    var speciesIdToSlugMap:Map<Int, String>;
 
     public var slugs(get, null):Vector<String>;
-    public var stats(get, null):Map<String, Dynamic>;
+    public var stats(get, null):Map<String, PokemonStats>;
 
     public var datasetIndex = 0;
 
     public function new() {
         super();
         datasets = new Array<DatasetDoc>();
+        speciesIdToSlugMap = new Map<Int, String>();
     }
 
     override public function load(callback) {
@@ -57,8 +59,16 @@ class PokemonDataset extends Dataset {
     }
 
     override function loadDone(data:Dynamic) {
-        var slugs = Reflect.field(data, "pokemon_slugs");
-        var stats = Reflect.field(data, "stats");
+        var slugs:Vector<String> = Reflect.field(data, "pokemon_slugs");
+        var statsDoc = Reflect.field(data, "stats");
+        var stats = new Map<String, PokemonStats>();
+
+        for (slug in slugs) {
+            var pokemonStats = new PokemonStats(slug);
+            pokemonStats.fromJsonObject(Reflect.field(statsDoc, slug));
+            stats.set(slug, pokemonStats);
+            speciesIdToSlugMap.set(pokemonStats.number, slug);
+        };
 
         var datasetDoc = {
             slugs: slugs,
@@ -74,27 +84,24 @@ class PokemonDataset extends Dataset {
         return datasets[datasetIndex].slugs;
     }
 
-    function get_stats():Map<String, Dynamic> {
+    function get_stats():Map<String, PokemonStats> {
         return datasets[datasetIndex].stats;
     }
 
     public function getPokemonStats(slug:String):PokemonStats {
-        if (!Reflect.hasField(stats, slug)) {
+        if (!stats.exists(slug)) {
             throw new DatasetItemNotFoundError();
         }
 
         var pokemonStat = new PokemonStats();
         pokemonStat.slug = slug;
-        pokemonStat.fromJsonObject(Reflect.field(stats, slug));
+        pokemonStat.update(stats.get(slug));
         return pokemonStat;
     }
 
     public function getSlug(pokemonNum:Int):String {
-        for (slug in slugs) {
-            var stats = getPokemonStats(slug);
-            if (stats.number == pokemonNum) {
-                return slug;
-            }
+        if (speciesIdToSlugMap.exists(pokemonNum)) {
+            return speciesIdToSlugMap.get(pokemonNum);
         }
 
         throw new DatasetItemNotFoundError();

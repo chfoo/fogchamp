@@ -21,12 +21,14 @@ class APIPokemonDataset extends Dataset {
     public var slugs(default, null):Array<String>;
 
     var stats:Map<String, MovesetPokemonStats>;
+    var speciesIdToSlugMap:Map<Int, String>;
     public var apiFacade(default, null):APIFacade;
 
     public function new() {
         super();
         slugs = [];
         stats = new Map<String, MovesetPokemonStats>();
+        speciesIdToSlugMap = new Map<Int, String>();
         this.apiFacade = new APIFacade();
     }
 
@@ -49,11 +51,8 @@ class APIPokemonDataset extends Dataset {
     }
 
     public function getSlug(pokemonNum:Int):String {
-        for (slug in slugs) {
-            var stats = getPokemonStats(slug);
-            if (stats.number == pokemonNum) {
-                return slug;
-            }
+        if (speciesIdToSlugMap.exists(pokemonNum)) {
+            return speciesIdToSlugMap.get(pokemonNum);
         }
 
         throw new DatasetItemNotFoundError();
@@ -65,6 +64,8 @@ class APIPokemonDataset extends Dataset {
             slugs.push(pokemonStats.slug);
             stats.set(pokemonStats.slug, pokemonStats);
         }
+
+        buildSpeciesIdSlugMap();
     }
 
     public function loadFromStorage() {
@@ -97,6 +98,8 @@ class APIPokemonDataset extends Dataset {
         }
 
         this.slugs = slugs;
+
+        buildSpeciesIdSlugMap();
     }
 
     public function saveToStorage() {
@@ -130,6 +133,12 @@ class APIPokemonDataset extends Dataset {
 
         for (key in deleteKeys) {
             Browser.window.localStorage.removeItem(key);
+        }
+    }
+
+    function buildSpeciesIdSlugMap() {
+        for (pokemonStats in stats.iterator()) {
+            speciesIdToSlugMap.set(pokemonStats.number, pokemonStats.slug);
         }
     }
 }

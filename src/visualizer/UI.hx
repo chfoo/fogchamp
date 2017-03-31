@@ -582,7 +582,7 @@ class UI {
             untyped jquery.dialog({position: {my: "center top", at: "center top", of: Browser.window}});
         }
 
-        attachEditFormListeners(pokemonStats, slotNum);
+        attachEditFormListeners(slotNum);
 
         untyped jquery.dialog("option", "title", 'Editing ${pokemonStats.name}');
     }
@@ -665,7 +665,7 @@ class UI {
         return moveRenderList;
     }
 
-    function attachEditFormListeners(pokemonStats:VisualizerPokemonStats, slotNum:Int) {
+    function attachEditFormListeners(slotNum:Int) {
         var genderInput = new JQuery("#pokemonEditGender");
         var abilityInput = new JQuery("#pokemonEditAbility");
         var itemInput = new JQuery("#pokemonEditItem");
@@ -681,6 +681,7 @@ class UI {
         var move4Input = new JQuery("#pokemonEditMove4");
 
         function readValues(event:Event) {
+            var pokemonStats = currentPokemon.get(slotNum);
             pokemonStats.gender = genderInput.find("option:selected").attr("name");
             pokemonStats.ability = abilityInput.find("option:selected").attr("name");
             pokemonStats.item = itemInput.find("option:selected").attr("name");
