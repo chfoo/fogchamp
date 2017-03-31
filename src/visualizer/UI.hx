@@ -630,14 +630,17 @@ class UI {
         var newCustomization = !database.isCustomized(pokemonStats.slug);
 
         if (newCustomization) {
+            pokemonStats = pokemonStats.copy();
             pokemonStats.slug = '${pokemonStats.slug}-custom$slotNum';
             pokemonStats.name = '${pokemonStats.name} - Custom $slotNum';
         }
 
+        currentPokemon.set(slotNum, pokemonStats);
         database.setCustomPokemonStats(pokemonStats.slug, pokemonStats);
 
         if (newCustomization) {
             reloadSelectionList();
+            syncSelectionListToCurrent();
         }
 
         renderAll(false);
