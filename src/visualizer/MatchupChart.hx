@@ -377,7 +377,7 @@ class MatchupChart {
 
     function renderAbilityText(element:Element, pokemonStats:VisualizerPokemonStats) {
         if (pokemonStats.ability != null && pokemonStats.ability != "") {
-            element.textContent = database.descriptionsDataset.abilities.get(pokemonStats.ability).name;
+            element.textContent = database.descriptionsDataset.getAbilityName(pokemonStats.ability);
             element.setAttribute("data-help-slug", 'ability:${pokemonStats.ability}');
         } else {
             element.textContent = "-";
@@ -386,7 +386,7 @@ class MatchupChart {
 
     function renderItemText(element:Element, pokemonStats:VisualizerPokemonStats) {
         if (pokemonStats.item != null && pokemonStats.item != "") {
-            element.textContent = database.descriptionsDataset.items.get(pokemonStats.item).name;
+            element.textContent = database.descriptionsDataset.getItemName(pokemonStats.item);
             element.setAttribute("data-help-slug", 'item:${pokemonStats.item}');
         } else {
             element.textContent = "-";

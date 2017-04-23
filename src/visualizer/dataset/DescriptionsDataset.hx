@@ -1,5 +1,7 @@
 package visualizer.dataset;
 
+import visualizer.api.APIFacade;
+
 
 typedef AbilityInfo = {
     var name : String;
@@ -19,6 +21,12 @@ class DescriptionsDataset extends Dataset {
     public var abilities(default, null):AbilityMap;
     public var types_efficacy(default, null):TypeEfficacyTable;
     public var items(default, null):ItemMap;
+    var dashlessSlugMap:Map<String,String>;
+
+    public function new() {
+        super();
+        dashlessSlugMap = new Map<String, String>();
+    }
 
     override public function load(callback) {
         makeRequest("descriptions.json", callback);
@@ -52,14 +60,36 @@ class DescriptionsDataset extends Dataset {
             items.set(slug, Reflect.field(itemsDoc, slug));
         }
 
+        buildDashlessSlugMap();
+
         super.loadDone(data);
     }
 
+    public function getAbility(slug:String):AbilityInfo {
+        if (!abilities.exists(slug)) {
+            slug = dashlessSlugMap.get(slug);
+        }
+
+        return abilities.get(slug);
+    }
+
     public function getAbilityName(slug:String):String {
-        return abilities.get(slug).name;
+        return getAbility(slug).name;
+    }
+
+    public function getItem(slug:String):ItemInfo {
+        if (!items.exists(slug)) {
+            slug = dashlessSlugMap.get(slug);
+        }
+
+        return items.get(slug);
     }
 
     public function getItemName(slug:String):String {
+        if (!items.exists(slug)) {
+            slug = dashlessSlugMap.get(slug);
+        }
+
         return items.get(slug).name;
     }
 
@@ -97,6 +127,15 @@ class DescriptionsDataset extends Dataset {
                 50;
             default:
                 100;
+        }
+    }
+
+    function buildDashlessSlugMap() {
+        for (key in items.keys()) {
+            dashlessSlugMap.set(APIFacade.slugify(key, true), key);
+        }
+        for (key in abilities.keys()) {
+            dashlessSlugMap.set(APIFacade.slugify(key, true), key);
         }
     }
 }

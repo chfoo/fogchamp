@@ -419,11 +419,11 @@ class UI {
         var text = "";
 
         if (category == "ability") {
-            var ability = database.descriptionsDataset.abilities.get(slug);
+            var ability = database.descriptionsDataset.getAbility(slug);
             title = ability.name;
             text = ability.description;
         } else if (category == "item") {
-            var item = database.descriptionsDataset.items.get(slug);
+            var item = database.descriptionsDataset.getItem(slug);
             title = item.name;
             text = item.description;
         } else if (category == "move") {
@@ -530,7 +530,7 @@ class UI {
         for (abilitySlug in setList) {
             abilityRenderList.push({
                 "slug": abilitySlug,
-                "label": database.descriptionsDataset.abilities.get(abilitySlug).name,
+                "label": database.descriptionsDataset.getAbilityName(abilitySlug),
                 "selected": (abilitySlug == pokemonStats.ability)? "selected": ""
             });
         }
@@ -551,7 +551,7 @@ class UI {
         for (itemSlug in setList) {
             itemRenderList.push({
                 "slug": itemSlug,
-                "label": database.descriptionsDataset.items.get(itemSlug).name,
+                "label": database.descriptionsDataset.getItemName(itemSlug),
                 "selected": (itemSlug == pokemonStats.item)? "selected": ""
             });
         }
