@@ -51,7 +51,7 @@ a:active, a:hover {
 
 #bodyContainer {
     text-align: center;
-    width: 55em;
+    width: 76.4em;
     margin: auto;
 }
 
@@ -70,22 +70,10 @@ a:active, a:hover {
     padding: 0.25em;
 }
 
-.pokemonStatsSlot, .pokemonMovesSet {
-    width: 8em;
-    margin: 0.25em;
-    display: inline-block;
-}
-
-.selectSlotContainer {
-    display: inline-block;
-}
-
-.pokemonMovesSet {
-    vertical-align: top;
-}
-
-.pokemonMoveSlot {
-    margin-bottom: 0.5em;
+#pokemonSelection {
+    /* work around so that the rotated diamond does not cover up the selection div */
+    z-index: 1;
+    position: relative;
 }
 
 .blueCorner {
@@ -96,13 +84,9 @@ a:active, a:hover {
     background: #9E2A27;
 }
 
-.pokemonStatsName, .moveName {
-    font-weight: bold;
-}
-
 .pokemonIcon {
-    width: 5em;
-    /* http://stackoverflow.com/q/3900436/1524507* /
+    height: 2em;
+    /* http://stackoverflow.com/q/3900436/1524507 */
     image-rendering:optimizeSpeed;             /* Legal fallback */
     image-rendering:-moz-crisp-edges;          /* Firefox        */
     image-rendering:-o-crisp-edges;            /* Opera          */
@@ -114,7 +98,6 @@ a:active, a:hover {
 }
 
 .pokemonIconSlot-0, .pokemonIconSlot-1, .pokemonIconSlot-2 {
-    -webkit-transform: scaleX(-1);
     transform: scaleX(-1);
 }
 
@@ -132,6 +115,9 @@ a:active, a:hover {
     -webkit-animation-direction: alternate;
     animation-direction: alternate;
     position: relative;
+}
+
+.pokemonIconChart {
 }
 
 @-moz-keyframes jump {
@@ -285,121 +271,91 @@ span[class|="pokemonType"] {
 }
 
 #pokemonDiamond {
-    padding-bottom: 6em;
-}
-
-div[class|="matchupChartMoveLabel"] {
-    line-height: 1em;
+    padding-bottom: 10em;
 }
 
 .matchupChart {
     border-collapse: collapse;
     text-align: center;
-    width: 40em;
-    height: 40em;
+    width: 60em;
+    height: 60em;
     margin: auto;
-    -webkit-transform: scale(0.9) rotate(45deg);
     transform: scale(0.9) rotate(45deg);
 }
 
-.matchupChartMoveCell-left {
-    text-align: right;
+.matchupChart td {
+    text-align: center;
+    vertical-align: middle;
 }
 
-.matchupChartMoveCell-top {
-    text-align: left;
+.matchupChartPokemonLabel, .matchupChartMoveLabel, .matchupChartMoveDivider, .matchupChartEfficacy {
+    white-space: nowrap;
 }
 
-.matchupChartMoveCell-left, .matchupChartEfficacyCell-left {
+.matchupChartPokemonLabelContainer-left {
+    width: 4.5em;
+    height: 15em;
+}
+
+.matchupChartPokemonLabelContainer-top {
+    width: 15em;
+    height: 4.5em;
+}
+
+.matchupChartPokemonLabelSubContainer-left {
+    width: 15em;
+    height: 4.5em;
+    transform: translateY(15em) rotate(-90deg);
+    transform-origin: top left;
+}
+
+.matchupChartMoveLabelContainer-top, .matchupChartMoveDividerContainer-top {
+    width: 3em;
+    height: 10.5em;
+}
+
+.matchupChartMoveLabelSubContainer-top, .matchupChartMoveDividerSubContainer-top {
+    width: 10.5em;
+    height: 3em;
+    transform: translateY(10em) rotate(-90deg);
+    transform-origin: top left;
+}
+
+.matchupChartMoveLabelSubContainer-left, .matchupChartMoveDividerSubContainer-left {
+    width: 10.5em;
+    height: 3em;
+}
+
+.matchupChartEfficacyContainer-top {
+    width: 3em;
+    height: 3em;
+}
+
+.matchupChartEfficacySubContainer-top {
+    width: 3em;
+    height: 3em;
+    transform: translateY(3em) rotate(-90deg);
+    transform-origin: top left;
+}
+
+.matchupChartEfficacyContainer-left {
+    width: 100%;
+    height: 3em;
+}
+
+.matchupChartMoveLabelCell-left, .matchupChartEfficacyCell-left {
     border-top: 0.1em solid #5E5E5E;
     border-bottom: 0.1em solid #5E5E5E;
 }
 
-.matchupChartMoveCell-top, .matchupChartEfficacyCell-top {
+.matchupChartMoveLabelCell-top, .matchupChartEfficacyCell-top {
     border-left: 0.1em solid #5E5E5E;
     border-right: 0.1em solid #5E5E5E;
-}
-
-.matchupChartDividerCell-first {
-    width: 4em;
-    height: 4em;
 }
 
 .matchupChartDividerCell-last {
     border-bottom: 0.1em solid #5E5E5E;
     border-right: 0.1em solid #5E5E5E;
-}
-
-.matchupChartLabel-top {
-    width: 10em;
-    height: 1.2em;
-}
-
-.matchupChartLabel-left {
-    height: 10em;
-    width: 1.2em;
-}
-
-.matchupChartLabelRotate-left {
-    height: 10em;
-    width: 10em;
-    -webkit-transform: rotate(-90deg);
-    transform: rotate(-90deg);
-    display: block;
-}
-
-.matchupChartMoveLabel-top {
-    width: 1em;
-    height: 6em;
-    white-space: nowrap;
-}
-
-.matchupChartMoveLabel-left {
-    height: 1em;
-    width: 6em;
-    white-space: nowrap;
-}
-
-.matchupChartMoveLabelRotate-top {
-    height: 6em;
-    width: 6em;
-    -webkit-transform: rotate(-90deg);
-    transform: rotate(-90deg);
-    display: block;
-}
-
-.matchupChartMoveLabelRotate-left {
-    height: 6em;
-    width: 6em;
-    display: block;
-}
-
-.matchupChartEfficacyCell-top {
-    vertical-align: top;
-}
-
-.matchupChartEfficacy-top {
-    width: 1em;
-    white-space: nowrap;
-}
-
-.matchupChartEfficacyRotate-top {
-    -webkit-transform: rotate(-90deg) translateX(-6em);
-    transform: rotate(-90deg) translateX(-6em);
-    -webkit-transform-origin: top left;
-    transform-origin: top left;
-    display: block;
-    width: 6em;
-    text-align: right;
-}
-
-.matchupChartEfficacy-left {
-    text-align: left;
-}
-
-.matchupChartSubEfficacy {
-    min-width: 1.2em;
-    display: inline-block;
 }
 
 .matchupChartDividerCellSpeed-blue {
@@ -415,10 +371,14 @@ div[class|="matchupChartMoveLabel"] {
 }
 
 .miniPokemonTypeIcon {
-    width: 0.5em;
-    height: 0.7em;
+    /*width: 0.5em;
+    height: 0.7em;*/
+    min-width: 0.7em;
+    min-height: 0.7em;
     display: inline-block;
     margin: 0.1em;
+    font-size: 0.7em;
+    text-align: center;
 }
 
 .damageEfficacy-0 {

@@ -356,8 +356,6 @@ class UI {
 
         try {
             renderMatchCommand();
-            renderPokemonStats();
-            renderPokemonMoves();
             renderChart();
             attachHelpListeners();
 
@@ -394,96 +392,6 @@ class UI {
         }
 
         return numbers;
-    }
-
-    function renderPokemonStats() {
-        var template = new JQuery("#pokemonStatsTemplate").html();
-
-        var rendered = renderTemplate(template, {
-            pokemonStats: buildPokemonStatsRenderDocs(true)
-        });
-
-        new JQuery("#pokemonStats").html(rendered);
-    }
-
-    function buildPokemonStatsRenderDocs(?visualBlueHorizontalOrder:Bool):Array<Dynamic> {
-        var slotNums = [0, 1, 2, 3, 4, 5];
-
-        if (visualBlueHorizontalOrder) {
-            slotNums = [2, 1, 0, 3, 4, 5];
-        }
-
-        var statsList = new Array<Dynamic>();
-
-        for (slotNum in slotNums) {
-            var pokemonStats = currentPokemon.get(slotNum);
-            var abilityName = "";
-
-            if (database.descriptionsDataset.abilities.exists(pokemonStats.ability)) {
-                abilityName = database.descriptionsDataset.getAbilityName(pokemonStats.ability);
-            }
-
-            var itemName = "";
-
-            if (database.descriptionsDataset.items.exists(pokemonStats.item)) {
-                itemName = database.descriptionsDataset.getItemName(pokemonStats.item);
-            }
-
-            var renderDoc = pokemonStats.toJsonObject();
-            Reflect.setField(renderDoc, 'ability_name', abilityName);
-            Reflect.setField(renderDoc, 'item_name', itemName);
-            Reflect.setField(renderDoc, 'slot_number', slotNum);
-            statsList.push(renderDoc);
-        }
-
-        return statsList;
-    }
-
-    function renderPokemonMoves() {
-        var template = new JQuery("#pokemonMovesTemplate").html();
-
-        var rendered = renderTemplate(template, {
-            pokemonMoves: buildMovesRenderDocs()
-        });
-
-        new JQuery("#pokemonMoves").html(rendered);
-    }
-
-    function buildMovesRenderDocs():Array<MovesItem> {
-        var movesList = new Array<MovesItem>();
-
-        for (slotNum in [2, 1, 0, 3, 4, 5]) {
-            var pokemonStat = currentPokemon.get(slotNum);
-            var name = pokemonStat.name;
-            var moveSlugs:Array<String> = pokemonStat.moves;
-            var moves = new Array<Dynamic>();
-
-            for (moveSlug in moveSlugs) {
-                var moveStats = database.movesDataset.getMoveStats(moveSlug, pokemonStat);
-                var moveRenderDoc = moveStats.toJsonObject();
-                Reflect.setField(moveRenderDoc, "move_slug", moveSlug);
-                Reflect.setField(moveRenderDoc, "move_name", moveStats.name);
-                var damageCategory:String = moveStats.damageCategory;
-                Reflect.setField(moveRenderDoc, "damage_category_short", damageCategory.substr(0, 2));
-
-                if (moveStats.power == null) {
-                    Reflect.setField(moveRenderDoc, "power", "--");
-                }
-
-                if (moveStats.accuracy == null) {
-                    Reflect.setField(moveRenderDoc, "accuracy", "--");
-                }
-
-                moves.push(moveRenderDoc);
-            }
-
-            movesList.push({
-                name: name,
-                moves: moves
-            });
-        }
-
-        return movesList;
     }
 
     function attachHelpListeners() {
@@ -741,8 +649,7 @@ class UI {
 
     function renderChart() {
         var matchupChart = new MatchupChart(database, formulaOptions);
-        var array:Array<PokemonStats> = cast currentPokemon.toArray();
-        matchupChart.setPokemon(array);
+        matchupChart.setPokemon(currentPokemon.toArray());
         var tableElement = matchupChart.renderTable();
 
         new JQuery("#pokemonDiamond").empty().append(tableElement);
