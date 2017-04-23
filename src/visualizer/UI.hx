@@ -15,6 +15,8 @@ import haxe.ds.Vector;
 import js.Browser;
 import js.jquery.JQuery;
 
+using StringTools;
+
 
 typedef SelectionItem = {
     name:String, slug:String
@@ -437,6 +439,8 @@ class UI {
         if (text == null || text.length == 0) {
             text = "(no help available for this item)";
         }
+
+        text = text.replace("✻", "\n✻");
 
         var jquery = new JQuery("#helpDialog").text(text);
         untyped jquery.dialog();

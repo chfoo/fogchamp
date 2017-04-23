@@ -6,6 +6,7 @@ import functools
 from util.readers.addarash1 import AddarashReader
 from util.readers.bulbapedia import BulbapediaReader
 from util.readers.chfoo import ChfooReader
+from util.readers.editornotes import EditorNotesReader
 
 from util.readers.nkekev import NkekevReader
 from util.readers.pokedex import PokedexReader
@@ -22,6 +23,7 @@ def main():
     addarash1_dir = os.path.join(args.metadata_dir, 'addarash1')
     pokedex_dir = os.path.join(args.metadata_dir, 'pokedex', 'pokedex', 'data', 'csv')
     bulbapedia_dir = os.path.join(args.metadata_dir, 'bulbapedia')
+    editor_notes_dir = os.path.join(args.metadata_dir, 'editor_notes')
     output_dir = args.output_dir
 
     pokedex_reader = PokedexReader(pokedex_dir)
@@ -29,6 +31,7 @@ def main():
     chfoo_reader = ChfooReader(chfoo_dir)
     addarash1_reader = AddarashReader(addarash1_dir)
     bulbapedia_reader = BulbapediaReader(bulbapedia_dir)
+    editor_notes_reader = EditorNotesReader(editor_notes_dir)
 
     # Build each Pokemon's stats
     movesets_funcs = [
@@ -72,6 +75,7 @@ def main():
         move_stats[slug] = move
 
     bulbapedia_reader.downgrade_move_changes(move_stats)
+    editor_notes_reader.add_move_notes(move_stats)
 
     json_path = os.path.join(output_dir, 'moves.json')
 
@@ -84,6 +88,8 @@ def main():
     for ability in pokedex_reader.read_abilities():
         slug = ability.pop('slug')
         abilities[slug] = ability
+
+    editor_notes_reader.add_ability_notes(abilities)
 
     types_efficacy = pokedex_reader.read_type_efficacy()
 
