@@ -17,6 +17,14 @@ class BulbapediaReader(Reader):
 
                 yield name, gen_4, gen_5, gen_6
 
+    def read_accuracy_overrides(self):
+        with self.read_csv('accuracy_overrides.csv') as reader:
+            for index, row in enumerate(reader):
+                if index == 0:
+                    continue
+
+                yield row[0], int(row[1])
+
     def read_power_changes(self):
         with self.read_csv('power_changes.csv') as reader:
             for index, row in enumerate(reader):
@@ -40,6 +48,10 @@ class BulbapediaReader(Reader):
 
             if accuracy:
                 accuracy_map[move_slug] = accuracy
+
+        for row in self.read_accuracy_overrides():
+            move_slug = slugify(row[0])
+            accuracy_map[move_slug] = row[1]
 
         return accuracy_map
 
