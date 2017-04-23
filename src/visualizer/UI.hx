@@ -52,11 +52,13 @@ class UI {
         attachUrlFragmentChangeListener();
         attachFetchFromAPIButtonListener();
         attachMovesetDownloadButtonLisenter();
-        setSelectionByNumbers(DEFAULT_POKEMON);
+        readUrlFragment();
+        if (currentPokemon.get(0) == null) {
+            setSelectionByNumbers(DEFAULT_POKEMON);
+        }
         var editions = database.getEditionNames();
         selectEdition(editions[editions.length - 2]);
         attachOptionsListeners();
-        readUrlFragment();
         renderAll();
         promptToDownloadMovesets();
     }
