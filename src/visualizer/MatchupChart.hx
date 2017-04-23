@@ -283,7 +283,7 @@ class MatchupChart {
         renderAbilityText(abilityText, pokemonStats);
         subContainer.appendChild(abilityText);
 
-        subContainer.appendChild(Browser.document.createTextNode(" · "));
+        subContainer.appendChild(Browser.document.createBRElement());
 
         var itemText = Browser.document.createSpanElement();
         renderItemText(itemText, pokemonStats);
@@ -344,10 +344,16 @@ class MatchupChart {
             var damageResultPercent = Formula.resultsToPercentages(damageResult, foePokemonStat.hp);
 
             subContainer.innerHTML = '<span class="damageEfficacy-$factor matchupChartSubEfficacy">×$factorString</span>
+                <br>
                 <span class=matchupChartSubEfficacy
                 data-help-slug="damage:
-                ${userPokemonStat.name} ${userMoveStat.name}:
-                ${damageResultPercent.minHPPercent}:${damageResultPercent.maxHPPercent}:${damageResultPercent.critHPPercent}"
+                ${userPokemonStat.name} ${userMoveStat.name}:'+
+                '${damageResultPercent.minHPPercent}:'+
+                '${damageResultPercent.maxHPPercent}:'+
+                '${damageResultPercent.critHPPercent}:'+
+                '${damageResultPercent.minHP}:'+
+                '${damageResultPercent.maxHP}:'+
+                '${damageResultPercent.critHP}"
                 >${damageResultPercent.maxHPPercent}<span class=dimLabel>%</span>
                 </span>';
         }

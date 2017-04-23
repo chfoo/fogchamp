@@ -427,7 +427,9 @@ class UI {
             title = move.name;
             text = move.description;
         } else if (category == "damage") {
-            text = 'HP damage against foe (min, max, crit):${parts[2]}–${parts[3]}–${parts[4]}%';
+            text = 'HP damage against foe (min, max, crit):
+                ${parts[2]}–${parts[3]}–${parts[4]}%
+                ${parts[5]}–${parts[6]}–${parts[7]}pts';
         }
 
         if (text == null || text.length == 0) {
