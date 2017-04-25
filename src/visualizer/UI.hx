@@ -1,5 +1,7 @@
 package visualizer;
 
+import visualizer.api.APIFacade;
+import visualizer.dataset.APIPokemonDataset;
 import visualizer.datastruct.VisualizerPokemonStats;
 import visualizer.datastruct.VisualizerPokemonStats;
 import visualizer.dataset.Dataset.LoadEvent;
@@ -54,12 +56,18 @@ class UI {
         attachUrlFragmentChangeListener();
         attachFetchFromAPIButtonListener();
         attachMovesetDownloadButtonLisenter();
+
+        var editions = database.getEditionNames();
+        if (database.apiPokemonDataset.isLoaded()) {
+            selectEdition(editions[editions.length - 1]);
+        } else {
+            selectEdition(editions[editions.length - 2]);
+        }
         readUrlFragment();
         if (currentPokemon.get(0) == null) {
             setSelectionByNumbers(DEFAULT_POKEMON);
         }
-        var editions = database.getEditionNames();
-        selectEdition(editions[editions.length - 2]);
+
         attachOptionsListeners();
         renderAll();
         promptToDownloadMovesets();
@@ -161,8 +169,11 @@ class UI {
         var selectElement = cast(Browser.document.getElementById("pokemonEditionSelect"), SelectElement);
         selectElement.selectedIndex = database.getEditionNames().indexOf(name);
         reloadSelectionList();
-        updateCurrentToNearestStatsByEdition();
-        renderAll();
+
+        if (currentPokemon.get(0) != null) {
+            updateCurrentToNearestStatsByEdition();
+            renderAll();
+        }
     }
 
     function attachUrlFragmentChangeListener() {
@@ -176,14 +187,24 @@ class UI {
             return;
         }
 
-        var pattern = new EReg("([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)", "");
+        var pattern = new EReg(
+            "([0-9]+)([a-z0-9_ ]*)[/,-]" +
+            "([0-9]+)([a-z0-9_ ]*)[/,-]" +
+            "([0-9]+)([a-z0-9_ ]*)[/,-]" +
+            "([0-9]+)([a-z0-9_ ]*)[/,-]" +
+            "([0-9]+)([a-z0-9_ ]*)[/,-]" +
+            "([0-9]+)([a-z0-9_ ]*)"
+        , "i");
 
         if (pattern.match(fragment)) {
             var pokemonNums = new Vector<Int>(6);
+            var movesetNames = new Vector<String>(6);
+
             for (i in 0...6) {
-                pokemonNums.set(i, Std.parseInt(pattern.matched(i + 1)));
+                pokemonNums.set(i, Std.parseInt(pattern.matched(i * 2 + 1)));
+                movesetNames.set(i, pattern.matched(i * 2 + 2).replace('_', ' '));
             }
-            setSelectionByNumbers(pokemonNums);
+            setSelectionByNumbers(pokemonNums, movesetNames);
             renderAll(false);
         } else {
             userMessage.showMessage("The URL fragment (stuff after the hash symbol) isn't valid.");
@@ -191,15 +212,21 @@ class UI {
     }
 
     function writeUrlFragment() {
-        var fragment = "#";
+        var fragment = new StringBuf();
+        fragment.add("#");
 
         for (i in 0...6) {
-            var pokemonNum = currentPokemon[i].number;
+            var pokemonStats = currentPokemon.get(i);
+            var pokemonNum = pokemonStats.number;
 
-            if (i == 5) {
-                fragment += '$pokemonNum';
-            } else {
-                fragment += '$pokemonNum-';
+            fragment.add('$pokemonNum');
+
+            if (pokemonStats.movesetName != null) {
+                fragment.add(APIFacade.slugify(pokemonStats.movesetName).replace('-', '_'));
+            }
+
+            if (i < 5) {
+                fragment.add("-");
             }
         }
 
@@ -207,8 +234,8 @@ class UI {
         // Disabling the hander while setting the hash does not work since
         // it is asynchronous. As a result, we need to keep state and ignore
         // the event if we see that we set the hash ourselves.
-        currentUrlHash = fragment;
-        Browser.location.hash = fragment;
+        currentUrlHash = fragment.toString();
+        Browser.location.hash = fragment.toString();
     }
 
     function attachFetchFromAPIButtonListener() {
@@ -282,6 +309,7 @@ class UI {
                 if (event.success) {
                     userMessage.hide();
                     database.apiPokemonDataset.saveToStorage();
+                    selectEdition(database.getEditionNames()[database.getEditionNames().length - 1]);
                 } else {
                     userMessage.showMessage('Failed to load movesets from TPP: ${event.errorMessage}');
                 }
@@ -289,9 +317,16 @@ class UI {
         );
     }
 
-    function setSelectionByNumbers(pokemonNums:Vector<Int>) {
+    function setSelectionByNumbers(pokemonNums:Vector<Int>, ?movesetNames:Vector<String>) {
         for (i in 0...6) {
-            var slug = database.getPokemonSlugByID(pokemonNums.get(i));
+            var movesetName = null;
+            if (movesetNames != null) {
+                if (movesetNames.get(i) != "") {
+                    movesetName = movesetNames.get(i);
+                }
+            }
+            var slug = database.getPokemonSlugByID(pokemonNums.get(i), movesetName);
+
             currentPokemon.set(i, database.getPokemonStats(slug));
         }
         syncSelectionListToCurrent();
@@ -381,10 +416,26 @@ class UI {
     }
 
     function renderMatchCommand() {
-        var numbers = getMatchNumbers();
+        var buffer = new StringBuf();
+        buffer.add("/w tpp match ");
+
+        for (i in 0...6) {
+            var pokemonStats = currentPokemon.get(i);
+            buffer.add(pokemonStats.name);
+
+            if (pokemonStats.movesetName != null) {
+                buffer.add('-${pokemonStats.movesetName}');
+            }
+
+            if (i == 2) {
+                buffer.add("/");
+            } else if (i < 5) {
+                buffer.add(",");
+            }
+        }
 
         var element:DivElement = cast(Browser.document.getElementById("matchCommand"), DivElement);
-        element.textContent = '!match ${numbers[0]},${numbers[1]},${numbers[2]}/${numbers[3]},${numbers[4]},${numbers[5]}';
+        element.textContent = buffer.toString();
     }
 
     function getMatchNumbers():Array<Int> {

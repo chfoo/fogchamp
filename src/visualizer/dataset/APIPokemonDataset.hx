@@ -21,15 +21,19 @@ class APIPokemonDataset extends Dataset {
     public var slugs(default, null):Array<String>;
 
     var stats:Map<String, MovesetPokemonStats>;
-    var speciesIdToSlugMap:Map<Int, String>;
+    var speciesIdToSlugMap:Map<Int, Array<String>>;
     public var apiFacade(default, null):APIFacade;
 
     public function new() {
         super();
         slugs = [];
         stats = new Map<String, MovesetPokemonStats>();
-        speciesIdToSlugMap = new Map<Int, String>();
+        speciesIdToSlugMap = new Map<Int, Array<String>>();
         this.apiFacade = new APIFacade();
+    }
+
+    public function isLoaded():Bool {
+        return slugs.length != 0;
     }
 
     override public function load(callback) {
@@ -50,9 +54,21 @@ class APIPokemonDataset extends Dataset {
         return stats.get(slug);
     }
 
-    public function getSlug(pokemonNum:Int):String {
+    public function getSlug(pokemonNum:Int, ?movesetName:String):String {
         if (speciesIdToSlugMap.exists(pokemonNum)) {
-            return speciesIdToSlugMap.get(pokemonNum);
+            var slugs = speciesIdToSlugMap.get(pokemonNum);
+            if (movesetName != null) {
+                var slugSuffix = APIFacade.slugify(movesetName);
+
+                for (slug in slugs) {
+                    if (slug.endsWith(slugSuffix)) {
+                        return slug;
+                    }
+                }
+
+            } else {
+                return slugs[0];
+            }
         }
 
         throw new DatasetItemNotFoundError();
@@ -144,7 +160,11 @@ class APIPokemonDataset extends Dataset {
 
     function buildSpeciesIdSlugMap() {
         for (pokemonStats in stats.iterator()) {
-            speciesIdToSlugMap.set(pokemonStats.number, pokemonStats.slug);
+            if (!speciesIdToSlugMap.exists(pokemonStats.number)) {
+                speciesIdToSlugMap.set(pokemonStats.number, new Array<String>());
+            }
+
+            speciesIdToSlugMap.get(pokemonStats.number).push(pokemonStats.slug);
         }
     }
 }

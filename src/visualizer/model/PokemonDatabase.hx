@@ -114,10 +114,10 @@ class PokemonDatabase {
         }
     }
 
-    public function getPokemonSlugByID(id:Int):String {
+    public function getPokemonSlugByID(id:Int, ?movesetName:String):String {
         try {
             if (edition == API_EDITION) {
-                return apiPokemonDataset.getSlug(id);
+                return apiPokemonDataset.getSlug(id, movesetName);
             } else {
                 return pokemonDataset.getSlug(id);
             }
