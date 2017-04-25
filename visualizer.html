@@ -171,6 +171,30 @@
     <p class="moveDescriptionNote">{{ note }}</p>
 </script>
 
+<script id="moveDamageTemplate">
+    Move damage inflicted on foe
+    <table>
+        <tr>
+            <td></td>
+            <th>Min</th>
+            <th>Max</th>
+            <th>Crit</th>
+        </tr>
+        <tr>
+            <th>%</th>
+            <td>{{ min_percent }}</td>
+            <td>{{ max_percent }}</td>
+            <td>{{ crit_percent }}</td>
+        </tr>
+        <tr>
+            <th>Points</th>
+            <td>{{ min_points }}</td>
+            <td>{{ max_points }}</td>
+            <td>{{ crit_points }}</td>
+        </tr>
+    </table>
+</script>
+
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 <script src="static/mustache.js"></script>

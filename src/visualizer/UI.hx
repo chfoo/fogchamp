@@ -496,9 +496,16 @@ class UI {
             });
 
         } else if (category == "damage") {
-            text = 'HP damage against foe (min, max, crit):
-                ${parts[2]}–${parts[3]}–${parts[4]}%
-                ${parts[5]}–${parts[6]}–${parts[7]}pts';
+            var template = new JQuery("#moveDamageTemplate").html();
+            title = '${parts[1]} Damage';
+            html = renderTemplate(template, {
+                min_percent: parts[2],
+                max_percent: parts[3],
+                crit_percent: parts[4],
+                min_points: parts[5],
+                max_points: parts[6],
+                crit_points: parts[7]
+            });
         }
 
         var jquery = new JQuery("#helpDialog");
