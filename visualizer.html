@@ -60,61 +60,7 @@
     </div>
     {{/slots}}
 </script>
-<script id="pokemonStatsTemplate" type="x-tmpl-mustache">
-    {{#pokemonStats}}
-    <div class="pokemonStatsSlot">
-        <img class="pokemonIcon pokemonIconSlot-{{slot_number}}" src="static/veekun/icons/{{number}}.png">
-        <br>
-        <span class="pokemonStatsName">
-            {{name}}<sup class="pokemonGender-{{gender}}">{{gender}}</sup>
-            <span class="pokemonEditContainer" style="display:none"><span data-edit-slot="{{slot_number}}" aria-label="Edit">✏</span></span>
-        </span>
-        <br>
-        {{#types}}
-            <span class="pokemonType-{{.}}">{{.}}</span>
-        {{/types}}
-        <br>
-        <span data-help-slug="ability:{{ability}}">{{ability_name}}</span>
-        <br>
-        <span data-help-slug="item:{{item}}">{{item_name}}</span>
-        <br>
-        <span class="pokemonHp">{{hp}}</span>
-        <span class="pokemonAttack">{{attack}}</span>&middot;<span class="pokemonDefense">{{defense}}</span>
-        <br>
-        <span class="pokemonSpeed">{{speed}}</span>
-        <span class="pokemonSpecialAttack">{{special_attack}}</span>&middot;<span class="pokemonSpecialDefense">{{special_defense}}</span>
-        <br>
-    </div>
-    {{/pokemonStats}}
 
-    <p>
-        <span class="pokemonHp">HP</span>
-        <span class="pokemonAttack">Attack</span>&middot;<span class="pokemonDefense">Defense</span>
-        <br>
-        <span class="pokemonSpeed">Speed</span>
-        <span class="pokemonSpecialAttack">Special-Attack</span>&middot;<span class="pokemonSpecialDefense">Special-Defense</span>
-    </p>
-</script>
-
-<script id="pokemonMovesTemplate" type="x-tmpl-mustache">
-    {{#pokemonMoves}}
-    <div class="pokemonMovesSet">
-        {{#moves}}
-            <div class="pokemonMoveSlot">
-                <span class="moveName" data-help-slug="move:{{move_slug}}">
-                    {{move_name}}<sup><span class="damageCategory-{{damage_category}}">{{damage_category_short}}</span></sup>
-                </span>
-                <br>
-                <span class="pokemonType-{{move_type}}">{{move_type}}</span>
-                <br>
-                {{accuracy}}<span class="dimLabel">%</span>
-                {{pp}}<span class="dimLabel">pp</span>
-                {{power}}<span class="dimLabel">pwr</span>
-            </div>
-        {{/moves}}
-   </div>
-    {{/pokemonMoves}}
-</script>
 <script id="pokemonEditTemplate" type="x-tmpl-mustache">
     <div class="pokemonEditContainer editForm">
         <div class="editFormRow">
@@ -123,6 +69,22 @@
                 {{#gender}}
                 <option name="{{slug}}" {{selected}}>{{label}}</option>
                 {{/gender}}>
+            </select>
+        </div>
+        <div class="editFormRow">
+            <label for="pokemonEditType1">Type 1:</label>
+            <select id="pokemonEditType1">
+                {{#type1}}
+                <option name="{{slug}}" {{selected}}>{{label}}</option>
+                {{/type1}}>
+            </select>
+        </div>
+        <div class="editFormRow">
+            <label for="pokemonEditType2">Type 2:</label>
+            <select id="pokemonEditType2">
+                {{#type2}}
+                <option name="{{slug}}" {{selected}}>{{label}}</option>
+                {{/type2}}>
             </select>
         </div>
         <div class="editFormRow">

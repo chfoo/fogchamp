@@ -21,11 +21,13 @@ class DescriptionsDataset extends Dataset {
     public var abilities(default, null):AbilityMap;
     public var types_efficacy(default, null):TypeEfficacyTable;
     public var items(default, null):ItemMap;
+    public var types(default, null):Array<String>;
     var dashlessSlugMap:Map<String,String>;
 
     public function new() {
         super();
         dashlessSlugMap = new Map<String, String>();
+        types = new Array<String>();
     }
 
     override public function load(callback) {
@@ -44,6 +46,7 @@ class DescriptionsDataset extends Dataset {
         var typesDoc = Reflect.field(data, "types_efficacy");
 
         for (firstType in Reflect.fields(typesDoc)) {
+            types.push(firstType);
             var secondTypesDoc = Reflect.field(typesDoc, firstType);
 
             for (secondType in Reflect.fields(secondTypesDoc)) {

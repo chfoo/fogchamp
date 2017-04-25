@@ -474,6 +474,8 @@ class UI {
         var html = renderTemplate(
             template, {
                 "gender": buildEditGenderRenderDoc(pokemonStats),
+                "type1": buildEditTypeRenderDoc(pokemonStats, 0),
+                "type2": buildEditTypeRenderDoc(pokemonStats, 1),
                 "ability": buildEditAbilityRenderDoc(pokemonStats),
                 "item": buildEditItemRenderDoc(pokemonStats),
                 "hp": pokemonStats.hp,
@@ -503,7 +505,7 @@ class UI {
         untyped jquery.dialog("option", "title", 'Editing ${pokemonStats.name}');
     }
 
-    function buildEditGenderRenderDoc(pokemonStats:PokemonStats):Dynamic {
+    function buildEditGenderRenderDoc(pokemonStats:VisualizerPokemonStats):Dynamic {
         var genderRenderList = [];
 
         for (genderSlug in ["-", "m", "f"]) {
@@ -515,6 +517,28 @@ class UI {
         }
 
         return genderRenderList;
+    }
+
+    function buildEditTypeRenderDoc(pokemonStats:VisualizerPokemonStats, typeIndex:Int):Dynamic {
+        var renderList = [];
+
+        if (typeIndex == 1) {
+            renderList.push({
+                "slug": "-",
+                "label": "-",
+                "selected": ""
+            });
+        }
+
+        for (slug in database.descriptionsDataset.types) {
+            renderList.push({
+                "slug": slug,
+                "label": slug,
+                "selected": (typeIndex < pokemonStats.types.length && slug == pokemonStats.types[typeIndex])? "selected": ""
+            });
+        }
+
+        return renderList;
     }
 
     function buildEditAbilityRenderDoc(pokemonStats:VisualizerPokemonStats):Dynamic {
@@ -583,6 +607,8 @@ class UI {
 
     function attachEditFormListeners(slotNum:Int) {
         var genderInput = new JQuery("#pokemonEditGender");
+        var type1Input = new JQuery("#pokemonEditType1");
+        var type2Input = new JQuery("#pokemonEditType2");
         var abilityInput = new JQuery("#pokemonEditAbility");
         var itemInput = new JQuery("#pokemonEditItem");
         var hpInput = new JQuery("#pokemonEditHP");
@@ -599,6 +625,15 @@ class UI {
         function readValues(event:Event) {
             var pokemonStats = currentPokemon.get(slotNum).copy();
             pokemonStats.gender = genderInput.find("option:selected").attr("name");
+
+            pokemonStats.types = [type1Input.find("option:selected").attr("name")];
+
+            var type2 = type2Input.find("option:selected").attr("name");
+
+            if (type2 != null && type2 != "" && type2 != "-") {
+                pokemonStats.types.push(type2);
+            }
+
             pokemonStats.ability = abilityInput.find("option:selected").attr("name");
             pokemonStats.item = itemInput.find("option:selected").attr("name");
             pokemonStats.hp = Std.parseInt(hpInput.val());
@@ -621,6 +656,8 @@ class UI {
         }
 
         genderInput.change(readValues);
+        type1Input.change(readValues);
+        type2Input.change(readValues);
         abilityInput.change(readValues);
         itemInput.change(readValues);
         hpInput.change(readValues);
