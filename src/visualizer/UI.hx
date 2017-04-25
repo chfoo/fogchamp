@@ -274,7 +274,7 @@ class UI {
             <p>
             <big><strong>Download the latest movesets from TPP?</strong></big>
             </p>
-            <p>Downloading will take a while but this only has to be done once.</p>
+            <p>Downloading will take a while but this only has to be done infrequently.</p>
             ")
             .dialog({
                 modal: true,
