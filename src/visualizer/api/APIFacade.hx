@@ -293,7 +293,7 @@ class APIFacade {
             text = text.replace('-', '');
         }
 
-        var asciiRegex = new EReg("[^a-zA-Z-]", "g");
+        var asciiRegex = new EReg("[^a-zA-Z0-9-]", "g");
         text = asciiRegex.replace(text, "");
 
         return text;
