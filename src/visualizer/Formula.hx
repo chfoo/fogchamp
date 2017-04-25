@@ -143,9 +143,9 @@ class Formula {
 
         return {
             factor: damageFactor,
-            minHP: minDamage,
-            maxHP: damage,
-            critHP: critDamage
+            minHP: Std.int(Math.max(1, minDamage)),
+            maxHP: Std.int(Math.max(1, damage)),
+            critHP: Std.int(Math.max(1, critDamage))
         }
     }
 
