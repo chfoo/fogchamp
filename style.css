@@ -402,6 +402,14 @@ span[class|="pokemonType"] {
     color: #BFE6BC;
 }
 
+.movePriority-high {
+    color: #BFE6BC;
+}
+
+.movePriority-low {
+    color: #E6DC8A;
+}
+
 .pokemonEditContainer {
     font-family: 'Roboto Condensed', sans-serif;
     font-size: 0.8em;

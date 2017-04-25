@@ -250,6 +250,10 @@ class MatchupChart {
             ';
 
             subContainer.appendChild(moveAccText);
+
+            var priorityElement = Browser.document.createSpanElement();
+            renderMovePriority(priorityElement, moveStats);
+            subContainer.appendChild(priorityElement);
         }
 
         container.appendChild(subContainer);
@@ -402,6 +406,19 @@ class MatchupChart {
         element.textContent = moveStats.damageCategory.substr(0, 2);
         element.classList.add('damageCategory-${moveStats.damageCategory}');
         element.title = moveStats.damageCategory;
+    }
+
+    function renderMovePriority(element:Element, moveStats:MoveStats) {
+        if (moveStats.priority != 0) {
+            if (moveStats.priority > 0) {
+                element.textContent = '+${moveStats.priority}';
+                element.classList.add("movePriority-high");
+            } else {
+                element.textContent = Std.string(moveStats.priority);
+                element.classList.add("movePriority-low");
+            }
+            element.title = "Priority";
+        }
     }
 
     function renderAttackStats(element:Element, pokemonStats:VisualizerPokemonStats) {
