@@ -20,10 +20,10 @@ class EditorNotesReader(Reader):
 
     def add_move_notes(self, move_map: dict):
         for slug, note in self.read_move_notes():
-            move_map[slug]['description'] += '\n✻ ' + note
+            move_map[slug]['editor_note'] = note
 
     def add_ability_notes(self, ability_map: dict):
         for slug, note in self.read_ability_notes():
-            ability_map[slug]['description'] += '\n✻ ' + note
+            ability_map[slug]['editor_note'] = note
 
 

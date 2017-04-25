@@ -1,4 +1,6 @@
 import collections
+import re
+
 from util.readers.base import Reader
 
 
@@ -29,6 +31,7 @@ class PokedexReader(Reader):
         types_map = self.read_types_map()
         move_name_map = self.read_move_names()
         move_desc_map = self.read_move_descriptions()
+        move_effects_map = self.read_move_effects()
         move_meta_map = self.read_move_meta()
 
         with self.read_csv('moves.csv') as reader:
@@ -44,14 +47,22 @@ class PokedexReader(Reader):
                 if move_type == 'fairy':
                     move_type = 'normal'
 
-                power = row[4]
-                pp = row[5]
-                accuracy = row[6]
+                power = int(row[4]) if row[4] else None
+                pp = int(row[5]) if row[5] else None
+                accuracy = int(row[6]) if row[6] else None
+                priority = int(row[7]) if row[7] else None
                 damage_category = DAMAGE_CATEGORY_MAP[int(row[9])]
+                effect_id = int(row[10])
+                effect_chance = int(row[11]) if row[11] else None
 
-                power = int(power) if power else None
-                pp = int(pp) if pp else None
-                accuracy = int(accuracy) if accuracy else None
+                effect_short = move_effects_map.get(effect_id, (None, None))[0]
+                effect_long = move_effects_map.get(effect_id, (None, None))[1]
+
+                if effect_short:
+                    effect_short = self.strip_hyperlink(effect_short)
+
+                if effect_long:
+                    effect_long = self.strip_hyperlink(effect_long)
 
                 doc = {
                     'slug': slug,
@@ -60,8 +71,12 @@ class PokedexReader(Reader):
                     'pp': pp,
                     'accuracy': accuracy,
                     'damage_category': damage_category,
+                    'priority': priority,
                     'name': move_name_map[move_id],
-                    'description': move_desc_map.get(move_id)
+                    'description': move_desc_map.get(move_id),
+                    'effect_short': effect_short,
+                    'effect_long': effect_long,
+                    'effect_chance': effect_chance,
                 }
 
                 doc.update(move_meta_map.get(move_id, {}))
@@ -123,15 +138,25 @@ class PokedexReader(Reader):
 
                 move_desc_map[effect_id] = description
 
-        # with self.read_csv('move_effect_prose.csv') as reader:
-        #     for index, row in enumerate(reader):
-        #         if index == 0:
-        #             continue
-        #
-        #         effect_id = int(row[0])
-        #         description = row[2]
-        #
-        #         move_desc_map[effect_id] = description
+        return move_desc_map
+
+    def read_move_effects(self, lang=9):
+        move_desc_map = {}
+
+        with self.read_csv('move_effect_prose.csv') as reader:
+            for index, row in enumerate(reader):
+                if index == 0:
+                    continue
+
+                effect_id = int(row[0])
+                language = int(row[1])
+                short_effect = row[2]
+                long_effect = row[3]
+
+                if language != lang:
+                    continue
+
+                move_desc_map[effect_id] = short_effect, long_effect
 
         return move_desc_map
 
@@ -315,3 +340,13 @@ class PokedexReader(Reader):
                     'name': name_map[ability_id],
                     'description': desc_map.get(ability_id)
                 }
+
+    @classmethod
+    def strip_hyperlink(cls, text) -> str:
+        def rep(match):
+            if match.group(1):
+                return match.group(1)
+            else:
+                return match.group(2).split(':', 1)[-1]
+
+        return re.sub(r'\[(.*?)\]{(.*?)}', rep, text)

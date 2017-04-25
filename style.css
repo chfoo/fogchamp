@@ -78,6 +78,10 @@ a:active, a:hover {
 }
 
 #helpDialog {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+.moveDescriptionEffectLong {
     white-space: pre-line;
 }
 

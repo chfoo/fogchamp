@@ -468,33 +468,53 @@ class UI {
         var slug = parts[1];
         var title = slug;
         var text = "";
+        var html = "";
 
         if (category == "ability") {
             var ability = database.descriptionsDataset.getAbility(slug);
             title = ability.name;
             text = ability.description;
+
+            if (ability.editor_note != null) {
+                text += '\n\n✻ ${ability.editor_note}';
+            }
+
         } else if (category == "item") {
             var item = database.descriptionsDataset.getItem(slug);
             title = item.name;
             text = item.description;
+
         } else if (category == "move") {
+            var template = new JQuery("#moveDescriptionTemplate").html();
             var move = database.movesDataset.getMoveStats(slug);
             title = move.name;
-            text = move.description;
+            html = renderTemplate(template, {
+                "simple": move.description,
+                "short": move.effectShort.replace("$effect_chance%", '${move.effectChance}%'),
+                "long": move.effectLong.replace("$effect_chance%", '${move.effectChance}%'),
+                "note": move.editorNote
+            });
+
         } else if (category == "damage") {
             text = 'HP damage against foe (min, max, crit):
                 ${parts[2]}–${parts[3]}–${parts[4]}%
                 ${parts[5]}–${parts[6]}–${parts[7]}pts';
         }
 
-        if (text == null || text.length == 0) {
+        var jquery = new JQuery("#helpDialog");
+        if (html != "") {
+            jquery.html(html);
+        } else if (text != "") {
+            jquery.text(text);
+        } else {
             text = "(no help available for this item)";
+            jquery.text(text);
         }
 
-        text = text.replace("✻", "\n✻");
-
-        var jquery = new JQuery("#helpDialog").text(text);
-        untyped jquery.dialog();
+        untyped jquery.dialog({
+            maxHeight: Browser.window.innerHeight,
+            width: 400
+        });
 
         var inViewport:Bool = untyped jquery.visible();
 

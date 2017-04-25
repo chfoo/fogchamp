@@ -6,6 +6,7 @@ import visualizer.api.APIFacade;
 typedef AbilityInfo = {
     var name : String;
     var description : String;
+    var editor_note: String;
 }
 
 typedef ItemInfo = {
