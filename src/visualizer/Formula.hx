@@ -141,11 +141,21 @@ class Formula {
         var minDamage = damage * RANDOM_MIN_MODIFIER;
         var critDamage = damage * CRIT_MODIFIER;
 
+        damage = Math.floor(damage);
+        minDamage = Math.floor(minDamage);
+        critDamage = Math.floor(critDamage);
+
+        if (damageFactor != 0) {
+            damage = Math.max(1, damage);
+            minDamage = Math.max(1, minDamage);
+            critDamage = Math.max(1, critDamage);
+        }
+
         return {
             factor: damageFactor,
-            minHP: Std.int(Math.max(1, minDamage)),
-            maxHP: Std.int(Math.max(1, damage)),
-            critHP: Std.int(Math.max(1, critDamage))
+            minHP: minDamage,
+            maxHP: damage,
+            critHP: critDamage
         }
     }
 
