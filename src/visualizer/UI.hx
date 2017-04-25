@@ -325,7 +325,12 @@ class UI {
                     movesetName = movesetNames.get(i);
                 }
             }
-            var slug = database.getPokemonSlugByID(pokemonNums.get(i), movesetName);
+            var slug;
+            try {
+                slug = database.getPokemonSlugByID(pokemonNums.get(i), movesetName);
+            } catch (error:StatsNotFoundError) {
+                slug = database.getPokemonSlugByID(pokemonNums.get(i));
+            }
 
             currentPokemon.set(i, database.getPokemonStats(slug));
         }
