@@ -16,8 +16,8 @@ class StorageEmpty {
 
 class APIPokemonDataset extends Dataset {
     static public var STORAGE_KEY = "tpp-api-moveset";
-    static public var STORAGE_VERISON = 1;
-    static public var MIN_STORAGE_VERSION = 1;
+    static public var STORAGE_VERISON = 2;
+    static public var MIN_STORAGE_VERSION = 2;
     public var slugs(default, null):Array<String>;
 
     var stats:Map<String, MovesetPokemonStats>;
