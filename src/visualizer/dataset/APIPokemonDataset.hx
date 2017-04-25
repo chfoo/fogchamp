@@ -91,6 +91,12 @@ class APIPokemonDataset extends Dataset {
 
         for (slug in slugs) {
             var jsonStr = Browser.window.localStorage.getItem('$STORAGE_KEY:pokemon:$slug');
+
+            if (jsonStr == null) {
+                trace(jsonStr, "not found in storage. corrupted?");
+                throw new StorageEmpty();
+            }
+
             var pokemonStats = new MovesetPokemonStats();
             pokemonStats.fromJsonObject(Json.parse(jsonStr));
 
