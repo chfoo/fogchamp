@@ -597,7 +597,7 @@ class UI {
         var move4Input = new JQuery("#pokemonEditMove4");
 
         function readValues(event:Event) {
-            var pokemonStats = currentPokemon.get(slotNum);
+            var pokemonStats = currentPokemon.get(slotNum).copy();
             pokemonStats.gender = genderInput.find("option:selected").attr("name");
             pokemonStats.ability = abilityInput.find("option:selected").attr("name");
             pokemonStats.item = itemInput.find("option:selected").attr("name");
@@ -639,7 +639,6 @@ class UI {
         var newCustomization = !database.isCustomized(pokemonStats.slug);
 
         if (newCustomization) {
-            pokemonStats = pokemonStats.copy();
             pokemonStats.slug = '${pokemonStats.slug}-custom$slotNum';
             pokemonStats.movesetName = 'Custom $slotNum';
         }
