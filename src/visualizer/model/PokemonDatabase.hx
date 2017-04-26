@@ -66,7 +66,7 @@ class PokemonDatabase {
         var slugs:Array<String>;
 
         if (edition == API_EDITION) {
-            slugs = apiPokemonDataset.slugs;
+            slugs = apiPokemonDataset.slugs.copy();
         } else {
             slugs = pokemonDataset.slugs.toArray();
         }
