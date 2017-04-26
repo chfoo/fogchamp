@@ -497,6 +497,7 @@ class UI {
                 "simple": move.description,
                 "short": move.effectShort.replace("$effect_chance%", '${move.effectChance}%'),
                 "long": move.effectLong.replace("$effect_chance%", '${move.effectChance}%'),
+                "flags": (move.flags != null) ? "🗹 " + move.flags.join(", 🗹 ") : "",
                 "note": move.editorNote
             });
 

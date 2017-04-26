@@ -33,6 +33,7 @@ class PokedexReader(Reader):
         move_desc_map = self.read_move_descriptions()
         move_effects_map = self.read_move_effects()
         move_meta_map = self.read_move_meta()
+        move_flags_map = self.read_move_flags()
 
         with self.read_csv('moves.csv') as reader:
             for index, row in enumerate(reader):
@@ -77,6 +78,7 @@ class PokedexReader(Reader):
                     'effect_short': effect_short,
                     'effect_long': effect_long,
                     'effect_chance': effect_chance,
+                    'flags': move_flags_map.get(move_id)
                 }
 
                 doc.update(move_meta_map.get(move_id, {}))
@@ -159,6 +161,32 @@ class PokedexReader(Reader):
                 move_desc_map[effect_id] = short_effect, long_effect
 
         return move_desc_map
+
+    def read_move_flags(self):
+        flag_map = collections.defaultdict(list)
+        flag_id_map = {}
+
+        with self.read_csv('move_flags.csv') as reader:
+            for index, row in enumerate(reader):
+                if index == 0:
+                    continue
+
+                flag_id = int(row[0])
+                flag_name = row[1]
+                flag_id_map[flag_id] = flag_name
+
+        with self.read_csv('move_flag_map.csv') as reader:
+            for index, row in enumerate(reader):
+                if index == 0:
+                    continue
+
+                move_id = int(row[0])
+                flag_id = int(row[1])
+                flag_name = flag_id_map[flag_id]
+
+                flag_map[move_id].append(flag_name)
+
+        return flag_map
 
     def read_pokemon_types(self):
         types_map = self.read_types_map()
