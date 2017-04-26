@@ -373,8 +373,8 @@ class PokedexReader(Reader):
     def strip_hyperlink(cls, text) -> str:
         def rep(match):
             if match.group(1):
-                return match.group(1)
+                return match.group(1)  # plaintext
             else:
-                return match.group(2).split(':', 1)[-1]
+                return match.group(2).split(':', 1)[-1].title()  # hyperlink
 
         return re.sub(r'\[(.*?)\]{(.*?)}', rep, text)
