@@ -374,22 +374,45 @@ class PokedexReader(Reader):
 
         return desc_map
 
+    def read_item_effects(self, lang=9):
+        desc_map = {}
+
+        with self.read_csv('item_prose.csv') as reader:
+            for index, row in enumerate(reader):
+                if index == 0:
+                    continue
+
+                item_id = int(row[0])
+                lang_id = int(row[1])
+                effect_short = row[2]
+                effect_long = row[3]
+
+                if lang_id != lang:
+                    continue
+
+                desc_map[item_id] = self.strip_hyperlink(effect_short), self.strip_hyperlink(effect_long)
+
+        return desc_map
+
     def read_items(self):
         name_map = self.read_item_names()
         desc_map = self.read_item_descriptions()
+        effect_map = self.read_item_effects()
 
         with self.read_csv('items.csv') as reader:
             for index, row in enumerate(reader):
                 if index == 0:
                     continue
 
-                ability_id = int(row[0])
+                item_id = int(row[0])
                 slug = row[1]
 
                 yield {
                     'slug': slug,
-                    'name': name_map[ability_id],
-                    'description': desc_map.get(ability_id)
+                    'name': name_map[item_id],
+                    'description': desc_map.get(item_id),
+                    'effect_short': effect_map.get(item_id, (None, None))[0],
+                    'effect_long': effect_map.get(item_id, (None, None))[1],
                 }
 
     @classmethod

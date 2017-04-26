@@ -14,6 +14,8 @@ typedef AbilityInfo = {
 typedef ItemInfo = {
     var name : String;
     var description : String;
+    var effectShort : String;
+    var effectLong : String;
 }
 
 typedef AbilityMap = Map<String,AbilityInfo>;
@@ -70,7 +72,13 @@ class DescriptionsDataset extends Dataset {
         var itemsDoc = Reflect.field(data, "items");
 
         for (slug in Reflect.fields(itemsDoc)) {
-            items.set(slug, Reflect.field(itemsDoc, slug));
+            var doc = Reflect.field(itemsDoc, slug);
+            items.set(slug, {
+                name: Reflect.field(doc, "name"),
+                description: Reflect.field(doc, "description"),
+                effectShort: Reflect.field(doc, "effect_short"),
+                effectLong: Reflect.field(doc, "effect_long")
+            });
         }
 
         buildDashlessSlugMap();

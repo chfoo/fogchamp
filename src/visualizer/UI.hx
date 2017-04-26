@@ -488,9 +488,15 @@ class UI {
             });
 
         } else if (category == "item") {
+            var template = new JQuery("#itemDescriptionTemplate").html();
             var item = database.descriptionsDataset.getItem(slug);
             title = item.name;
-            text = item.description;
+
+            html = renderTemplate(template, {
+                "simple": item.description,
+                "short": item.effectShort,
+                "long": item.effectLong
+            });
 
         } else if (category == "move") {
             var template = new JQuery("#moveDescriptionTemplate").html();
