@@ -224,6 +224,7 @@ class PokedexReader(Reader):
     def read_abilities(self):
         name_map = self.read_ability_names()
         desc_map = self.read_ability_descriptions()
+        effect_map = self.read_ability_effects()
 
         with self.read_csv('abilities.csv') as reader:
             for index, row in enumerate(reader):
@@ -236,7 +237,9 @@ class PokedexReader(Reader):
                 yield {
                     'slug': slug,
                     'name': name_map[ability_id],
-                    'description': desc_map.get(ability_id)
+                    'description': desc_map.get(ability_id),
+                    'effect_short': effect_map.get(ability_id, (None, None))[0],
+                    'effect_long': effect_map.get(ability_id, (None, None))[1],
                 }
 
     def read_ability_names(self, lang=9):
@@ -274,6 +277,26 @@ class PokedexReader(Reader):
                     continue
 
                 desc_map[ability_id] = description
+
+        return desc_map
+
+    def read_ability_effects(self, lang=9):
+        desc_map = {}
+
+        with self.read_csv('ability_prose.csv') as reader:
+            for index, row in enumerate(reader):
+                if index == 0:
+                    continue
+
+                ability_id = int(row[0])
+                lang_id = int(row[1])
+                effect_short = row[2]
+                effect_long = row[3]
+
+                if lang_id != lang:
+                    continue
+
+                desc_map[ability_id] = self.strip_hyperlink(effect_short), self.strip_hyperlink(effect_long)
 
         return desc_map
 

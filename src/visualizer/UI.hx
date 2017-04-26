@@ -476,13 +476,16 @@ class UI {
         var html = "";
 
         if (category == "ability") {
+            var template = new JQuery("#abilityDescriptionTemplate").html();
             var ability = database.descriptionsDataset.getAbility(slug);
             title = ability.name;
-            text = ability.description;
 
-            if (ability.editor_note != null) {
-                text += '\n\n✻ ${ability.editor_note}';
-            }
+            html = renderTemplate(template, {
+                "simple": ability.description,
+                "short": ability.effectShort,
+                "long": ability.effectLong,
+                "note": ability.editorNote
+            });
 
         } else if (category == "item") {
             var item = database.descriptionsDataset.getItem(slug);

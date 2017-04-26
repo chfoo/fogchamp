@@ -6,7 +6,9 @@ import visualizer.api.APIFacade;
 typedef AbilityInfo = {
     var name : String;
     var description : String;
-    var editor_note: String;
+    var effectShort : String;
+    var effectLong : String;
+    var editorNote: String;
 }
 
 typedef ItemInfo = {
@@ -40,7 +42,14 @@ class DescriptionsDataset extends Dataset {
         var abilitiesDoc = Reflect.field(data, "abilities");
 
         for (slug in Reflect.fields(abilitiesDoc)) {
-            abilities.set(slug, Reflect.field(abilitiesDoc, slug));
+            var doc = Reflect.field(abilitiesDoc, slug);
+            abilities.set(slug, {
+                name: Reflect.field(doc, "name"),
+                description: Reflect.field(doc, "description"),
+                effectShort: Reflect.field(doc, "effect_short"),
+                effectLong: Reflect.field(doc, "effect_long"),
+                editorNote: Reflect.field(doc, "editor_note")
+            });
         }
 
         types_efficacy = new TypeEfficacyTable();
