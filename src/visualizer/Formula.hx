@@ -1,9 +1,10 @@
 package visualizer;
 
 
+import visualizer.datastruct.PokemonStats;
 import visualizer.dataset.DescriptionsDataset;
 import visualizer.datastruct.MoveStats;
-import visualizer.datastruct.PokemonStats;
+
 typedef DamageResult = {
     factor: Int,
     minHP: Float,
@@ -38,16 +39,22 @@ class Formula {
     public static var HAPPINESS_MOVE = ["return", "frustration"];
     public static var VARIABLE_POWER_MOVE = ["magnitude"];
 
-    static public function computeResult(
+    var descriptionsDataset:DescriptionsDataset;
+
+    public function new(descriptionsDataset:DescriptionsDataset) {
+        this.descriptionsDataset = descriptionsDataset;
+    }
+
+    public function computeResult(
         userPokemonStat:PokemonStats, foePokemonStat:PokemonStats,
-        userMoveStat:MoveStats, descriptionsDataset:DescriptionsDataset,
+        userMoveStat:MoveStats,
         formulaOptions:FormulaOptions
     ):DamageResult {
-        var userMoveType:String = userMoveStat.moveType;
+        var userMoveType:String = computeUserMoveType(userPokemonStat, userMoveStat);
         var userTypes:Array<String> = userPokemonStat.types;
         var foeTypes:Array<String> = foePokemonStat.types;
         var factor = descriptionsDataset.getTypeEfficacy(userMoveType, foeTypes[0], foeTypes[1]);
-        var userBasePower = Formula.computeBasePower(userPokemonStat, foePokemonStat, userMoveStat);
+        var userBasePower = computeBasePower(userPokemonStat, foePokemonStat, userMoveStat);
         var isVariableBasePower = Formula.VARIABLE_POWER_MOVE.indexOf(userMoveStat.slug) != -1;
         var isFixedDamageMove = Formula.FIXED_DAMAGE_MOVE.indexOf(userMoveStat.slug) != -1;
 
@@ -90,8 +97,8 @@ class Formula {
                 critHP: Formula.LEVEL
             }
         } else if (isVariableBasePower) {
-            var damageResultLow = Formula.computeDamage(userAttack, foeDefense, 10, stab, factor);
-            var damageResultHigh = Formula.computeDamage(userAttack, foeDefense, 150, stab, factor);
+            var damageResultLow = computeDamage(userAttack, foeDefense, 10, stab, factor);
+            var damageResultHigh = computeDamage(userAttack, foeDefense, 150, stab, factor);
 
             damageResult = {
                 factor: factor,
@@ -100,7 +107,7 @@ class Formula {
                 critHP: damageResultHigh.critHP
             }
         } else {
-            damageResult = Formula.computeDamage(userAttack, foeDefense, userBasePower, stab, factor);
+            damageResult = computeDamage(userAttack, foeDefense, userBasePower, stab, factor);
         }
 
         if (userMoveStat.maxHits != null) {
@@ -110,7 +117,18 @@ class Formula {
         return damageResult;
     }
 
-    static public function computeBasePower(userPokemonStat:PokemonStats, foePokemonStat:PokemonStats, userMoveStat:MoveStats):Int {
+    public function computeUserMoveType(pokemonStat:PokemonStats, moveStats:MoveStats) {
+        if (moveStats.slug == "natural-gift") {
+            var itemInfo = descriptionsDataset.getItem(pokemonStat.item);
+
+            if (itemInfo.naturalGiftType != null) {
+                return itemInfo.naturalGiftType;
+            }
+        }
+        return moveStats.moveType;
+    }
+
+    public function computeBasePower(userPokemonStat:PokemonStats, foePokemonStat:PokemonStats, userMoveStat:MoveStats):Int {
         switch (userMoveStat.slug) {
             case "low-kick" | "grass-knot":
                 if (foePokemonStat.weight != null) {
@@ -124,11 +142,21 @@ class Formula {
                 if (userPokemonStat.happiness != null) {
                     return Std.int(Math.max(1, (255 - userPokemonStat.happiness) / 2.5));
                 }
+            case "fling":
+                var itemInfo = descriptionsDataset.getItem(userPokemonStat.item);
+                if (itemInfo != null) {
+                    return itemInfo.flingPower;
+                }
+            case "natural-gift":
+                var itemInfo = descriptionsDataset.getItem(userPokemonStat.item);
+                if (itemInfo != null && itemInfo.naturalGiftType != null) {
+                    return itemInfo.naturalGiftPower;
+                }
         }
         return userMoveStat.power;
     }
 
-    static public function computeDamage(userAttack:Int, foeDefense:Int, userBasePower:Int, stab:Bool, damageFactor:Int):DamageResult {
+    public function computeDamage(userAttack:Int, foeDefense:Int, userBasePower:Int, stab:Bool, damageFactor:Int):DamageResult {
         var modifier = damageFactor / 100;
 
         if (stab) {

@@ -9,14 +9,19 @@ typedef AbilityInfo = {
     var effectShort : String;
     var effectLong : String;
     var editorNote: String;
-}
+};
 
 typedef ItemInfo = {
     var name : String;
     var description : String;
     var effectShort : String;
     var effectLong : String;
-}
+    var flingEffectShort : String;
+    var flingEffectLong : String;
+    var flingPower: Int;
+    var naturalGiftPower : Int;
+    var naturalGiftType : String;
+};
 
 typedef AbilityMap = Map<String,AbilityInfo>;
 typedef TypeEfficacyTable = Map<String,Int>;
@@ -77,7 +82,12 @@ class DescriptionsDataset extends Dataset {
                 name: Reflect.field(doc, "name"),
                 description: Reflect.field(doc, "description"),
                 effectShort: Reflect.field(doc, "effect_short"),
-                effectLong: Reflect.field(doc, "effect_long")
+                effectLong: Reflect.field(doc, "effect_long"),
+                flingEffectShort: Reflect.field(doc, "fling_effect_short"),
+                flingEffectLong: Reflect.field(doc, "fling_effect_long"),
+                flingPower: Reflect.field(doc, "fling_power"),
+                naturalGiftPower: Reflect.field(doc, "natural_gift_power"),
+                naturalGiftType: Reflect.field(doc, "natural_gift_type")
             });
         }
 

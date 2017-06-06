@@ -394,10 +394,30 @@ class PokedexReader(Reader):
 
         return desc_map
 
+    def read_berry_natural_gift_power(self):
+        desc_map = {}
+        types_map = self.read_types_map()
+
+        with self.read_csv('berries.csv') as reader:
+            for index, row in enumerate(reader):
+                if index == 0:
+                    continue
+
+                item_id = int(row[1])
+                power = int(row[3])
+                type_id = int(row[4])
+                move_type = types_map[type_id]
+
+                desc_map[item_id] = (power, move_type)
+
+        return desc_map
+
     def read_items(self):
         name_map = self.read_item_names()
         desc_map = self.read_item_descriptions()
         effect_map = self.read_item_effects()
+        move_effect_map = self.read_move_effects()
+        natural_gift_map = self.read_berry_natural_gift_power()
 
         with self.read_csv('items.csv') as reader:
             for index, row in enumerate(reader):
@@ -406,14 +426,24 @@ class PokedexReader(Reader):
 
                 item_id = int(row[0])
                 slug = row[1]
+                fling_power = int(row[4]) if row[4] else None
+                fling_effect_id = int(row[5]) if row[5] else None
 
-                yield {
+                d = {
                     'slug': slug,
                     'name': name_map[item_id],
                     'description': desc_map.get(item_id),
                     'effect_short': effect_map.get(item_id, (None, None))[0],
                     'effect_long': effect_map.get(item_id, (None, None))[1],
+                    'fling_power': fling_power,
+                    'fling_effect_short': move_effect_map.get(fling_effect_id, (None, None))[0],
+                    'fling_effect_long': move_effect_map.get(fling_effect_id, (None, None))[1],
                 }
+
+                if item_id in natural_gift_map:
+                    d['natural_gift_power'], d['natural_gift_type'] = natural_gift_map[item_id]
+
+                yield d
 
     @classmethod
     def strip_hyperlink(cls, text) -> str:

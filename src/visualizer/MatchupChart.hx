@@ -1,5 +1,7 @@
 package visualizer;
 
+import visualizer.datastruct.VisualizerPokemonStats;
+import visualizer.datastruct.VisualizerPokemonStats;
 import js.html.Element;
 import visualizer.datastruct.VisualizerPokemonStats;
 import visualizer.model.PokemonDatabase;
@@ -29,11 +31,13 @@ class MatchupChart {
     var database:PokemonDatabase;
     var pokemonStatsList:Array<VisualizerPokemonStats>;
     var tableElement:TableElement;
+    var formula:Formula;
     var formulaOptions:FormulaOptions;
 
     public function new(pokemonDatabase:PokemonDatabase, formulaOptions:FormulaOptions) {
         database = pokemonDatabase;
         this.formulaOptions = formulaOptions;
+        formula = new Formula(database.descriptionsDataset);
     }
 
     public function setPokemon(pokemonStatsList:Array<VisualizerPokemonStats>) {
@@ -163,17 +167,17 @@ class MatchupChart {
         processPokemonLabelCell(pokemonStat, labelCell, "left", slotNum);
     }
 
-    function renderMoveLabelCell(pokemonStat:VisualizerPokemonStats, moveIndex:Int, rowElement:TableRowElement, position:String) {
+    function renderMoveLabelCell(userPokemonStat:VisualizerPokemonStats, moveIndex:Int, rowElement:TableRowElement, position:String) {
         var labelCell = cast(rowElement.insertCell(-1), TableCellElement);
-        var moveSlugs:Array<String> = pokemonStat.moves;
+        var moveSlugs:Array<String> = userPokemonStat.moves;
 
         if (moveIndex < moveSlugs.length) {
             var moveSlug = moveSlugs[moveIndex];
-            var moveStats = database.movesDataset.getMoveStats(moveSlug, pokemonStat);
+            var moveStats = database.movesDataset.getMoveStats(moveSlug, userPokemonStat);
 
-            processMoveLabelCell(moveStats, labelCell, position);
+            processMoveLabelCell(userPokemonStat, moveStats, labelCell, position);
         } else {
-            processMoveLabelCell(null, labelCell, position);
+            processMoveLabelCell(null, null, labelCell, position);
         }
     }
 
@@ -213,7 +217,9 @@ class MatchupChart {
         cell.appendChild(container);
     }
 
-    function processMoveLabelCell(moveStats:MoveStats, cell:TableCellElement, position:String) {
+    function processMoveLabelCell(
+            userPokemonStat:VisualizerPokemonStats,
+            moveStats:MoveStats, cell:TableCellElement, position:String) {
         cell.classList.add('matchupChartMoveLabelCell-$position');
 
         var container = Browser.document.createDivElement();
@@ -225,7 +231,7 @@ class MatchupChart {
 
         if (moveStats != null) {
             var typeIcon = Browser.document.createSpanElement();
-            renderMiniTypeIcon(typeIcon, moveStats.moveType);
+            renderMiniTypeIcon(typeIcon, formula.computeUserMoveType(userPokemonStat, moveStats));
             subContainer.appendChild(typeIcon);
 
             var moveLabelText = Browser.document.createSpanElement();
@@ -310,7 +316,7 @@ class MatchupChart {
         subContainer.classList.add('matchupChartEfficacySubContainer-$position');
         subContainer.classList.add("matchupChartEfficacy");
 
-        var damageResult = Formula.computeResult(userPokemonStat, foePokemonStat, userMoveStat, database.descriptionsDataset, formulaOptions);
+        var damageResult = formula.computeResult(userPokemonStat, foePokemonStat, userMoveStat, formulaOptions);
         var factor = damageResult.factor;
         var factorString;
 
