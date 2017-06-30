@@ -124,7 +124,7 @@ class UI {
             var jquery = new JQuery('#selectionSelect$i');
 
             jquery.change(function (event:Event) {
-                selectChanged(i, jquery.val());
+                selectChangedCallback(i, jquery.val());
             });
 
             jquery.focus(function (event:Event) {
@@ -371,10 +371,14 @@ class UI {
         renderAll();
     }
 
-    function selectChanged(slotNum:Int, slug:String) {
+    function setSelectionBySlug(slotNum:Int, slug:String, updateUrlFragment:Bool = true) {
         currentPokemon.set(slotNum, database.getPokemonStats(slug));
 
-        renderAll();
+        renderAll(updateUrlFragment);
+    }
+
+    function selectChangedCallback(slotNum:Int, slug:String) {
+        setSelectionBySlug(slotNum, slug);
     }
 
     function reloadSelectionList() {
@@ -393,11 +397,7 @@ class UI {
         }
     }
 
-    function renderAll(?updateUrlFragment:Bool) {
-        if (updateUrlFragment == null) {
-            updateUrlFragment = true;
-        }
-
+    function renderAll(updateUrlFragment:Bool = true) {
         try {
             renderMatchCommand();
             renderChart();
@@ -811,5 +811,26 @@ class UI {
             FelkCraft</a>
             visualizer
         ');
+    }
+
+    public function testAll() {
+        var editions = database.getEditionNames();
+
+        selectEdition(editions[editions.length - 1]);
+
+        var slugs = database.getPokemonSlugs();
+
+        testOne(slugs);
+    }
+
+    function testOne(slugs:Array<String>) {
+        if (slugs.length > 0) {
+            var slug = slugs.pop();
+            trace(slug);
+            setSelectionBySlug(0, slug, false);
+            syncSelectionListToCurrent();
+
+            Browser.window.setTimeout(testOne.bind(slugs), 10);
+        }
     }
 }

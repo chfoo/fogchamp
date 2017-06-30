@@ -36,6 +36,8 @@ class Main {
         new JQuery(Browser.document.body).ready(function (event:Event) {
             app.run();
         });
+
+        Reflect.setField(Browser.window, "runTests", app.runTests);
     }
 
     function run() {
@@ -100,5 +102,9 @@ class Main {
     function loadUI() {
         ui = new UI(database);
         ui.setup();
+    }
+
+    public function runTests() {
+        ui.testAll();
     }
 }
