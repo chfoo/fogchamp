@@ -26,11 +26,14 @@ typedef ItemInfo = {
 typedef AbilityMap = Map<String,AbilityInfo>;
 typedef TypeEfficacyTable = Map<String,Int>;
 typedef ItemMap = Map<String,ItemInfo>;
+typedef ItemRenamesMap = Map<String,String>;
+
 
 class DescriptionsDataset extends Dataset {
     public var abilities(default, null):AbilityMap;
     public var types_efficacy(default, null):TypeEfficacyTable;
     public var items(default, null):ItemMap;
+    public var itemRenames(default, null):ItemRenamesMap;
     public var types(default, null):Array<String>;
     var dashlessSlugMap:Map<String,String>;
 
@@ -91,6 +94,16 @@ class DescriptionsDataset extends Dataset {
             });
         }
 
+        itemRenames = new ItemRenamesMap();
+
+        var itemRenamesDoc = Reflect.field(data, "item_renames");
+
+        for (oldName in Reflect.fields(itemRenamesDoc)) {
+            var newName = Reflect.field(itemRenamesDoc, oldName);
+
+            itemRenames.set(oldName, newName);
+        }
+
         buildDashlessSlugMap();
 
         super.loadDone(data);
@@ -109,19 +122,37 @@ class DescriptionsDataset extends Dataset {
     }
 
     public function getItem(slug:String):ItemInfo {
-        if (!items.exists(slug)) {
-            slug = dashlessSlugMap.get(slug);
+        if (items.exists(slug)) {
+            return items.get(slug);
         }
 
-        return items.get(slug);
+        var candidateSlugs = [];
+
+        if (itemRenames.exists(slug)) {
+            candidateSlugs.push(itemRenames.get(slug));
+        }
+
+        if (dashlessSlugMap.exists(slug)) {
+            var dashless = dashlessSlugMap.get(slug);
+
+            candidateSlugs.push(dashless);
+
+            if (itemRenames.exists(dashless)) {
+                candidateSlugs.push(itemRenames.get(dashless));
+            }
+        }
+
+        for (candidate in candidateSlugs) {
+            if (items.exists(candidate)) {
+                return items.get(candidate);
+            }
+        }
+
+        return null;
     }
 
     public function getItemName(slug:String):String {
-        if (!items.exists(slug)) {
-            slug = dashlessSlugMap.get(slug);
-        }
-
-        return items.get(slug).name;
+        return getItem(slug).name;
     }
 
     public function getTypeEfficacy(user:String, foe:String, ?foeSecondary:String):Int {
@@ -166,6 +197,10 @@ class DescriptionsDataset extends Dataset {
             dashlessSlugMap.set(APIFacade.slugify(key, true), key);
         }
         for (key in abilities.keys()) {
+            dashlessSlugMap.set(APIFacade.slugify(key, true), key);
+        }
+
+        for (key in itemRenames.keys()) {
             dashlessSlugMap.set(APIFacade.slugify(key, true), key);
         }
     }

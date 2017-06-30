@@ -39,6 +39,16 @@ class BulbapediaReader(Reader):
 
                 yield name, gen_4, gen_5, gen_6
 
+    def read_item_renames(self):
+        with self.read_csv('item_renames.csv') as reader:
+            for index, row in enumerate(reader):
+                if index == 0:
+                    continue
+
+                old_name, new_name = row
+
+                yield old_name, new_name
+
     def get_accuracy_map(self):
         accuracy_map = {}
 
@@ -77,3 +87,11 @@ class BulbapediaReader(Reader):
 
             if slug in power_map:
                 stats['power'] = power_map[slug]
+
+    def get_item_renames_map(self):
+        renames_map = {}
+
+        for old_name, new_name in self.read_item_renames():
+            renames_map[slugify(old_name)] = slugify(new_name)
+
+        return renames_map

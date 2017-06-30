@@ -99,6 +99,8 @@ def main():
         slug = item.pop('slug')
         items[slug] = item
 
+    item_renames = bulbapedia_reader.get_item_renames_map()
+
     json_path = os.path.join(output_dir, 'descriptions.json')
 
     with open(json_path, 'w') as file:
@@ -106,6 +108,7 @@ def main():
             'abilities': abilities,
             'types_efficacy': types_efficacy,
             'items': items,
+            'item_renames': item_renames,
         }, indent=2, sort_keys=True))
 
 if __name__ == '__main__':
