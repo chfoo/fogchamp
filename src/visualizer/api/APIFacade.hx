@@ -100,7 +100,7 @@ class APIFacade {
 
             Browser.window.setTimeout(function () {
                 callAPI(
-                    CONSUME_CURSOR_API_URL + token,
+                    CONSUME_CURSOR_API_URL + token + "?limit=100",
                     cursorPaginateSuccessHandler,
                     cursorErrorHandler,
                     true
@@ -113,7 +113,7 @@ class APIFacade {
 
             Browser.window.setTimeout(function () {
                 callAPI(
-                    CONSUME_CURSOR_API_URL + token,
+                    CONSUME_CURSOR_API_URL + token + "?limit=100",
                     cursorPaginateSuccessHandler,
                     cursorErrorHandler,
                     true
