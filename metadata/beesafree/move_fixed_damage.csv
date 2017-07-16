@@ -1,0 +1,11 @@
+move,damage_method
+seismic toss,user_level
+night shade,user_level
+dragon rate,fixed_40
+low kick,foe_weight
+grass knot,foe_weight
+return,happiness
+frustration,happiness
+magnitude,magnitude
+sonic boom,fixed_20
+super fang,foe_half_hp

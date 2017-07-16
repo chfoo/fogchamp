@@ -1,0 +1,5 @@
+user_move_type,weather,multiplier
+fire,sun,1.5
+water,rain.1.5
+water,sun,0.5
+fire,rain,0.5

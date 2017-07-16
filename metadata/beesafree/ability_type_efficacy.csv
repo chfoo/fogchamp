@@ -1,0 +1,13 @@
+foe_ability,user_move_type,efficacy_multiplier,user_efficacy_min_apply
+water absorb,water,0,
+volt absorb,electric,0,
+motor drive,electric,0,
+levitate,ground,0,
+flash fire,fire,0,
+dry skin,water,0,
+dry skin,fire,1.25,
+thick fat,ice,0.5,
+thick fat,fire,0.5,
+heat proof,fire,0.5,
+filter,0.75,1
+solid rock,0.75,1

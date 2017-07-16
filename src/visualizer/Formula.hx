@@ -34,6 +34,8 @@ class Formula {
     public static var LEVEL = 100;
     public static var RANDOM_MIN_MODIFIER = 0.85;
     public static var CRIT_MODIFIER = 2.0;
+
+    // TODO: use values in database generated from CSV
     public static var FIXED_DAMAGE_MOVE = ["seismic-toss", "night-shade"];
     public static var WEIGHT_MOVE = ["low-kick", "grass-knot"];
     public static var HAPPINESS_MOVE = ["return", "frustration"];
@@ -55,6 +57,8 @@ class Formula {
         var foeTypes:Array<String> = foePokemonStat.types;
         var factor = descriptionsDataset.getTypeEfficacy(userMoveType, foeTypes[0], foeTypes[1]);
         var userBasePower = computeBasePower(userPokemonStat, foePokemonStat, userMoveStat);
+
+        // TODO: check these from database
         var isVariableBasePower = Formula.VARIABLE_POWER_MOVE.indexOf(userMoveStat.slug) != -1;
         var isFixedDamageMove = Formula.FIXED_DAMAGE_MOVE.indexOf(userMoveStat.slug) != -1;
 
@@ -113,6 +117,8 @@ class Formula {
         if (userMoveStat.maxHits != null) {
             damageResult = Formula.modifyHits(damageResult, userMoveStat.minHits, userMoveStat.maxHits);
         }
+
+        // TODO: give the valeus of all the parameters so it can be shown to user
 
         return damageResult;
     }
