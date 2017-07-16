@@ -421,6 +421,8 @@ class UI {
     }
 
     function renderMatchCommand() {
+        // FIXME: don't show "Current" or "Custom" Pokemon since you can't actually bid them
+
         var buffer = new StringBuf();
         buffer.add("/w tpp match ");
 
@@ -468,6 +470,8 @@ class UI {
     }
 
     function clickedHelp(helpSlug:String) {
+        // TODO: the help data should probably be changed into JSON
+        // so it can be used to show complicated stuff like each component of the damage formula
         var parts = helpSlug.split(":");
         var category = parts[0];
         var slug = parts[1];
@@ -561,6 +565,8 @@ class UI {
     }
 
     function clickedEdit(slotNum:Int) {
+        // TODO: make it easier to edit. IE, add a edit button next to each part
+        // so it can be edited instead of one big dialog box
         var pokemonStats = currentPokemon.get(slotNum);
 
         var template = new JQuery("#pokemonEditTemplate").html();
