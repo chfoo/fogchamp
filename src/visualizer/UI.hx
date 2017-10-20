@@ -810,12 +810,12 @@ class UI {
         var numbers = getMatchNumbers();
 
         new JQuery("#extraUrls").html('
-            <s>View
+            <!--<s>View
             <a href="http://www.tppvisuals.com/pbr/visualizer.htm#${numbers[0]}-${numbers[1]}-${numbers[2]}-${numbers[3]}-${numbers[4]}-${numbers[5]}">
             Dhason</a> /
             <a href="http://fe1k.de/tpp/visualize#${numbers[0]}-${numbers[1]}-${numbers[2]}-${numbers[3]}-${numbers[4]}-${numbers[5]}">
             FelkCraft</a>
-            visualizer</s>
+            visualizer</s>-->
         ');
     }
 
