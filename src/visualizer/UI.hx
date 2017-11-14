@@ -272,9 +272,10 @@ class UI {
         if (database.apiPokemonDataset.slugs.length == 0) {
             untyped new JQuery("#promptDialog").html("
             <p>
-            <big><strong>Download the latest movesets from TPP?</strong></big>
+            <big><strong>Download the latest movesets from TPP's API website?</strong></big>
             </p>
             <p>Downloading will take a while but this only has to be done infrequently.</p>
+            <p>The API website may collect your IP address and other browser details.</p>
             ")
             .dialog({
                 modal: true,
