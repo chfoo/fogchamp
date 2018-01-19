@@ -163,15 +163,32 @@ class Formula {
     }
 
     public function computeDamage(userAttack:Int, foeDefense:Int, userBasePower:Int, stab:Bool, damageFactor:Int):DamageResult {
+        // This calculation is not accurate in the sense that
+        // flooring/rounding errors are not properly represented.
+        // IE, actual low level steps to compute each integer is not in
+        // the correct sequence.
+        // Ideally, Int should be an abstract so that it can provide int
+        // division extension method or operator override.
+        // Any attempts to fix this should be focused into making an accurate
+        // battle engine library so I can use it :)
+
         var modifier = damageFactor / 100;
 
+        var damage = Math.floor(
+            Math.floor(
+                Math.floor(2 * LEVEL / 5 + 2)
+                * userBasePower
+                * userAttack / foeDefense
+            )
+            / 50 + 2
+        );
+
         if (stab) {
-            modifier *= 1.5;
+            damage = Math.floor(damage * 1.5);
         }
 
-        var damage = ((2 * LEVEL + 10) / 250) * (userAttack / foeDefense) * userBasePower + 2;
+        damage = Math.floor(damage * modifier);
 
-        damage = damage * modifier;
         var minDamage = damage * RANDOM_MIN_MODIFIER;
         var critDamage = damage * CRIT_MODIFIER;
 
@@ -180,7 +197,7 @@ class Formula {
         critDamage = Math.floor(critDamage);
 
         if (damageFactor != 0) {
-            damage = Math.max(1, damage);
+            damage = Std.int(Math.max(1, damage));
             minDamage = Math.max(1, minDamage);
             critDamage = Math.max(1, critDamage);
         }
