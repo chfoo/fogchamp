@@ -61,6 +61,10 @@ a:active, a:hover {
     margin-bottom: 1em;
 }
 
+#news {
+    font-size: small;
+}
+
 #footer {
     max-width: 40em;
     margin: auto;
