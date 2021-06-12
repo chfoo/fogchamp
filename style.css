@@ -40,6 +40,11 @@ a:active, a:hover {
     color: #98B1B3;
 }
 
+summary {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 #messageContainer {
     background: rgba(180, 152, 39, 0.75);
     position: fixed;
@@ -63,6 +68,7 @@ a:active, a:hover {
 
 #news {
     font-size: small;
+    margin-bottom: 1em;
 }
 
 #footer {

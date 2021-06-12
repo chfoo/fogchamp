@@ -20,7 +20,18 @@
 
 <div id="bodyContainer">
     <div id="news">
-        <p>News: Wolfie 🐺 made a <a href="https://wolfcal.pythonanywhere.com/vis/">new visualizer</a></p>
+        <details>
+            <summary>News</summary>
+            <p>
+                2021 maintenance update:
+            </p>
+            <ul>
+                <li>The prompt to download the movesets from the API was removed. While changing downloading the movesets from the API from batches of 100 to 1000, I found out that the movesets may not fit in the site data storage quotas (5MB) and the visualizer will fail with a silent error. You try downloading them manually by selecting the "API" edition and the Download button, but in order to check if there is an error, you need to open Developer Tools first.</li>
+                <li>Removed link to Wolfie's defunct visualizer</li>
+                <li>Added underline to the expandable/collapsible box things to make it clear that you can click on them</li>
+                <li>Uhhh.... I guess that's it <img src="https://static-cdn.jtvnw.net/emoticons/v1/114870/1.0" referrerpolicy="no-referrer"></li>
+            </ul>
+        </details>
     </div>
     <div id="pokemonSelection">
         <div class="blueCorner" id="pokemonSelectionBlue"></div>
@@ -54,11 +65,10 @@
             <p>Each Pokémon has their HP, Attack, Defense, Special Attack, Special Defense, and Speed shown. Moves are shown with Accuracy in percentage, PP, Base Power, and Priority. </p>
             <p>To properly use the visualizer, please study the abilities and move descriptions. This visualizer is very basic and should be used as a rough guide.</p>
             <p>New to betting on TPP? Type <code>/w tpp tutorial</code> to receive guided betting whispers from the TPP bot.</p>
-            <p>Do not visit tppvisuals.com. That visualizer is no longer available and is currently serving ads/malware by domain squatters.</p>
+            <p>Please note that I'm not interested in PBR anymore and do not plan to fix complex engine bugs, data issues (such as wrong gen info) or improve functionality (such as 6v6) with any TPP PBR features that is newer than 2018. Only occasional bug fixes related to TPP's API will be done.</p>
             <p>
                 <strong>Privacy notice:</strong> When using the feature to get the current match and movesets from TPP, it contacts TPP's API website. The API website may be logging your IP address and other browser details. By using this feature, you should reasonably expect that I can't be held liable for any damages that may be caused by the operators of the API website. To protect your privacy, you may wish to use an anonymizing service such as Tor.
             </p>
-            <p>Other links: <a href="https://wolfcal.pythonanywhere.com/vis/">🐺 Wolfie's visualizer</a></p>
         </details>
         <br>
         <p>

@@ -70,7 +70,7 @@ class UI {
 
         attachOptionsListeners();
         renderAll();
-        promptToDownloadMovesets();
+        //promptToDownloadMovesets();
     }
 
     function renderSelectionList() {
@@ -643,7 +643,7 @@ class UI {
 
     function buildEditAbilityRenderDoc(pokemonStats:VisualizerPokemonStats):Dynamic {
         var abilityRenderList = [{"slug": "", "label": "-", "selected": ""}];
-        var setList;
+        var setList:Iterator<String>;
 
         if (pokemonStats.abilitySet != null) {
             setList = pokemonStats.abilitySet.iterator();
@@ -664,7 +664,7 @@ class UI {
 
     function buildEditItemRenderDoc(pokemonStats:VisualizerPokemonStats):Dynamic {
         var itemRenderList = [{"slug": "", "label": "-", "selected": ""}];
-        var setList;
+        var setList:Iterator<String>;
 
         if (pokemonStats.itemSet != null) {
             setList = pokemonStats.itemSet.iterator();
@@ -686,7 +686,7 @@ class UI {
     function buildEditMoveRenderDoc(pokemonStats:VisualizerPokemonStats, slot:Int):Dynamic {
         var moveRenderList = [{"slug": "", "label": "-", "selected": ""}];
 
-        var setList;
+        var setList:Iterator<String>;
 
         if (pokemonStats.itemSet != null && slot <= pokemonStats.moveSets.length - 1) {
             setList = pokemonStats.moveSets[slot].iterator();

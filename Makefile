@@ -3,8 +3,8 @@
 all: build
 
 build:
-	haxe -cp src/ -main visualizer.Main -js script.js
+	haxe build.hxml
 
 build-debug:
-	haxe -cp src/ -main visualizer.Main -js script.js -debug
+	haxe build.hxml -debug
 

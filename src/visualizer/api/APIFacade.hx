@@ -16,7 +16,7 @@ typedef PokemonSetsCallback = Bool -> String -> Array<MovesetPokemonStats> -> Vo
 class APIFacade {
     static var CURRENT_MATCH_API_URL(default, null) = "https://twitchplayspokemon.tv/api/current_match";
 //    static var CURRENT_MATCH_API_URL(default, null) = "/test_data/match.json";
-    static var POKEMON_SETS_API_URL(default, null) = "https://twitchplayspokemon.tv/api/pokemon_sets?id&limit=100";
+    static var POKEMON_SETS_API_URL(default, null) = "https://twitchplayspokemon.tv/api/pokemon_sets?id&limit=1000";
     static var CONSUME_CURSOR_API_URL(default, null) = "https://twitchplayspokemon.tv/api/cursor/";
     var callInProgress = false;
     public var progressCallback:Int->Void;
@@ -100,7 +100,7 @@ class APIFacade {
 
             Browser.window.setTimeout(function () {
                 callAPI(
-                    CONSUME_CURSOR_API_URL + token + "?limit=100",
+                    CONSUME_CURSOR_API_URL + token + "?limit=1000",
                     cursorPaginateSuccessHandler,
                     cursorErrorHandler,
                     true
@@ -113,7 +113,7 @@ class APIFacade {
 
             Browser.window.setTimeout(function () {
                 callAPI(
-                    CONSUME_CURSOR_API_URL + token + "?limit=100",
+                    CONSUME_CURSOR_API_URL + token + "?limit=1000",
                     cursorPaginateSuccessHandler,
                     cursorErrorHandler,
                     true

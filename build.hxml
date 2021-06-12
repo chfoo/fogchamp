@@ -1,0 +1,4 @@
+-cp src/
+-main visualizer.Main
+-js script.js
+-L hx3compat
